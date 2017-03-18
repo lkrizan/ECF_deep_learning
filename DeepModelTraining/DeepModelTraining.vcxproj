@@ -142,7 +142,7 @@
       <SubSystem>Console</SubSystem>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <ForceFileOutput>MultiplyDefinedSymbolOnly</ForceFileOutput>
-      <AdditionalOptions>/WHOLEARCHIVE:tf_core_direct_session.lib /WHOLEARCHIVE:tf_core_gpu_kernels.lib /WHOLEARCHIVE:tf_cc_framework.lib /WHOLEARCHIVE:tf_cc_op_gen_main.lib  /WHOLEARCHIVE:tf_cc_ops.lib /WHOLEARCHIVE:tf_core_cpu.lib /WHOLEARCHIVE:tf_core_framework.lib  /WHOLEARCHIVE:tf_core_lib.lib /WHOLEARCHIVE:tf_core_ops.lib  /WHOLEARCHIVE:tf_core_kernels.lib /WHOLEARCHIVE:tf_stream_executor.lib %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/WHOLEARCHIVE:tf_core_direct_session.lib  /WHOLEARCHIVE:tf_core_cpu.lib /WHOLEARCHIVE:tf_core_lib.lib /WHOLEARCHIVE:tf_core_kernels.lib  /WHOLEARCHIVE:tf_stream_executor.lib  /WHOLEARCHIVE:tf_core_ops.lib %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <ProjectReference>
       <LinkLibraryDependencies>false</LinkLibraryDependencies>
