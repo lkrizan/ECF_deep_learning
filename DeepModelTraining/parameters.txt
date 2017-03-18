@@ -1,18 +1,17 @@
 <ECF>
 	<Algorithm>
-		<SteadyStateTournament>
-			<Entry key="tsize">3</Entry>
-		</SteadyStateTournament>
+		<GenHookeJeeves>
+		</GenHookeJeeves>
 	</Algorithm>
 	<Genotype>
 		<FloatingPoint>
-			<Entry key="lbound">-1</Entry>
-			<Entry key="ubound">1</Entry>
-			<Entry key="dimension">17</Entry>
+			<Entry key="lbound">-5</Entry>
+			<Entry key="ubound">5</Entry>
+			<Entry key="dimension">41</Entry>
 		</FloatingPoint>
 	</Genotype>
 	<Registry>
-		<Entry key="population.size">500</Entry>
+		<Entry key="population.size">50</Entry>
 		<Entry key="mutation.indprob">0.3</Entry>
 		<Entry key="term.maxgen">500</Entry>
 		<Entry key="term.eval">100000</Entry>

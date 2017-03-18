@@ -3,7 +3,7 @@
 
 #define N_INPUTS 2
 #define N_OUTPUTS 1
-#define FIRST_LAYER 4
+#define FIRST_LAYER 10
 
 
 void ModelEvalOp::registerParameters(StateP state)
@@ -14,7 +14,7 @@ void ModelEvalOp::registerParameters(StateP state)
 
 ModelEvalOp::~ModelEvalOp()
 {
-	delete m_Session;
+	m_Session->Close();
 }
 
 template<class T, class InputIterator>
@@ -42,7 +42,7 @@ GraphDef ModelEvalOp::createGraphDef()
 	// network definition
 	auto firstLayer = MatMul(root, x, w1, ops::MatMul::TransposeB(true));
 	auto firstLayerNet = Add(root, firstLayer, b1);
-	auto firstLayerOut = Softmax(root, firstLayerNet);
+	auto firstLayerOut = Sigmoid(root, firstLayerNet);
 	auto secondLayer = MatMul(root, firstLayerOut, w2, ops::MatMul::TransposeB(true));
 	auto secondLayerOut = Add(root, secondLayer, b2);
 	auto diff = Subtract(root, secondLayerOut, y);

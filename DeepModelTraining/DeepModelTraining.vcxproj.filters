@@ -37,5 +37,8 @@
     <Text Include="dataset.txt">
       <Filter>Resource Files</Filter>
     </Text>
+    <Text Include="parameters.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
   </ItemGroup>
 </Project>

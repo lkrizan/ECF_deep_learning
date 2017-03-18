@@ -159,6 +159,7 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="dataset.txt" />
+    <Text Include="parameters.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
