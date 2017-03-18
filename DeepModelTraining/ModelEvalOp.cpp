@@ -63,7 +63,7 @@ bool ModelEvalOp::initialize(StateP state)
 	GraphDef graphDef = createGraphDef();
 	Status status = m_Session->Create(graphDef);
     // load training data
-    DatasetLoader<float> parser("dataset.txt", N_INPUTS, N_OUTPUTS);
+    DatasetLoader<float> parser("./dataset/dataset.txt", N_INPUTS, N_OUTPUTS);
     std::vector<float> inputs = parser.getInputs();
     std::vector<float> outputs = parser.getOutputs();
     // create tensors and set their values
