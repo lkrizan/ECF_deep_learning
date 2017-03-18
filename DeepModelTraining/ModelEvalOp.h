@@ -1,6 +1,5 @@
 #ifndef MODELEVALOP_H_
 #define MODELEVALOP_H_
-
 #include <ECF/ECF.h>
 #include "tensorflow/cc/ops/standard_ops.h"
 #include "tensorflow/core/framework/graph.pb.h"
@@ -13,6 +12,9 @@
 #include "tensorflow/core/platform/logging.h"
 #include "tensorflow/core/platform/types.h"
 #include "tensorflow/core/public/session.h"
+#include "tensorflow/cc/ops/standard_ops.h"
+#include "tensorflow/core/framework/tensor.h"
+#include "tensorflow/core/common_runtime/direct_session.h"
 #include "DatasetLoader.h"
 
 using namespace tensorflow;
@@ -31,8 +33,8 @@ private:
     Session* m_Session;
     std::shared_ptr<Tensor> m_Inputs;
     std::shared_ptr<Tensor> m_Outputs;
+	GraphDef createGraphDef();
 };
 
 typedef boost::shared_ptr<ModelEvalOp> ModelEvalOpP;
-
 #endif
