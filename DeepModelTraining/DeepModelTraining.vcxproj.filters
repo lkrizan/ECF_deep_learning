@@ -13,6 +13,15 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Layers">
+      <UniqueIdentifier>{9d021e2a-b086-472e-9117-63bc5af0eb1f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Layers\Header Files">
+      <UniqueIdentifier>{540dc324-3409-47af-ba75-eb53264155d6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Layers\Source Files">
+      <UniqueIdentifier>{02b0ec92-3166-46e3-a485-6e706b09fde5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DatasetLoader.cpp">
@@ -24,6 +33,9 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="FullyConnectedLayer.cpp">
+      <Filter>Layers\Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DatasetLoader.h">
@@ -31,6 +43,12 @@
     </ClInclude>
     <ClInclude Include="ModelEvalOp.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Layer.h">
+      <Filter>Layers\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FullyConnectedLayer.h">
+      <Filter>Layers\Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

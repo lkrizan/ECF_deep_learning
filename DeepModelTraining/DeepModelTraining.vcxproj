@@ -150,11 +150,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="DatasetLoader.cpp" />
+    <ClCompile Include="FullyConnectedLayer.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ModelEvalOp.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DatasetLoader.h" />
+    <ClInclude Include="FullyConnectedLayer.h" />
+    <ClInclude Include="Layer.h" />
     <ClInclude Include="ModelEvalOp.h" />
   </ItemGroup>
   <ItemGroup>
