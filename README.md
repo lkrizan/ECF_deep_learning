@@ -1,6 +1,6 @@
 # README #
 
-Extension of ECF (Evolutionary Computation Framework, http://ecf.zemris.fer.hr/) for deep neural networks with TensorFlow r1.0 on MS Windows.
+Extension of [ECF](http://ecf.zemris.fer.hr/) (Evolutionary Computation Framework) for deep neural networks with TensorFlow r1.0 on MS Windows.
 
 
 ## REQUIREMENTS ##
