@@ -32,7 +32,7 @@ Make sure that `cmake` and `git` are installed and in your `PATH`. Check if ther
 ### TensorFlow build ###
 
 * Setup environment.
-- run cmd.exe and the following command:
+    - run cmd.exe and the following command:
 
 ```
 C:\temp> "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\amd64\vcvars64.bat"
@@ -49,7 +49,7 @@ C:\temp\tensorflow\tensorflow\contrib\cmake\build>
 ```
 
 * Invoke CMake to create Visual Studio solution and project files.
-- If you are building without GPU support, do not use the last two lines (and remove the `^` character (line continuation) from the last line.    
+    - If you are building without GPU support, do not use the last two lines (and remove the `^` character (line continuation) from the last line.    
 ```
 cmake .. -A x64 -DCMAKE_BUILD_TYPE=Release ^
 -DSWIG_EXECUTABLE=C:\tools\swigwin-3.0.10\swig.exe ^
@@ -62,14 +62,14 @@ cmake .. -A x64 -DCMAKE_BUILD_TYPE=Release ^
 ```
 
 * Invoke MSBuild to build TensorFlow. 
-- Run the following line:  
+    - Run the following line:  
 
 ```
 C:\...\build> MSBuild /p:Configuration=Release tf_tutorials_example_trainer.vcxproj
 ```    
 
-* Be patient, this may take few hours.
-* After the build is finished, test it:
+    - Be patient, this may take few hours.
+    - After the build is finished, test it:
     
 ```
 C:\...\build> Release\tf_tutorials_example_trainer.exe
