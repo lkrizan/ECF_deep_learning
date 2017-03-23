@@ -33,50 +33,45 @@ Make sure that `cmake` and `git` are installed and in your `PATH`. Check if ther
 
 1.  Setup environment.
     * run cmd.exe and the following command:
+    
     ```
     C:\temp> "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\amd64\vcvars64.bat"
     ```
 
 2. Clone the TensorFlow repository, checkout r1.0 branch and create a working directory for your build:
+
     ```
     C:\temp> git clone -b r1.0 --single-branch https://github.com/tensorflow/tensorflow.git
-    
     C:\temp> cd tensorflow\tensorflow\contrib\cmake
-    
     C:\temp\tensorflow\tensorflow\contrib\cmake> mkdir build
-    
     C:\temp\tensorflow\tensorflow\contrib\cmake> cd build
-    
     C:\temp\tensorflow\tensorflow\contrib\cmake\build>
     ```
 
 3. Invoke CMake to create Visual Studio solution and project files.
     * If you are building without GPU support, do not use the last two lines (and remove the `^` character (line continuation) from the last line.
+    
     ```
     cmake .. -A x64 -DCMAKE_BUILD_TYPE=Release ^
-    
     -DSWIG_EXECUTABLE=C:\tools\swigwin-3.0.10\swig.exe ^
-    
     -DPYTHON_EXECUTABLE=C:\Users\%USERNAME%\Anaconda3\python.exe ^
-    
     -DPYTHON_LIBRARIES=C:\Users\%USERNAME%\Anaconda3\libs\python35.lib ^
-    
     -DPYTHON_INCLUDE_DIR=C:\Users\%USERNAME%\Anaconda3\include ^
-    
     -DNUMPY_INCLUDE_DIR=C:\Users\%USERNAME%\Anaconda3\Lib\site-packages\numpy\core\include ^
-    
     -Dtensorflow_ENABLE_GPU=ON ^
-    
     -DCUDNN_HOME=C:\local\cuda\
     ```
 
 4. Invoke MSBuild to build TensorFlow. 
     * Run the following line:
+    
     ```
     C:\...\build> MSBuild /p:Configuration=Release tf_tutorials_example_trainer.vcxproj
     ```
+    
     * Be patient, this may take few hours.
     * After the build is finished, test it:
+    
     ```
     C:\...\build> Release\tf_tutorials_example_trainer.exe
     ```
