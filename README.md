@@ -42,6 +42,7 @@ Make sure that `cmake` and `git` are installed and in your `PATH`. Check if ther
 
     ```
     C:\temp> git clone -b r1.0 --single-branch https://github.com/tensorflow/tensorflow.git
+
     C:\temp> cd tensorflow\tensorflow\contrib\cmake
     C:\temp\tensorflow\tensorflow\contrib\cmake> mkdir build
     C:\temp\tensorflow\tensorflow\contrib\cmake> cd build
