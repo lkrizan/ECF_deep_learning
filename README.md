@@ -40,14 +40,13 @@ Make sure that `cmake` and `git` are installed and in your `PATH`. Check if ther
 
 2. Clone the TensorFlow repository, checkout r1.0 branch and create a working directory for your build:
 
-    ```
-    C:\temp> git clone -b r1.0 --single-branch https://github.com/tensorflow/tensorflow.git
-
-    C:\temp> cd tensorflow\tensorflow\contrib\cmake
-    C:\temp\tensorflow\tensorflow\contrib\cmake> mkdir build
-    C:\temp\tensorflow\tensorflow\contrib\cmake> cd build
-    C:\temp\tensorflow\tensorflow\contrib\cmake\build>
-    ```
+```
+C:\temp> git clone -b r1.0 --single-branch https://github.com/tensorflow/tensorflow.git
+C:\temp> cd tensorflow\tensorflow\contrib\cmake
+C:\temp\tensorflow\tensorflow\contrib\cmake> mkdir build
+C:\temp\tensorflow\tensorflow\contrib\cmake> cd build
+C:\temp\tensorflow\tensorflow\contrib\cmake\build>
+```
 
 3. Invoke CMake to create Visual Studio solution and project files.
     * If you are building without GPU support, do not use the last two lines (and remove the `^` character (line continuation) from the last line.
