@@ -6,7 +6,6 @@ class Layer
 {
 public:
 	virtual const tensorflow::Output& forward() const = 0;
-	// TODO: switch this method to Layer::TensorShape
 	virtual Shape outputShape() = 0;
 	virtual bool hasParams() = 0;
 };

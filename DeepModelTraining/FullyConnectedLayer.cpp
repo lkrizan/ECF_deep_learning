@@ -10,14 +10,21 @@ FullyConnectedLayer::FullyConnectedLayer(const tensorflow::Input &previousLayerO
 	// set names for variables
 	m_Index = ++s_TotalNumber;
 	std::string name = s_LayerName + std::to_string(m_Index);
+	m_WeightsName = name + "_w";
+	m_BiasName = name + "_b";
 
 	// create placeholders and graph nodes for layer 
-	auto weights = Placeholder(m_Scope.WithOpName(name + "_w"), tensorflow::DataType::DT_FLOAT);
-	auto bias = Placeholder(m_Scope.WithOpName(name + "_b"), tensorflow::DataType::DT_FLOAT);
+	auto weights = Placeholder(m_Scope.WithOpName(m_WeightsName), tensorflow::DataType::DT_FLOAT);
+	auto bias = Placeholder(m_Scope.WithOpName(m_BiasName), tensorflow::DataType::DT_FLOAT);
 	auto tempResult = MatMul(m_Scope, previousLayerOutput, weights, MatMul::TransposeB(true));
 	m_Output = Add(m_Scope, tempResult, bias);
 
-	// TODO: set shapes
+	// set shapes
+	m_WeightsShape = paramShape;
+	m_WeightsShape.transpose();
+	m_BiasShape.push_back(m_WeightsShape.front());
+	m_OutputShape = inputShape;
+	m_OutputShape.push_back(m_WeightsShape.back());
 }
 
 const tensorflow::Output& FullyConnectedLayer::forward() const
@@ -32,5 +39,5 @@ Shape FullyConnectedLayer::outputShape()
 
 std::vector<std::pair<std::string, Shape>> FullyConnectedLayer::getParamShapes() const
 {
-	// TODO: insert return statement here
+	return std::vector<std::pair<std::string, Shape>>({ {m_WeightsName, m_WeightsShape}, {m_BiasName, m_BiasShape} });
 }

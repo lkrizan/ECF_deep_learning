@@ -9,6 +9,9 @@ private:
 	int m_Index;
 	// counter of class instances
 	static int s_TotalNumber;
+	// parameters name
+	std::string m_WeightsName;
+	std::string m_BiasName;
 	// parameters shape
 	Shape m_WeightsShape;
 	Shape m_BiasShape;
