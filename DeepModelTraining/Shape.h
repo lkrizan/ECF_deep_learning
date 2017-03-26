@@ -1,29 +1,31 @@
 #include <vector>
+#include <algorithm>
+#include "tensorflow/cc/ops/standard_ops.h"
+#include "tensorflow/core/framework/tensor.h"
 
-namespace Layer {
-
-class TensorShape
+class Shape
 {
+	// this class describes tensor (matrix) shape
 private:
-	std::vector<int> m_Values;
-	// one value (first or last) in shape can be unspecifed (e.g., number of examples does not have to defined for creation of layers of network
-	bool m_ValueUndefined;
-	bool m_Transposed = false;
+	// dimensions do not have to be defined - their value can be set to zero
+	std::vector<tensorflow::int64> m_Values;
 public:	
 	template <class InputInterator>
-	TensorShape(InputIterator valuesFirst, InputIterator valuesLast, bool firstValueUndefined) : m_Values(valuesFirst, valuesLast) { m_ValueUndefined = firstValueUndefined; }
-	void transpose() { m_Transposed = !m_Transposed; }
-	int length() { return (m_ValueUndefined) ? m_Values.size() + 1 : m_Values.size();  }
+	Shape(InputIterator valuesFirst, InputIterator valuesLast) : m_Values(valuesFirst, valuesLast) {}
+	Shape(std::initializer_list<tensorflow::int64> list) : m_Values(list) {}
+	Shape() : m_Values() {}
+	void transpose() { std::reverse(m_Values.begin(), m_Values.end()); }
+	size_t length() { return m_Values.size(); }
 	bool validForParameterizedUse() 
 	{
-		// TODO: check if all values are not zero and everything is defined
+		// shape is valid for use with parameterized layers if all values in shape are greater than zero
+		return std::find_if(m_Values.begin(), m_Values.end(), [](int n) { return n <= 0; }) == m_Values.end();
 	
 	}
-	bool compatibleForMul(const TensorShape &other)
+	bool compatibleForMul(const Shape &right)
 	{
-		/* TODO: check shapes and allow undefined values if possible */
-		return true;
+		return m_Values.back() == right.m_Values.front();
 	}
+	tensorflow::TensorShape asTensorShape() { return tensorflow::TensorShape(tensorflow::gtl::ArraySlice<tensorflow::int64>(m_Values)); }
 };	
 
-}

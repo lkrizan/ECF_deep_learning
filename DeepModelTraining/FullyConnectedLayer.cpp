@@ -1,6 +1,6 @@
 #include "FullyConnectedLayer.h"
 
-FullyConnectedLayer::FullyConnectedLayer(const Layer &previousLayer, tensorflow::Scope &scope, std::vector<int> shape) : m_Scope(scope)
+FullyConnectedLayer::FullyConnectedLayer(const tensorflow::Input &previousLayerOutput, tensorflow::Scope &scope, Shape inputShape, Shape paramShape) : m_Scope(scope)
 {
 	using namespace tensorflow::ops;
 
@@ -12,34 +12,25 @@ FullyConnectedLayer::FullyConnectedLayer(const Layer &previousLayer, tensorflow:
 	std::string name = s_LayerName + std::to_string(m_Index);
 
 	// create placeholders and graph nodes for layer 
-	m_pWeights = new Placeholder(m_Scope.WithOpName(name + "_w"), tensorflow::DataType::DT_FLOAT);
-	m_pBias = new Placeholder(m_Scope.WithOpName(name + "_b"), tensorflow::DataType::DT_FLOAT);
-	auto tempResult = MatMul(m_Scope, previousLayer.forward(), *m_pWeights, MatMul::TransposeB(true));
-	m_Output = Add(m_Scope, tempResult, *m_pBias);
+	auto weights = Placeholder(m_Scope.WithOpName(name + "_w"), tensorflow::DataType::DT_FLOAT);
+	auto bias = Placeholder(m_Scope.WithOpName(name + "_b"), tensorflow::DataType::DT_FLOAT);
+	auto tempResult = MatMul(m_Scope, previousLayerOutput, weights, MatMul::TransposeB(true));
+	m_Output = Add(m_Scope, tempResult, bias);
 
-	// TODO: with Layer::TensorShape class
-	m_OutputShape.push_back(shape[0]);
+	// TODO: set shapes
 }
 
-FullyConnectedLayer::~FullyConnectedLayer()
-{
-	if (m_pWeights != nullptr)
-		delete m_pWeights;
-	if (m_pBias != nullptr)
-		delete m_pBias;
-}
-
-tensorflow::Output FullyConnectedLayer::forward() const
+const tensorflow::Output& FullyConnectedLayer::forward() const
 {
 	return m_Output;
 }
 
-const std::vector<int>& FullyConnectedLayer::outputShape()
+Shape FullyConnectedLayer::outputShape()
 {
-	// TODO: insert return statement here
+	return m_OutputShape;
 }
 
-const std::vector<std::pair<std::string, std::vector<int>>>& FullyConnectedLayer::getParamShapes()
+std::vector<std::pair<std::string, Shape>> FullyConnectedLayer::getParamShapes() const
 {
 	// TODO: insert return statement here
 }
