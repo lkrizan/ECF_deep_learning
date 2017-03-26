@@ -83,9 +83,7 @@ FitnessP ModelEvalOp::evaluate(IndividualP individual)
 
     // not very nice, but it will be changed once parameters won't be hardcoded
     // create tensors
-	std::vector<int> a = { 1, 2, 3 };
     TensorShape w1Shape({FIRST_LAYER, N_INPUTS});
-	TensorShape wShape(gtl::ArraySlice<int64>(a));
     Tensor w1(DT_FLOAT, w1Shape);
     TensorShape b1Shape({FIRST_LAYER});
     Tensor b1(DT_FLOAT, b1Shape);
