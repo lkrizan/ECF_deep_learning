@@ -154,12 +154,15 @@
     <ClCompile Include="FullyConnectedLayer.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ModelEvalOp.cpp" />
+    <ClCompile Include="SigmoidLayer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DatasetLoader.h" />
     <ClInclude Include="FullyConnectedLayer.h" />
     <ClInclude Include="Layer.h" />
     <ClInclude Include="ModelEvalOp.h" />
+    <ClInclude Include="Shape.h" />
+    <ClInclude Include="SigmoidLayer.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="dataset.txt" />

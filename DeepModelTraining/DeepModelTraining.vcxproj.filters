@@ -36,6 +36,9 @@
     <ClCompile Include="FullyConnectedLayer.cpp">
       <Filter>Layers\Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SigmoidLayer.cpp">
+      <Filter>Layers\Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DatasetLoader.h">
@@ -48,6 +51,12 @@
       <Filter>Layers\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="FullyConnectedLayer.h">
+      <Filter>Layers\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Shape.h">
+      <Filter>Layers\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SigmoidLayer.h">
       <Filter>Layers\Header Files</Filter>
     </ClInclude>
   </ItemGroup>
