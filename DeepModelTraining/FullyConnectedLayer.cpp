@@ -3,11 +3,10 @@
 FullyConnectedLayer::FullyConnectedLayer(const tensorflow::Input &previousLayerOutput, tensorflow::Scope &scope, Shape inputShape, Shape paramShape) : m_Scope(scope)
 {
 	using namespace tensorflow::ops;
-
-	// fully connected layer is implemented as x dot wT
-	paramShape.transpose();
 	
 	// check if parameters are valid
+	// fully connected layer is implemented as x dot wT so transpose it for shape compatibility checks
+	paramShape.transpose();
 	bool parameterizationFailure = false;
 	std::ostringstream errorMessageStream;
 	if (!paramShape.validForParameterizedUse())
@@ -29,6 +28,8 @@ FullyConnectedLayer::FullyConnectedLayer(const tensorflow::Input &previousLayerO
 	{
 		throw std::invalid_argument(errorMessageStream.str());
 	}
+	// revert shape
+	paramShape.transpose();
 
 	// set names for variables
 	m_Index = ++s_TotalNumber;
@@ -44,7 +45,6 @@ FullyConnectedLayer::FullyConnectedLayer(const tensorflow::Input &previousLayerO
 
 	// set shapes
 	m_WeightsShape = paramShape;
-	m_WeightsShape.transpose();
 	m_BiasShape.push_back(m_WeightsShape.front());
 	m_OutputShape = inputShape;
 	m_OutputShape.push_back(m_WeightsShape.back());

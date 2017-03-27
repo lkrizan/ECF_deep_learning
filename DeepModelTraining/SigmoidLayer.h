@@ -11,9 +11,7 @@ private:
 	Shape m_OutputShape;
 
 public:
-	static const std::string s_LayerName;
 	SigmoidLayer(const tensorflow::Input &previousLayerOutput, tensorflow::Scope &scope, Shape inputShape);
 	const tensorflow::Output& forward() const override;
 	Shape outputShape() const override;
 };
-const std::string SigmoidLayer::s_LayerName = "Sigmoid";

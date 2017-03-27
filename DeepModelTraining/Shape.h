@@ -1,5 +1,6 @@
 #include <vector>
 #include <algorithm>
+#include <numeric>
 #include "tensorflow/cc/ops/standard_ops.h"
 #include "tensorflow/core/framework/tensor.h"
 
@@ -9,8 +10,8 @@ class Shape
 {
 	// this class describes tensor (matrix) shape - implemented as a wrapper over std::vector<int64>
 	std::vector<int64> m_Values;
-	
-public:	
+
+public:
 	template <class InputInterator>
 	Shape(InputIterator valuesFirst, InputIterator valuesLast) : m_Values(valuesFirst, valuesLast) {}
 	Shape(std::initializer_list<tensorflow::int64> list) : m_Values(list) {}
@@ -23,6 +24,7 @@ public:
 	int64 front() const { return m_Values.front(); }
 	int64 back() const { return m_Values.back(); }
 	size_t size() const { return m_Values.size(); }
+	size_t numberOfElements() const { return std::accumulate(m_Values.begin(), m_Values.end(), 1, std::multiplies<int64>()); }
 	void push_back(const int64& value) { m_Values.push_back(value); }
 	template <class InputInterator>
 	std::vector<int64>::iterator insert(std::vector<int64>::iterator pos, InputIterator first, InputIterator last) { return m_Values.insert(pos, first, last); }
