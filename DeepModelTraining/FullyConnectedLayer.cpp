@@ -4,8 +4,31 @@ FullyConnectedLayer::FullyConnectedLayer(const tensorflow::Input &previousLayerO
 {
 	using namespace tensorflow::ops;
 
-	// TODO: check given shape - maybe create exception class?
-	// TODO: check if shape of this layer is compatible with previous for operations
+	// fully connected layer is implemented as x dot wT
+	paramShape.transpose();
+	
+	// check if parameters are valid
+	bool parameterizationFailure = false;
+	std::ostringstream errorMessageStream;
+	if (!paramShape.validForParameterizedUse())
+	{
+		parameterizationFailure = true;
+		errorMessageStream << "Shape " << paramShape << " cannot be used for weights in fully connected layer." << std::endl;
+	}
+	else if (paramShape.size() != 2 || inputShape.size() != 2)
+	{
+		parameterizationFailure = true;
+		errorMessageStream << "Both input (X) and weights (W) in fully connected layer must have tensor rank 2." << std::endl;
+	}
+	else if (!inputShape.compatibleForMul(paramShape))
+	{
+		parameterizationFailure = true;
+		errorMessageStream << "Shapes " << inputShape << " and " << paramShape << "are not compatible for multiplication." << std::endl;
+	}
+	if (parameterizationFailure) 
+	{
+		throw std::invalid_argument(errorMessageStream.str());
+	}
 
 	// set names for variables
 	m_Index = ++s_TotalNumber;

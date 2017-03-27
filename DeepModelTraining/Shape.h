@@ -37,5 +37,11 @@ public:
 		return this->back() == right.front();
 	}
 	tensorflow::TensorShape asTensorShape() const { return tensorflow::TensorShape(tensorflow::gtl::ArraySlice<int64>(this->m_Values)); }
+
+	friend std::ostream& operator<< (std::ostream& os, const Shape &source)
+	{
+		os << source.m_Values;
+		return os;
+	}
 };	
 
