@@ -22,6 +22,7 @@ public:
 	std::vector<int64>::const_iterator cend() const { return m_Values.cend(); }
 	int64 front() const { return m_Values.front(); }
 	int64 back() const { return m_Values.back(); }
+	size_t size() const { return m_Values.size(); }
 	void push_back(const int64& value) { m_Values.push_back(value); }
 	template <class InputInterator>
 	std::vector<int64>::iterator insert(std::vector<int64>::iterator pos, InputIterator first, InputIterator last) { return m_Values.insert(pos, first, last); }
