@@ -1,6 +1,6 @@
 #include "Layer.h"
 
-class SigmoidLayer : NonParameterizedLayer
+class SigmoidActivation : NonParameterizedLayer
 {
 private:
 	// scope for placeholder variables
@@ -11,7 +11,7 @@ private:
 	Shape m_OutputShape;
 
 public:
-	SigmoidLayer(const tensorflow::Input &previousLayerOutput, tensorflow::Scope &scope, Shape inputShape);
+	SigmoidActivation(const tensorflow::Input &previousLayerOutput, tensorflow::Scope &scope, Shape inputShape);
 	const tensorflow::Output& forward() const override;
 	Shape outputShape() const override;
 };

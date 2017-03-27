@@ -26,7 +26,7 @@ FullyConnectedLayer::FullyConnectedLayer(const tensorflow::Input &previousLayerO
 	}
 	if (parameterizationFailure) 
 	{
-		throw std::invalid_argument(errorMessageStream.str());
+		throw std::logic_error(errorMessageStream.str());
 	}
 	// revert shape
 	paramShape.transpose();

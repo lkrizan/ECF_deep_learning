@@ -39,6 +39,9 @@
     <ClCompile Include="SigmoidLayer.cpp">
       <Filter>Layers\Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="MeanSquaredLoss.cpp">
+      <Filter>Layers\Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DatasetLoader.h">
@@ -57,6 +60,9 @@
       <Filter>Layers\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SigmoidLayer.h">
+      <Filter>Layers\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MeanSquaredLoss.h">
       <Filter>Layers\Header Files</Filter>
     </ClInclude>
   </ItemGroup>

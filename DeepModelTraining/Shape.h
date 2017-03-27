@@ -40,10 +40,20 @@ public:
 	}
 	tensorflow::TensorShape asTensorShape() const { return tensorflow::TensorShape(tensorflow::gtl::ArraySlice<int64>(this->m_Values)); }
 
-	friend std::ostream& operator<< (std::ostream& os, const Shape &source)
+	friend std::ostream& operator<< (std::ostream& os, const Shape& source)
 	{
 		os << source.m_Values;
 		return os;
+	}
+
+	friend bool operator== (const Shape& lhs, const Shape& rhs)
+	{
+		return lhs.m_Values == rhs.m_Values;
+	}
+
+	friend bool operator!= (const Shape& lhs, const Shape& rhs)
+	{
+		return !(lhs == rhs);
 	}
 };	
 
