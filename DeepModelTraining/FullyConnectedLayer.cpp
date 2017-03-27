@@ -32,7 +32,7 @@ const tensorflow::Output& FullyConnectedLayer::forward() const
 	return m_Output;
 }
 
-Shape FullyConnectedLayer::outputShape()
+Shape FullyConnectedLayer::outputShape() const 
 {
 	return m_OutputShape;
 }

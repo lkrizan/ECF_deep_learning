@@ -9,6 +9,7 @@ private:
 	int m_Index;
 	// counter of class instances
 	static int s_TotalNumber;
+	static const std::string s_LayerName;
 	// parameters name
 	std::string m_WeightsName;
 	std::string m_BiasName;
@@ -20,10 +21,9 @@ private:
 	tensorflow::Output m_Output;
 
 public:
-	static const std::string s_LayerName;
 	FullyConnectedLayer(const tensorflow::Input &previousLayerOutput, tensorflow::Scope &scope, Shape inputShape, Shape paramShape);
 	const tensorflow::Output& forward() const override;
-	Shape outputShape() override;
+	Shape outputShape() const override;
 	std::vector<std::pair<std::string, Shape>> getParamShapes() const override;
 };
 

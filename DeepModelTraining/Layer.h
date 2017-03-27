@@ -6,14 +6,14 @@ class Layer
 {
 public:
 	virtual const tensorflow::Output& forward() const = 0;
-	virtual Shape outputShape() = 0;
-	virtual bool hasParams() = 0;
+	virtual Shape outputShape() const = 0;
+	virtual bool hasParams() const = 0;
 };
 
 class ParameterizedLayer : public Layer
 {
 public:
-	bool hasParams() override { return true; };
+	bool hasParams() const override { return true; };
 	// returns shapes of all parameters
 	virtual std::vector<std::pair<std::string, Shape>> getParamShapes() const = 0;
 };
@@ -21,5 +21,5 @@ public:
 class NonParameterizedLayer : public Layer
 {
 public:
-	bool hasParams() override { return false; };
+	bool hasParams() const override { return false; };
 };

@@ -11,7 +11,7 @@ const tensorflow::Output & SigmoidLayer::forward() const
 	return m_Output;
 }
 
-Shape SigmoidLayer::outputShape()
+Shape SigmoidLayer::outputShape() const
 {
 	return m_OutputShape;
 }
