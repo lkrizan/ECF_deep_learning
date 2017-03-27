@@ -12,7 +12,7 @@ class Shape
 	std::vector<int64> m_Values;
 
 public:
-	template <class InputInterator>
+	template <class InputIterator>
 	Shape(InputIterator valuesFirst, InputIterator valuesLast) : m_Values(valuesFirst, valuesLast) {}
 	Shape(std::initializer_list<tensorflow::int64> list) : m_Values(list) {}
 	Shape() : m_Values() {}
@@ -26,7 +26,7 @@ public:
 	size_t size() const { return m_Values.size(); }
 	size_t numberOfElements() const { return std::accumulate(m_Values.begin(), m_Values.end(), 1, std::multiplies<int64>()); }
 	void push_back(const int64& value) { m_Values.push_back(value); }
-	template <class InputInterator>
+	template <class InputIterator>
 	std::vector<int64>::iterator insert(std::vector<int64>::iterator pos, InputIterator first, InputIterator last) { return m_Values.insert(pos, first, last); }
 	bool validForParameterizedUse() const
 	{
@@ -42,7 +42,10 @@ public:
 
 	friend std::ostream& operator<< (std::ostream& os, const Shape& source)
 	{
-		os << source.m_Values;
+		os << "[";
+		for(auto it = source.m_Values.cbegin(); it != source.m_Values.cend(); it++)
+			os << *it << "," ;
+		os << "]";
 		return os;
 	}
 
