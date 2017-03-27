@@ -1,5 +1,5 @@
-#include <ECF/ECF.h>
 #include "ModelEvalOp.h"
+#include <array>
 
 #define N_INPUTS 2
 #define N_OUTPUTS 1
@@ -28,12 +28,13 @@ void ModelEvalOp::setTensor(Tensor &tensor, InputIterator first, InputIterator l
 
 GraphDef ModelEvalOp::createGraphDef()
 {
+	using Layers::Shape;
 	// TODO: will be parameterized, for now everything is hardcoded for testing purposes
 	Scope root = Scope::NewRootScope();
 	using namespace tensorflow::ops;
 	// placeholders for inputs and outputs
-	auto x = Placeholder(root.WithOpName("x"), DT_FLOAT);
-	auto y = Placeholder(root.WithOpName("y"), DT_FLOAT);
+	auto x = Placeholder(root.WithOpName(INPUTS_PLACEHOLDER_NAME), DT_FLOAT);
+	auto y = Placeholder(root.WithOpName(OUTPUTS_PLACEHOLDER_NAME), DT_FLOAT);
 	// placeholders for network parameters
 	auto w1 = Placeholder(root.WithOpName("w1"), DT_FLOAT);
 	auto b1 = Placeholder(root.WithOpName("b1"), DT_FLOAT);
@@ -57,11 +58,6 @@ GraphDef ModelEvalOp::createGraphDef()
 
 bool ModelEvalOp::initialize(StateP state)
 {
-	// create session
-	SessionOptions options;
-	NewSession(options, &m_Session);
-	GraphDef graphDef = createGraphDef();
-	Status status = m_Session->Create(graphDef);
     // load training data
     DatasetLoader<float> parser("./dataset/dataset.txt", N_INPUTS, N_OUTPUTS);
     std::vector<float> inputs = parser.getInputs();
@@ -73,6 +69,11 @@ bool ModelEvalOp::initialize(StateP state)
     TensorShape outputShape({(int64) outputs.size(), N_OUTPUTS});
     m_Outputs = std::make_shared<Tensor>(Tensor(DT_FLOAT, outputShape));
     setTensor<float>(*m_Outputs, outputs.begin(), outputs.end());
+	// create session
+	SessionOptions options;
+	NewSession(options, &m_Session);
+	GraphDef graphDef = createGraphDef(inputs.size(), outputs.size());
+	Status status = m_Session->Create(graphDef);
 	return status.ok();
 }
 

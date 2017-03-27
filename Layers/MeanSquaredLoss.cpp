@@ -1,6 +1,6 @@
 #include "MeanSquaredLoss.h"
 
-MeanSquaredLoss::MeanSquaredLoss(const tensorflow::Input & previousLayerOutput, tensorflow::Scope & scope, Shape inputShape, Shape outputShape)
+MeanSquaredLoss::MeanSquaredLoss(const tensorflow::Input & previousLayerOutput, const tensorflow::Input & expectedOutputsPlaceholder, tensorflow::Scope & scope, Shape inputShape, Shape outputShape)
 {
 	// check if inputShape to layer and outputShapes are identical
 	if (inputShape != outputShape)
@@ -10,7 +10,7 @@ MeanSquaredLoss::MeanSquaredLoss(const tensorflow::Input & previousLayerOutput, 
 
 	// create graph nodes for layer
 	using namespace tensorflow::ops;
-	auto diff = Subtract(scope, previousLayerOutput, OUTPUTS_PLACEHOLDER_NAME);
+	auto diff = Subtract(scope, previousLayerOutput, expectedOutputsPlaceholder);
 	auto squaredDiff = Square(scope, diff);
 	m_Output = Mean(scope.WithOpName(LOSS_OUTPUT_NAME), squaredDiff, 0);
 

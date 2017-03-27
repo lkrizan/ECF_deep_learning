@@ -1,4 +1,4 @@
-#include "SigmoidLayer.h"
+#include "SigmoidActivation.h"
 
 SigmoidActivation::SigmoidActivation(const tensorflow::Input & previousLayerOutput, tensorflow::Scope & scope, Shape inputShape) : m_Scope(scope)
 {

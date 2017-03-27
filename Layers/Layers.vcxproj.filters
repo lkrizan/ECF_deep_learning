@@ -27,7 +27,10 @@
     <ClInclude Include="Shape.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SigmoidLayer.h">
+    <ClInclude Include="SigmoidActivation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Layers_all.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -38,7 +41,7 @@
     <ClCompile Include="MeanSquaredLoss.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SigmoidLayer.cpp">
+    <ClCompile Include="SigmoidActivation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -1,3 +1,6 @@
+#ifndef Shape_h
+#define Shape_h
+
 #include <vector>
 #include <algorithm>
 #include <numeric>
@@ -5,6 +8,8 @@
 #include "tensorflow/core/framework/tensor.h"
 
 using tensorflow::int64;
+
+namespace Layers {
 
 class Shape
 {
@@ -58,5 +63,8 @@ public:
 	{
 		return !(lhs == rhs);
 	}
-};	
+};
+
+}
+#endif
 

@@ -1,7 +1,7 @@
 #ifndef MODELEVALOP_H_
 #define MODELEVALOP_H_
 #include <ECF/ECF.h>
-
+#include <Layers/Layers_all.h>
 #include "tensorflow/core/public/session.h"
 #include "tensorflow/cc/ops/standard_ops.h"
 #include "tensorflow/core/framework/tensor.h"

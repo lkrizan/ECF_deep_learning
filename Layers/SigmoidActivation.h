@@ -1,3 +1,6 @@
+#ifndef SigmoidActivation_h
+#define SigmoidActivation_h
+
 #include "Layer.h"
 
 class SigmoidActivation : NonParameterizedLayer
@@ -15,3 +18,5 @@ public:
 	const tensorflow::Output& forward() const override;
 	Shape outputShape() const override;
 };
+
+#endif
