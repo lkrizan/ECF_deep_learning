@@ -46,8 +46,8 @@ FullyConnectedLayer::FullyConnectedLayer(const tensorflow::Input &previousLayerO
 	// set shapes
 	m_WeightsShape = paramShape;
 	m_BiasShape.push_back(m_WeightsShape.front());
-	m_OutputShape = inputShape;
-	m_OutputShape.push_back(m_WeightsShape.back());
+	m_OutputShape.push_back(inputShape.front());
+	m_OutputShape.push_back(m_WeightsShape.front());
 }
 
 const tensorflow::Output& FullyConnectedLayer::forward() const
