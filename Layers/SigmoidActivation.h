@@ -1,9 +1,11 @@
 #ifndef SigmoidActivation_h
 #define SigmoidActivation_h
 
-#include "Layer.h"
+#include "NonParameterizedLayer.h"
 
-class SigmoidActivation : NonParameterizedLayer
+namespace Layers {
+
+class SigmoidActivation : public NonParameterizedLayer
 {
 private:
 	// scope for placeholder variables
@@ -18,5 +20,7 @@ public:
 	const tensorflow::Output& forward() const override;
 	Shape outputShape() const override;
 };
+
+}
 
 #endif

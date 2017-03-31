@@ -35,15 +35,19 @@ GraphDef ModelEvalOp::createGraphDef()
 	// placeholders for inputs and outputs
 	auto x = Placeholder(root.WithOpName(INPUTS_PLACEHOLDER_NAME), DT_FLOAT);
 	auto y = Placeholder(root.WithOpName(OUTPUTS_PLACEHOLDER_NAME), DT_FLOAT);
-	// TODO: only for testing purposes, will be replaced with reading from file and will not leak
+	// TODO: only for testing purposes
 	std::array<int, 2> inputshp_ = { 0, N_INPUTS };
 	std::array<int, 2> outputshp_ = { 0, N_OUTPUTS };
 	std::array<int, 2> w1shp_ = { FIRST_LAYER, N_INPUTS };
 	std::array<int, 2> w2shp_ = { N_OUTPUTS, FIRST_LAYER };
-	FullyConnectedLayer* first_ = new FullyConnectedLayer(x, root, Shape(inputshp_.begin(), inputshp_.end()), Shape(w1shp_.begin(), w1shp_.end()));
-	SigmoidActivation* first_activation_ = new SigmoidActivation(first_->forward(), root, first_->outputShape());
-	FullyConnectedLayer* second_ = new FullyConnectedLayer(first_activation_->forward(), root, first_activation_->outputShape(), Shape(w2shp_.begin(), w2shp_.end()));
-	MeanSquaredLoss* loss_ = new MeanSquaredLoss(second_->forward(), y, root, second_->outputShape(), Shape(outputshp_.begin(), outputshp_.end()));
+	Layers::LayerP first_ (new Layers::FullyConnectedLayer(x, root, Shape(inputshp_.begin(), inputshp_.end()), Shape(w1shp_.begin(), w1shp_.end())));
+	m_Layers.push_back(first_);
+	Layers::LayerP first_activation_ (new Layers::SigmoidActivation(first_->forward(), root, first_->outputShape()));
+	m_Layers.push_back(first_activation_);
+	Layers::LayerP second_ (new Layers::FullyConnectedLayer(first_activation_->forward(), root, first_activation_->outputShape(), Shape(w2shp_.begin(), w2shp_.end())));
+	m_Layers.push_back(second_);
+	Layers::LayerP loss_ (new Layers::MeanSquaredLoss(second_->forward(), y, root, second_->outputShape(), Shape(outputshp_.begin(), outputshp_.end())));
+	m_Layers.push_back(loss_);
 	// create session
 	GraphDef def;
 	TF_CHECK_OK(root.ToGraphDef(&def));

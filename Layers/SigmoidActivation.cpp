@@ -1,5 +1,7 @@
 #include "SigmoidActivation.h"
 
+namespace Layers {
+
 SigmoidActivation::SigmoidActivation(const tensorflow::Input & previousLayerOutput, tensorflow::Scope & scope, Shape inputShape) : m_Scope(scope)
 {
 	m_OutputShape = inputShape;
@@ -14,6 +16,8 @@ const tensorflow::Output & SigmoidActivation::forward() const
 Shape SigmoidActivation::outputShape() const
 {
 	return m_OutputShape;
+}
+
 }
 
 

@@ -21,6 +21,7 @@ public:
 
 private:
     Session *m_Session;
+	std::vector<Layers::LayerP> m_Layers;
     std::shared_ptr<Tensor> m_Inputs;
     std::shared_ptr<Tensor> m_Outputs;
 	GraphDef createGraphDef();

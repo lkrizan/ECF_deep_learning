@@ -1,5 +1,7 @@
 #include "MeanSquaredLoss.h"
 
+namespace Layers {
+
 MeanSquaredLoss::MeanSquaredLoss(const tensorflow::Input & previousLayerOutput, const tensorflow::Input & expectedOutputsPlaceholder, tensorflow::Scope & scope, Shape inputShape, Shape outputShape)
 {
 	// check if inputShape to layer and outputShapes are identical
@@ -26,4 +28,6 @@ const tensorflow::Output & MeanSquaredLoss::forward() const
 Shape MeanSquaredLoss::outputShape() const
 {
 	return m_OutputShape;
+}
+
 }

@@ -1,5 +1,7 @@
 #include "FullyConnectedLayer.h"
 
+namespace Layers {
+
 FullyConnectedLayer::FullyConnectedLayer(const tensorflow::Input &previousLayerOutput, tensorflow::Scope &scope, Shape inputShape, Shape paramShape) : m_Scope(scope)
 {
 	using namespace tensorflow::ops;
@@ -63,4 +65,6 @@ Shape FullyConnectedLayer::outputShape() const
 std::vector<std::pair<std::string, Shape>> FullyConnectedLayer::getParamShapes() const
 {
 	return std::vector<std::pair<std::string, Shape>>({ {m_WeightsName, m_WeightsShape}, {m_BiasName, m_BiasShape} });
+}
+
 }

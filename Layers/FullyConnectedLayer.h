@@ -1,7 +1,9 @@
 #ifndef FullyConnectedLayer_h
 #define FullyConnectedLayer_h
 
-#include "Layer.h"
+#include "ParameterizedLayer.h"
+
+namespace Layers {
 
 class FullyConnectedLayer : public ParameterizedLayer
 {
@@ -32,5 +34,7 @@ public:
 
 int FullyConnectedLayer::s_TotalNumber = 0;
 const std::string FullyConnectedLayer::s_LayerName = "FC";
+
+}
 
 #endif

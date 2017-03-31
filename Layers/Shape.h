@@ -7,9 +7,9 @@
 #include "tensorflow/cc/ops/standard_ops.h"
 #include "tensorflow/core/framework/tensor.h"
 
-using tensorflow::int64;
-
 namespace Layers {
+
+	using tensorflow::int64;
 
 class Shape
 {

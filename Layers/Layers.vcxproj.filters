@@ -33,6 +33,15 @@
     <ClInclude Include="Layers_all.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ParameterizedLayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NonParameterizedLayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LossLayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FullyConnectedLayer.cpp">
