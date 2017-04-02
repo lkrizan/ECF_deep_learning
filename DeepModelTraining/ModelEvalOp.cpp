@@ -23,7 +23,7 @@ void ModelEvalOp::setTensor(Tensor &tensor, InputIterator first, InputIterator l
     auto tensorMap = tensor.flat<T>();
     int currentIdx = 0;
     for (auto it = first; it != last; it++)
-        tensorMap(currentIdx++) = (T) *it;
+        tensorMap(currentIdx++) = static_cast<T>(*it);
 }
 
 GraphDef ModelEvalOp::createGraphDef()
