@@ -54,6 +54,19 @@ GraphDef ModelEvalOp::createGraphDef()
 	return def;
 }
 
+void ModelEvalOp::createVariableData()
+{
+	for (auto it = m_Layers.begin(); it != m_Layers.end(); it++)
+	{
+		if (!(*it)->hasParams())
+			continue;
+		auto layerPtr = std::dynamic_pointer_cast<Layers::ParameterizedLayer>(*it);
+		auto values = layerPtr->getParamShapes();
+		for (auto fwdit = values.begin(); fwdit != values.end(); fwdit++)
+			m_VariablesData.push_back(VariableData((*fwdit).first, (*fwdit).second.asTensorShape(), (*fwdit).second.numberOfElements()));
+	}
+}
+
 
 bool ModelEvalOp::initialize(StateP state)
 {
@@ -75,6 +88,7 @@ bool ModelEvalOp::initialize(StateP state)
 		NewSession(options, &m_Session);
 		GraphDef graphDef = createGraphDef();
 		Status status = m_Session->Create(graphDef);
+		createVariableData();
 		return status.ok();
 	}
 	catch (std::exception& e)
@@ -87,52 +101,23 @@ bool ModelEvalOp::initialize(StateP state)
 FitnessP ModelEvalOp::evaluate(IndividualP individual)
 {
     FitnessP fitness (new FitnessMin);
+	// for FloatingPoint genotype
     FloatingPoint::FloatingPoint* gen = (FloatingPoint::FloatingPoint*) individual->getGenotype().get();
-
-    // not very nice, but it will be changed once parameters won't be hardcoded
-    // create tensors
-    TensorShape w1Shape({FIRST_LAYER, N_INPUTS});
-    Tensor w1(DT_FLOAT, w1Shape);
-    TensorShape b1Shape({FIRST_LAYER});
-    Tensor b1(DT_FLOAT, b1Shape);
-    TensorShape w2Shape({N_OUTPUTS, FIRST_LAYER});
-    Tensor w2(DT_FLOAT, w2Shape);
-    TensorShape b2Shape({N_OUTPUTS});
-    Tensor b2(DT_FLOAT, b2Shape);
-
-    // set tensor values
-    auto currentIterator = gen->realValue.begin() + FIRST_LAYER * N_INPUTS;
-    setTensor<float>(w1, gen->realValue.begin(), currentIterator);
-    setTensor<float>(b1, currentIterator, currentIterator + FIRST_LAYER);
-    currentIterator += FIRST_LAYER;
-    setTensor<float>(w2, currentIterator, currentIterator + N_OUTPUTS * FIRST_LAYER);
-    currentIterator += N_OUTPUTS * FIRST_LAYER;
-    setTensor<float>(b2, currentIterator, gen->realValue.end());
-
-    // setting tensor values can also be performed via std::copy
-    // (but it does not cover for type difference, as far as I know)
-    // std::copy(gen->realValue.begin(), gen->realValue.end(), w_map.data());
-    std::vector<std::pair<string, tensorflow::Tensor>> inputs = {
-            { "FC1_w", w1 },
-            { "FC2_w", w2 },
-            { "FC1_b", b1 },
-            { "FC2_b", b2 },
-            { INPUTS_PLACEHOLDER_NAME, *m_Inputs },
-            { OUTPUTS_PLACEHOLDER_NAME, *m_Outputs }
-    };
-
+	// create tensors and fill them with values
+	std::vector<std::pair<string, tensorflow::Tensor>> inputs;
+	inputs.reserve(m_VariablesData.size());
+	auto currentIterator = gen->realValue.begin();
+	for (auto it = m_VariablesData.begin(); it != m_VariablesData.end(); it++)
+	{
+		Tensor tensor(DT_FLOAT, (*it).m_Shape);
+		setTensor<float>(tensor, currentIterator, currentIterator + (*it).m_NumberOfElements);
+		currentIterator += (*it).m_NumberOfElements;
+		inputs.push_back(std::make_pair((*it).m_VariableName, tensor));
+	}
+	inputs.push_back(std::make_pair(INPUTS_PLACEHOLDER_NAME, *m_Inputs));
+	inputs.push_back(std::make_pair(OUTPUTS_PLACEHOLDER_NAME, *m_Outputs));
     std::vector<tensorflow::Tensor> outputs;
-    /*
-    std::cout << "W1: " << w1.DebugString() << std::endl;
-    std::cout << "b1: " << b1.DebugString() << std::endl;
-    std::cout << "W2: " << w2.DebugString() << std::endl;
-    std::cout << "b2: " << b2.DebugString() << std::endl;
-    std::cout << "X: " << m_Inputs->DebugString() << std::endl;
-    std::cout << "Y: " << m_Outputs->DebugString() << std::endl;
-    */
 	Status status = m_Session->Run(inputs, { LOSS_OUTPUT_NAME }, {}, &outputs);
-    // std::cout << status.ToString() << std::endl;
-    // std::cout << outputs[0].DebugString() << std::endl;
     auto outputRes = outputs[0].scalar<float>();
     fitness->setValue(outputRes());
     return fitness;
