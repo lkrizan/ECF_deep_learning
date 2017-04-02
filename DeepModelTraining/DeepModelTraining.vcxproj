@@ -69,15 +69,18 @@
     </ProjectReference>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ConfigParser.cpp" />
     <ClCompile Include="DatasetLoader.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ModelEvalOp.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ConfigParser.h" />
     <ClInclude Include="DatasetLoader.h" />
     <ClInclude Include="ModelEvalOp.h" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="config.txt" />
     <Text Include="dataset.txt" />
     <Text Include="parameters.txt" />
   </ItemGroup>

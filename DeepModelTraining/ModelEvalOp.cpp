@@ -1,4 +1,5 @@
 #include "ModelEvalOp.h"
+#include "ConfigParser.h"
 #include <array>
 
 #define N_INPUTS 2
@@ -8,8 +9,7 @@
 
 void ModelEvalOp::registerParameters(StateP state)
 {
-    // does nothing for now
-    // will be updated when models will have parameters
+	state->getRegistry()->registerEntry("configFilePath", (voidP)(new std::string), ECF::STRING);
 }
 
 ModelEvalOp::~ModelEvalOp()
@@ -82,20 +82,21 @@ bool ModelEvalOp::initialize(StateP state)
     m_Outputs = std::make_shared<Tensor>(Tensor(DT_FLOAT, outputShape));
     setTensor<float>(*m_Outputs, outputs.begin(), outputs.end());
 	// create session
+	Status status;
 	try
 	{
 		SessionOptions options;
 		NewSession(options, &m_Session);
 		GraphDef graphDef = createGraphDef();
-		Status status = m_Session->Create(graphDef);
-		createVariableData();
-		return status.ok();
+		status = m_Session->Create(graphDef);
 	}
 	catch (std::exception& e)
 	{
 		std::cout << e.what() << std::endl;
 		return false;
 	}
+	createVariableData();
+	return status.ok();
 }
 
 FitnessP ModelEvalOp::evaluate(IndividualP individual)
