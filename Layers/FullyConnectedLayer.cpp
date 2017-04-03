@@ -2,7 +2,7 @@
 
 namespace Layers {
 
-FullyConnectedLayer::FullyConnectedLayer(const tensorflow::Input &previousLayerOutput, tensorflow::Scope &scope, Shape inputShape, Shape paramShape) : m_Scope(scope)
+FullyConnectedLayer::FullyConnectedLayer(const tensorflow::Input &previousLayerOutput, tensorflow::Scope &scope, const Shape &inputShape, Shape paramShape) : m_Scope(scope)
 {
 	using namespace tensorflow::ops;
 	

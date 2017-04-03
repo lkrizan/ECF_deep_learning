@@ -26,7 +26,7 @@ private:
 	tensorflow::Output m_Output;
 
 public:
-	FullyConnectedLayer(const tensorflow::Input &previousLayerOutput, tensorflow::Scope &scope, Shape inputShape, Shape paramShape);
+	FullyConnectedLayer(const tensorflow::Input &previousLayerOutput, tensorflow::Scope &scope, const Shape& inputShape, Shape paramShape);
 	const tensorflow::Output& forward() const override;
 	Shape outputShape() const override;
 	std::vector<std::pair<std::string, Shape>> getParamShapes() const override;

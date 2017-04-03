@@ -11,7 +11,7 @@ class MeanSquaredLoss : public LossLayer
 	Shape m_OutputShape;
 
 public:
-	MeanSquaredLoss(const tensorflow::Input &previousLayerOutput, const tensorflow::Input & expectedOutputsPlaceholder, tensorflow::Scope &scope, Shape inputShape, Shape outputShape);
+	MeanSquaredLoss(const tensorflow::Input &previousLayerOutput, const tensorflow::Input & expectedOutputsPlaceholder, tensorflow::Scope &scope, const Shape &inputShape, Shape outputShape);
 	const tensorflow::Output& forward() const override;
 	Shape outputShape() const override;
 };

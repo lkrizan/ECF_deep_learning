@@ -2,7 +2,7 @@
 
 namespace Layers {
 
-MeanSquaredLoss::MeanSquaredLoss(const tensorflow::Input & previousLayerOutput, const tensorflow::Input & expectedOutputsPlaceholder, tensorflow::Scope & scope, Shape inputShape, Shape outputShape)
+MeanSquaredLoss::MeanSquaredLoss(const tensorflow::Input & previousLayerOutput, const tensorflow::Input & expectedOutputsPlaceholder, tensorflow::Scope & scope, const Shape &inputShape, Shape outputShape)
 {
 	// check if inputShape to layer and outputShapes are identical
 	if (inputShape != outputShape)
