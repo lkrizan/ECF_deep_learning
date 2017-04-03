@@ -1,14 +1,12 @@
 #include "FullyConnectedLayer.h"
 
-namespace Layers {
+namespace NetworkConfiguration {
 
-FullyConnectedLayer::FullyConnectedLayer(const tensorflow::Input &previousLayerOutput, tensorflow::Scope &scope, const Shape &inputShape, Shape paramShape) : m_Scope(scope)
+FullyConnectedLayer::FullyConnectedLayer(tensorflow::Scope &scope, const tensorflow::Input &previousLayerOutput, const Shape& previousLayerOutputShape, const Shape &paramShape) : m_Scope(scope)
 {
 	using namespace tensorflow::ops;
 	
 	// check if parameters are valid
-	// fully connected layer is implemented as x dot wT so transpose it for shape compatibility checks
-	paramShape.transpose();
 	bool parameterizationFailure = false;
 	std::ostringstream errorMessageStream;
 	if (!paramShape.validForParameterizedUse())
@@ -16,23 +14,21 @@ FullyConnectedLayer::FullyConnectedLayer(const tensorflow::Input &previousLayerO
 		parameterizationFailure = true;
 		errorMessageStream << "Shape " << paramShape << " cannot be used for weights in fully connected layer." << std::endl;
 	}
-	else if (paramShape.size() != 2 || inputShape.size() != 2)
+	else if (paramShape.size() != 2 || previousLayerOutputShape.size() != 2)
 	{
 		parameterizationFailure = true;
 		errorMessageStream << "Both input (X) and weights (W) in fully connected layer must have tensor rank 2." << std::endl;
 	}
-	else if (!inputShape.compatibleForMul(paramShape))
+	// check if compatible for matrix multiplication ( forward pass is x dot wT
+	else if (previousLayerOutputShape.back() != paramShape.back())
 	{
 		parameterizationFailure = true;
-		errorMessageStream << "Shapes " << inputShape << " and " << paramShape << "are not compatible for multiplication." << std::endl;
+		errorMessageStream << "Shapes " << previousLayerOutputShape << " and " << paramShape << "are not compatible for multiplication." << std::endl;
 	}
 	if (parameterizationFailure) 
 	{
 		throw std::logic_error(errorMessageStream.str());
 	}
-	// revert shape
-	paramShape.transpose();
-
 	// set names for variables
 	m_Index = ++s_TotalNumber;
 	std::string name = s_LayerName + std::to_string(m_Index);
@@ -48,7 +44,7 @@ FullyConnectedLayer::FullyConnectedLayer(const tensorflow::Input &previousLayerO
 	// set shapes
 	m_WeightsShape = paramShape;
 	m_BiasShape.push_back(m_WeightsShape.front());
-	m_OutputShape.push_back(inputShape.front());
+	m_OutputShape.push_back(previousLayerOutputShape.front());
 	m_OutputShape.push_back(m_WeightsShape.front());
 }
 
@@ -67,4 +63,4 @@ std::vector<std::pair<std::string, Shape>> FullyConnectedLayer::getParamShapes()
 	return std::vector<std::pair<std::string, Shape>>({ {m_WeightsName, m_WeightsShape}, {m_BiasName, m_BiasShape} });
 }
 
-}
+} // namespace NetworkConfiguration

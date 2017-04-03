@@ -3,7 +3,7 @@
 
 #include "NonParameterizedLayer.h"
 
-namespace Layers {
+namespace NetworkConfiguration {
 
 class SigmoidActivation : public NonParameterizedLayer
 {
@@ -16,11 +16,11 @@ private:
 	Shape m_OutputShape;
 
 public:
-	SigmoidActivation(const tensorflow::Input &previousLayerOutput, tensorflow::Scope &scope, Shape inputShape);
+	SigmoidActivation(tensorflow::Scope &scope, const tensorflow::Input &previousLayerOutput, const Shape& previousLayerOutputShape);
 	const tensorflow::Output& forward() const override;
 	Shape outputShape() const override;
 };
 
-}
+}	// namespace NetworkConfiguration
 
 #endif

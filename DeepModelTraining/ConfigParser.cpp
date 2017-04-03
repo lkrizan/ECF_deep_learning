@@ -10,11 +10,14 @@ void ConfigParser::parseLine(const std::string line)
 		auto currIterator = tokens.begin();
 		if (isHeaderLine(*currIterator))
 		{
+			std::string header((*currIterator).begin() + 1, (*currIterator).end() - 1);
 			// this is a header line - determine next state
-			if ((*currIterator).find("General") != std::string::npos)
+			if (header == "General")
 				m_State = eGeneral;
-			else if ((*currIterator).find("Layers") != std::string::npos)
+			else if (header == "Layers")
 				m_State = eLayers;
+			else if (header == "Loss")
+				m_State = eLoss;
 			else
 				throw std::logic_error(*currIterator + " is not registered block in configuration file.\n");
 			return;
@@ -62,6 +65,13 @@ void ConfigParser::parseLine(const std::string line)
 				m_LayerConfiguration.push_back(std::make_pair(layerName, shapeValues));
 				break;
 			}
+			case eLoss:
+				m_LossFunctionName = *currIterator;
+				m_State = eLossFinished;
+				break;
+			case eLossFinished:
+				throw std::logic_error("Only one loss function is allowed.\n");
+				break;
 		}
 	}
 }

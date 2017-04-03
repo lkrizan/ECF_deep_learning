@@ -7,9 +7,9 @@
 #include "tensorflow/cc/ops/standard_ops.h"
 #include "tensorflow/core/framework/tensor.h"
 
-namespace Layers {
+namespace NetworkConfiguration {
 
-	using tensorflow::int64;
+using tensorflow::int64;
 
 class Shape
 {
@@ -21,7 +21,6 @@ public:
 	Shape(InputIterator valuesFirst, InputIterator valuesLast) : m_Values(valuesFirst, valuesLast) {}
 	Shape(std::initializer_list<tensorflow::int64> list) : m_Values(list) {}
 	Shape() : m_Values() {}
-	Shape(const Shape& refShape) : m_Values(refShape.m_Values) {}
 	void transpose() { std::reverse(m_Values.begin(), m_Values.end()); }
 	std::vector<int64>::iterator begin() { return m_Values.begin(); }
 	std::vector<int64>::iterator end() { return m_Values.end(); }
@@ -40,10 +39,7 @@ public:
 		return std::find_if(m_Values.cbegin(), m_Values.cend(), [](int n) { return n <= 0; }) == m_Values.cend();
 	
 	}
-	bool compatibleForMul(const Shape &right) const
-	{
-		return this->back() == right.front();
-	}
+	
 	tensorflow::TensorShape asTensorShape() const { return tensorflow::TensorShape(tensorflow::gtl::ArraySlice<int64>(this->m_Values)); }
 
 	friend std::ostream& operator<< (std::ostream& os, const Shape& source)
@@ -64,8 +60,19 @@ public:
 	{
 		return !(lhs == rhs);
 	}
+
+	// checks if shapes are equal, but ignores first dimension (number of examples)
+	friend bool shapesFormEqual(const Shape& lhs, const Shape& rhs)
+	{
+		if (lhs.size() != rhs.size() && lhs.size() > 1)
+			return false;
+		for (auto lhsIter = lhs.cbegin() + 1, rhsIter = rhs.cbegin() + 1; lhsIter != lhs.cend(), rhsIter != rhs.cend(); lhsIter++, rhsIter++)
+			if (*lhsIter != *rhsIter)
+				return false;
+		return true;
+	}
 };
 
-}
+}	// namespace NetworkConfiguration
 #endif
 

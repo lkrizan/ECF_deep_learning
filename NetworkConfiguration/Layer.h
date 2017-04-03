@@ -5,11 +5,7 @@
 #include "tensorflow/core/framework/tensor.h"
 #include "Shape.h"
 
-#define INPUTS_PLACEHOLDER_NAME "inputs"
-#define OUTPUTS_PLACEHOLDER_NAME "outputs"
-#define LOSS_OUTPUT_NAME "loss"
-
-namespace Layers {
+namespace NetworkConfiguration {
 
 class Layer
 {
@@ -22,5 +18,5 @@ public:
 
 typedef std::shared_ptr<Layer> LayerP;
 
-}
+}	// namespace NetworkConfiguration
 #endif

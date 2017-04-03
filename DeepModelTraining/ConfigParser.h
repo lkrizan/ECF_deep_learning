@@ -5,13 +5,17 @@
 
 class ConfigParser
 {
+
+// TODO: parser should check if all required parameters are included
+
 private:
 	std::vector<std::pair<std::string, std::vector<int>>> m_LayerConfiguration;
 	int m_NumInputs;
 	int m_NumOutputs;
 	std::string m_DatasetPath;
+	std::string m_LossFunctionName;
 
-	enum State {eStart, eGeneral, eLayers};
+	enum State {eStart, eGeneral, eLayers, eLoss, eLossFinished};
 	State m_State = eStart;
 
 	void parseLine(const std::string line);
@@ -23,4 +27,5 @@ public:
 	int NumInputs() { return m_NumInputs; }
 	int NumOutputs() { return m_NumOutputs; }
 	std::string DatasetPath() { return m_DatasetPath; }
+	std::string LossFunctionName() { return m_LossFunctionName; }
 };

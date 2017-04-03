@@ -3,7 +3,7 @@
 
 #include "Layer.h"
 
-namespace Layers {
+namespace NetworkConfiguration {
 
 class NonParameterizedLayer : public Layer
 {
@@ -13,6 +13,6 @@ public:
 
 typedef std::shared_ptr<NonParameterizedLayer> NonParameterizedLayerP;
 
-} // namespace Layers
+} // namespace NetworkConfiguration
 
 #endif

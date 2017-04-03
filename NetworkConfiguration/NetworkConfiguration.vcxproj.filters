@@ -21,16 +21,10 @@
     <ClInclude Include="Layer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MeanSquaredLoss.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Shape.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SigmoidActivation.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Layers_all.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ParameterizedLayer.h">
@@ -39,7 +33,13 @@
     <ClInclude Include="NonParameterizedLayer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="LossLayer.h">
+    <ClInclude Include="LossFunction.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NetworkConfiguration.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MeanSquaredLossFunction.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -47,10 +47,10 @@
     <ClCompile Include="FullyConnectedLayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MeanSquaredLoss.cpp">
+    <ClCompile Include="SigmoidActivation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SigmoidActivation.cpp">
+    <ClCompile Include="MeanSquaredLossFunction.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

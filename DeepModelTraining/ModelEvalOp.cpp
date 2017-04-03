@@ -1,10 +1,9 @@
 #include "ModelEvalOp.h"
 #include "ConfigParser.h"
-#include <array>
 
-#define N_INPUTS 2
-#define N_OUTPUTS 1
-#define FIRST_LAYER 10
+#define INPUTS_PLACEHOLDER_NAME "inputs"
+#define OUTPUTS_PLACEHOLDER_NAME "outputs"
+#define LOSS_OUTPUT_NAME "loss"
 
 
 void ModelEvalOp::registerParameters(StateP state)
@@ -26,41 +25,43 @@ void ModelEvalOp::setTensor(Tensor &tensor, InputIterator first, InputIterator l
         tensorMap(currentIdx++) = static_cast<T>(*it);
 }
 
-GraphDef ModelEvalOp::createGraphDef()
+GraphDef ModelEvalOp::createGraphDef(const std::vector<std::pair<std::string, std::vector<int>>> & networkConfiguration, const std::string lossFunctionName, const NetworkConfiguration::Shape & inputShape, const NetworkConfiguration::Shape & outputShape)
 {
-	using Layers::Shape;
-	// TODO: will be parameterized, for now everything is hardcoded for testing purposes
+	using NetworkConfiguration::Shape;
 	Scope root = Scope::NewRootScope();
-	using namespace tensorflow::ops;
-	// placeholders for inputs and outputs
-	auto x = Placeholder(root.WithOpName(INPUTS_PLACEHOLDER_NAME), DT_FLOAT);
-	auto y = Placeholder(root.WithOpName(OUTPUTS_PLACEHOLDER_NAME), DT_FLOAT);
-	// TODO: only for testing purposes
-	std::array<int, 2> inputshp_ = { 0, N_INPUTS };
-	std::array<int, 2> outputshp_ = { 0, N_OUTPUTS };
-	std::array<int, 2> w1shp_ = { FIRST_LAYER, N_INPUTS };
-	std::array<int, 2> w2shp_ = { N_OUTPUTS, FIRST_LAYER };
-	Layers::LayerP first_ (new Layers::FullyConnectedLayer(x, root, Shape(inputshp_.begin(), inputshp_.end()), Shape(w1shp_.begin(), w1shp_.end())));
-	m_Layers.push_back(first_);
-	Layers::LayerP first_activation_ (new Layers::SigmoidActivation(first_->forward(), root, first_->outputShape()));
-	m_Layers.push_back(first_activation_);
-	Layers::LayerP second_ (new Layers::FullyConnectedLayer(first_activation_->forward(), root, first_activation_->outputShape(), Shape(w2shp_.begin(), w2shp_.end())));
-	m_Layers.push_back(second_);
-	Layers::LayerP loss_ (new Layers::MeanSquaredLoss(second_->forward(), y, root, second_->outputShape(), Shape(outputshp_.begin(), outputshp_.end())));
-	m_Layers.push_back(loss_);
+	// create placeholders for inputs and for expected outputs so network can be defined
+	auto inputPlaceholder = ops::Placeholder(root.WithOpName(INPUTS_PLACEHOLDER_NAME), DT_FLOAT);
+	auto outputPlaceholder = ops::Placeholder(root.WithOpName(OUTPUTS_PLACEHOLDER_NAME), DT_FLOAT);
+	// create layers from value pairs - layer type name and shape in form of vector of ints
+	std::vector<NetworkConfiguration::LayerP> layers;
+	for (auto iter = networkConfiguration.begin(); iter != networkConfiguration.end(); iter++)
+	{
+		Shape paramShape(iter->second.begin(), iter->second.end());
+		NetworkConfiguration::LayerP layer;
+		if (iter == networkConfiguration.begin())
+			layer = NetworkConfiguration::LayerFactory::createLayer(iter->first, root, inputPlaceholder, inputShape, paramShape);
+		else
+			layer = NetworkConfiguration::LayerFactory::createLayer(iter->first, root, layers.back()->forward(), layers.back()->outputShape(), paramShape);
+		layers.push_back(layer);
+	}
+	// add loss function to graph
+	auto lossFunction = NetworkConfiguration::LossFunctionFactory::createLossFunction(lossFunctionName, root, layers.back()->forward(), layers.back()->outputShape(), outputPlaceholder, outputShape, LOSS_OUTPUT_NAME);
+	// layers are only used for helping in creating graph definition - layers themselves are not used anywhere else later
+	// instead of layers, create instances of VariableData class which carry only required information - symbolic parameter names, their shapes and number of elements
+	createVariableData(layers);
 	// create session
 	GraphDef def;
 	TF_CHECK_OK(root.ToGraphDef(&def));
 	return def;
 }
 
-void ModelEvalOp::createVariableData()
+void ModelEvalOp::createVariableData(const std::vector<NetworkConfiguration::LayerP> &layers)
 {
-	for (auto it = m_Layers.begin(); it != m_Layers.end(); it++)
+	for (auto it = layers.begin(); it != layers.end(); it++)
 	{
 		if (!(*it)->hasParams())
 			continue;
-		auto layerPtr = std::dynamic_pointer_cast<Layers::ParameterizedLayer>(*it);
+		auto layerPtr = std::dynamic_pointer_cast<NetworkConfiguration::ParameterizedLayer>(*it);
 		auto values = layerPtr->getParamShapes();
 		for (auto fwdit = values.begin(); fwdit != values.end(); fwdit++)
 			m_VariablesData.push_back(VariableData((*fwdit).first, (*fwdit).second.asTensorShape(), (*fwdit).second.numberOfElements()));
@@ -70,24 +71,30 @@ void ModelEvalOp::createVariableData()
 
 bool ModelEvalOp::initialize(StateP state)
 {
-    // load training data
-    DatasetLoader<float> parser("./dataset/dataset.txt", N_INPUTS, N_OUTPUTS);
-    std::vector<float> inputs = parser.getInputs();
-    std::vector<float> outputs = parser.getOutputs();
-    // create tensors and set their values
-    TensorShape inputShape({(int64)inputs.size() / N_INPUTS, N_INPUTS});
-    m_Inputs = std::make_shared<Tensor>(Tensor(DT_FLOAT, inputShape));
-    setTensor<float>(*m_Inputs, inputs.begin(), inputs.end());
-    TensorShape outputShape({(int64) outputs.size(), N_OUTPUTS});
-    m_Outputs = std::make_shared<Tensor>(Tensor(DT_FLOAT, outputShape));
-    setTensor<float>(*m_Outputs, outputs.begin(), outputs.end());
+	// load parameterization data
+	std::string configFilePath = *(static_cast<std::string*> (state->getRegistry()->getEntry("configFilePath").get()));
+	ConfigParser configParser(configFilePath);
+	std::vector<std::pair<std::string, std::vector<int>>> layerConfiguration = configParser.LayerConfiguration();
+	int numInputs = configParser.NumInputs();
+	int numOutputs = configParser.NumOutputs();
+	std::string datasetPath = configParser.DatasetPath();
+	std::string lossFunctionName = configParser.LossFunctionName();
+	// load training data
+	DatasetLoader<float> datasetParser("./dataset/dataset.txt", numInputs, numOutputs);
+	std::vector<float> inputs = datasetParser.getInputs();
+	std::vector<float> outputs = datasetParser.getOutputs();
+	// TODO: refactor this so that inputs and output shape do not have to be matrices (they can be tensors)
+	int inputShape_[] = { inputs.size() / numInputs, numInputs };
+	int outputShape_[] = { outputs.size() / numOutputs, numOutputs };
+	NetworkConfiguration::Shape inputShape(begin(inputShape_), end(inputShape_));
+	NetworkConfiguration::Shape outputShape(begin(outputShape_), end(outputShape_));
 	// create session
 	Status status;
 	try
 	{
 		SessionOptions options;
 		NewSession(options, &m_Session);
-		GraphDef graphDef = createGraphDef();
+		GraphDef graphDef = createGraphDef(layerConfiguration, lossFunctionName, inputShape, outputShape);
 		status = m_Session->Create(graphDef);
 	}
 	catch (std::exception& e)
@@ -95,7 +102,11 @@ bool ModelEvalOp::initialize(StateP state)
 		std::cout << e.what() << std::endl;
 		return false;
 	}
-	createVariableData();
+	// create tensors for inputs and outputs and fill them with values from dataset
+	m_Inputs = std::make_shared<Tensor>(Tensor(DT_FLOAT, inputShape.asTensorShape()));
+	setTensor<float>(*m_Inputs, inputs.begin(), inputs.end());
+	m_Outputs = std::make_shared<Tensor>(Tensor(DT_FLOAT, outputShape.asTensorShape()));
+	setTensor<float>(*m_Outputs, outputs.begin(), outputs.end());
 	return status.ok();
 }
 

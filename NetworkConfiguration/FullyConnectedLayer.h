@@ -3,7 +3,7 @@
 
 #include "ParameterizedLayer.h"
 
-namespace Layers {
+namespace NetworkConfiguration {
 
 class FullyConnectedLayer : public ParameterizedLayer
 {
@@ -26,7 +26,7 @@ private:
 	tensorflow::Output m_Output;
 
 public:
-	FullyConnectedLayer(const tensorflow::Input &previousLayerOutput, tensorflow::Scope &scope, const Shape& inputShape, Shape paramShape);
+	FullyConnectedLayer(tensorflow::Scope &scope, const tensorflow::Input &previousLayerOutput, const Shape& previousLayerOutputShape, const Shape &paramShape);
 	const tensorflow::Output& forward() const override;
 	Shape outputShape() const override;
 	std::vector<std::pair<std::string, Shape>> getParamShapes() const override;
@@ -35,6 +35,6 @@ public:
 int FullyConnectedLayer::s_TotalNumber = 0;
 const std::string FullyConnectedLayer::s_LayerName = "FC";
 
-}
+}	// namespace NetworkConfiguration
 
 #endif
