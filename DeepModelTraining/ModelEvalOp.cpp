@@ -73,7 +73,7 @@ bool ModelEvalOp::initialize(StateP state)
 {
 	try
 	{
-		ECF_LOG(state, 3, "Loading network configuration...\n");
+		ECF_LOG(state, 3, "Loading network configuration...");
 		// load parameterization data
 		std::string configFilePath = *(static_cast<std::string*> (state->getRegistry()->getEntry("configFilePath").get()));
 		ConfigParser configParser(configFilePath);
@@ -82,7 +82,7 @@ bool ModelEvalOp::initialize(StateP state)
 		int numOutputs = configParser.NumOutputs();
 		std::string datasetPath = configParser.DatasetPath();
 		std::string lossFunctionName = configParser.LossFunctionName();
-		ECF_LOG(state, 3, "Loading dataset...\n");
+		ECF_LOG(state, 3, "Loading dataset...");
 		// load training data
 		DatasetLoader<float> datasetParser(datasetPath, numInputs, numOutputs);
 		std::vector<float> inputs = datasetParser.getInputs();
@@ -92,7 +92,7 @@ bool ModelEvalOp::initialize(StateP state)
 		int outputShape_[] = { outputs.size() / numOutputs, numOutputs };
 		NetworkConfiguration::Shape inputShape(begin(inputShape_), end(inputShape_));
 		NetworkConfiguration::Shape outputShape(begin(outputShape_), end(outputShape_));
-		ECF_LOG(state, 3, "Creating session...\n");
+		ECF_LOG(state, 3, "Creating session...");
 		// create session
 		Status status;
 		SessionOptions options;
@@ -108,7 +108,7 @@ bool ModelEvalOp::initialize(StateP state)
 	}
 	catch (std::exception& e)
 	{
-		ECF_LOG_ERROR(state, "\nErrors:");
+		ECF_LOG_ERROR(state, "Errors:");
 		ECF_LOG_ERROR(state, e.what());
 		return false;
 	}
