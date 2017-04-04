@@ -101,3 +101,15 @@ C:\...\build> Release\tf_tutorials_example_trainer.exe
 ### r.0.01 ###
     
 * more or less a play-ground release - it cannot be parameterized and uses hardcoded values for everything
+
+### r.0.2 ###
+
+* neural network parameterization (see config.txt file)
+* limitations:
+    - only fully connected layer and sigmoid activation supported (for now)
+    - learning examples can only be vectors (for now)
+
+### Goals for next release ###
+* more dataset options (support for image classification)
+* new layers, activation and loss functions (convolution, pooling layers, ReLU, tanh)
+* option to save trained model (and use it elsewhere for e.g., evaluation)
