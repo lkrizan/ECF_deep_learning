@@ -1,0 +1,12 @@
+[General]
+NumInputs 2
+NumOutputs 1
+DatasetPath ./dataset/dataset.txt
+
+[Layers]
+FullyConnectedLayer 10 2
+SigmoidActivation
+FullyConnectedLayer 1 10
+
+[Loss]
+MeanSquaredLossFunction

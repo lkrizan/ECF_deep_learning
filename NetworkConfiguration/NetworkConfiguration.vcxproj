@@ -1,0 +1,69 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="FullyConnectedLayer.h" />
+    <ClInclude Include="Layer.h" />
+    <ClInclude Include="LossFunction.h" />
+    <ClInclude Include="MeanSquaredLossFunction.h" />
+    <ClInclude Include="NetworkConfiguration.h" />
+    <ClInclude Include="NonParameterizedLayer.h" />
+    <ClInclude Include="ParameterizedLayer.h" />
+    <ClInclude Include="Shape.h" />
+    <ClInclude Include="SigmoidActivation.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="FullyConnectedLayer.cpp" />
+    <ClCompile Include="MeanSquaredLossFunction.cpp" />
+    <ClCompile Include="SigmoidActivation.cpp" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{4E3DD63B-B30F-421C-98C0-53F88873BA7C}</ProjectGuid>
+    <RootNamespace>Layers</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(TENSORFLOW_ROOT);$(TENSORFLOW_ROOT)\tensorflow\contrib\cmake\build;$(TENSORFLOW_ROOT)\tensorflow\contrib\cmake\build\external\zlib_archive;$(TENSORFLOW_ROOT)\tensorflow\contrib\cmake\build\external\gif_archive\giflib-5.1.4;$(TENSORFLOW_ROOT)\tensorflow\contrib\cmake\build\external\png_archive;$(TENSORFLOW_ROOT)\tensorflow\contrib\cmake\build\external\jpeg_archive;$(TENSORFLOW_ROOT)\tensorflow\contrib\cmake\build\external\eigen_archive;$(TENSORFLOW_ROOT)\third_party\eigen3;$(TENSORFLOW_ROOT)\tensorflow\contrib\cmake\build\gemmlowp\src\gemmlowp;$(TENSORFLOW_ROOT)\tensorflow\contrib\cmake\build\jsoncpp\src\jsoncpp;$(TENSORFLOW_ROOT)\tensorflow\contrib\cmake\build\external\farmhash_archive;$(TENSORFLOW_ROOT)\tensorflow\contrib\cmake\build\external\farmhash_archive\util;$(TENSORFLOW_ROOT)\tensorflow\contrib\cmake\build\external\highwayhash;$(TENSORFLOW_ROOT)\tensorflow\contrib\cmake\build\protobuf\src\protobuf\src;$(TENSORFLOW_ROOT)\tensorflow\contrib\cmake\build\grpc\src\grpc\include;$(CUDA_PATH);$(CUDA_PATH)\extras\CUPTI\include;C:\local\cuda;$(TENSORFLOW_ROOT)\third_party\gpus;$(CUDA_PATH)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_MBCS;WIN32;_WINDOWS;NDEBUG;EIGEN_AVOID_STL_ARRAY;NOMINMAX;_WIN32_WINNT=0x0A00;LANG_CXX11;COMPILER_MSVC;__VERSION__="MSVC";WIN32;OS_WIN;_MBCS;WIN64;WIN32_LEAN_AND_MEAN;NOGDI;PLATFORM_WINDOWS;TENSORFLOW_USE_EIGEN_THREADPOOL;EIGEN_HAS_C99_MATH;_ITERATOR_DEBUG_LEVEL=0;NDEBUG;GOOGLE_CUDA=1;TF_EXTRA_CUDA_CAPABILITIES=3.0,3.5,5.2;CMAKE_INTDIR="Release";%(PreprocessorDefinitions)%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <DisableSpecificWarnings>4267;4244;4800;4503;4554;4996;4348;4018;4099;4146;4305;4307;4715;4722;4723;4838;4309;4334</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <EnableCOMDATFolding>false</EnableCOMDATFolding>
+      <OptimizeReferences>false</OptimizeReferences>
+      <ForceFileOutput>MultiplyDefinedSymbolOnly</ForceFileOutput>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;$(TENSORFLOW_ROOT)\tensorflow\contrib\cmake\build\Release\tf_protos_cc.lib;$(TENSORFLOW_ROOT)\tensorflow\contrib\cmake\build\Release\tf_core_gpu_kernels.lib;$(TENSORFLOW_ROOT)\tensorflow\contrib\cmake\build\tf_array_ops.dir\Release\tf_array_ops.lib;$(TENSORFLOW_ROOT)\tensorflow\contrib\cmake\build\tf_candidate_sampling_ops.dir\Release\tf_candidate_sampling_ops.lib;$(TENSORFLOW_ROOT)\tensorflow\contrib\cmake\build\tf_cc_framework.dir\Release\tf_cc_framework.lib;$(TENSORFLOW_ROOT)\tensorflow\contrib\cmake\build\tf_cc_op_gen_main.dir\Release\tf_cc_op_gen_main.lib;$(TENSORFLOW_ROOT)\tensorflow\contrib\cmake\build\tf_cc_ops.dir\Release\tf_cc_ops.lib;$(TENSORFLOW_ROOT)\tensorflow\contrib\cmake\build\tf_control_flow_ops.dir\Release\tf_control_flow_ops.lib;$(TENSORFLOW_ROOT)\tensorflow\contrib\cmake\build\tf_core_cpu.dir\Release\tf_core_cpu.lib;$(TENSORFLOW_ROOT)\tensorflow\contrib\cmake\build\tf_core_direct_session.dir\Release\tf_core_direct_session.lib;$(TENSORFLOW_ROOT)\tensorflow\contrib\cmake\build\tf_core_framework.dir\Release\tf_core_framework.lib;$(TENSORFLOW_ROOT)\tensorflow\contrib\cmake\build\tf_core_kernels.dir\Release\tf_core_kernels.lib;$(TENSORFLOW_ROOT)\tensorflow\contrib\cmake\build\tf_core_lib.dir\Release\tf_core_lib.lib;$(TENSORFLOW_ROOT)\tensorflow\contrib\cmake\build\tf_core_ops.dir\Release\tf_core_ops.lib;$(TENSORFLOW_ROOT)\tensorflow\contrib\cmake\build\tf_ctc_ops.dir\Release\tf_ctc_ops.lib;$(TENSORFLOW_ROOT)\tensorflow\contrib\cmake\build\tf_data_flow_ops.dir\Release\tf_data_flow_ops.lib;$(TENSORFLOW_ROOT)\tensorflow\contrib\cmake\build\tf_functional_ops.dir\Release\tf_functional_ops.lib;$(TENSORFLOW_ROOT)\tensorflow\contrib\cmake\build\tf_image_ops.dir\Release\tf_image_ops.lib;$(TENSORFLOW_ROOT)\tensorflow\contrib\cmake\build\tf_io_ops.dir\Release\tf_io_ops.lib;$(TENSORFLOW_ROOT)\tensorflow\contrib\cmake\build\tf_linalg_ops.dir\Release\tf_linalg_ops.lib;$(TENSORFLOW_ROOT)\tensorflow\contrib\cmake\build\tf_logging_ops.dir\Release\tf_logging_ops.lib;$(TENSORFLOW_ROOT)\tensorflow\contrib\cmake\build\tf_math_ops.dir\Release\tf_math_ops.lib;$(TENSORFLOW_ROOT)\tensorflow\contrib\cmake\build\tf_nn_ops.dir\Release\tf_nn_ops.lib;$(TENSORFLOW_ROOT)\tensorflow\contrib\cmake\build\tf_no_op.dir\Release\tf_no_op.lib;$(TENSORFLOW_ROOT)\tensorflow\contrib\cmake\build\tf_parsing_ops.dir\Release\tf_parsing_ops.lib;$(TENSORFLOW_ROOT)\tensorflow\contrib\cmake\build\tf_random_ops.dir\Release\tf_random_ops.lib;$(TENSORFLOW_ROOT)\tensorflow\contrib\cmake\build\tf_remote_fused_graph_ops.dir\Release\tf_remote_fused_graph_ops.lib;$(TENSORFLOW_ROOT)\tensorflow\contrib\cmake\build\tf_resource_variable_ops.dir\Release\tf_resource_variable_ops.lib;$(TENSORFLOW_ROOT)\tensorflow\contrib\cmake\build\tf_script_ops.dir\Release\tf_script_ops.lib;$(TENSORFLOW_ROOT)\tensorflow\contrib\cmake\build\tf_sdca_ops.dir\Release\tf_sdca_ops.lib;$(TENSORFLOW_ROOT)\tensorflow\contrib\cmake\build\tf_sendrecv_ops.dir\Release\tf_sendrecv_ops.lib;$(TENSORFLOW_ROOT)\tensorflow\contrib\cmake\build\tf_set_ops.dir\Release\tf_set_ops.lib;$(TENSORFLOW_ROOT)\tensorflow\contrib\cmake\build\tf_sparse_ops.dir\Release\tf_sparse_ops.lib;$(TENSORFLOW_ROOT)\tensorflow\contrib\cmake\build\tf_state_ops.dir\Release\tf_state_ops.lib;$(TENSORFLOW_ROOT)\tensorflow\contrib\cmake\build\tf_stream_executor.dir\Release\tf_stream_executor.lib;$(TENSORFLOW_ROOT)\tensorflow\contrib\cmake\build\tf_string_ops.dir\Release\tf_string_ops.lib;$(TENSORFLOW_ROOT)\tensorflow\contrib\cmake\build\tf_training_ops.dir\Release\tf_training_ops.lib;$(TENSORFLOW_ROOT)\tensorflow\contrib\cmake\build\tf_user_ops.dir\Release\tf_user_ops.lib;$(TENSORFLOW_ROOT)\tensorflow\contrib\cmake\build\zlib\install\lib\zlibstatic.lib;$(TENSORFLOW_ROOT)\tensorflow\contrib\cmake\build\gif\install\lib\giflib.lib;$(TENSORFLOW_ROOT)\tensorflow\contrib\cmake\build\png\install\lib\libpng12_static.lib;$(TENSORFLOW_ROOT)\tensorflow\contrib\cmake\build\jpeg\install\lib\libjpeg.lib;$(TENSORFLOW_ROOT)\tensorflow\contrib\cmake\build\jsoncpp\src\jsoncpp\src\lib_json\Release\jsoncpp.lib;$(TENSORFLOW_ROOT)\tensorflow\contrib\cmake\build\farmhash\install\lib\farmhash.lib;$(TENSORFLOW_ROOT)\tensorflow\contrib\cmake\build\highwayhash\install\lib\highwayhash.lib;$(TENSORFLOW_ROOT)\tensorflow\contrib\cmake\build\protobuf\src\protobuf\Release\libprotobuf.lib;$(TENSORFLOW_ROOT)\tensorflow\contrib\cmake\build\grpc\src\grpc\Release\grpc++_unsecure.lib;$(TENSORFLOW_ROOT)\tensorflow\contrib\cmake\build\grpc\src\grpc\Release\grpc_unsecure.lib;$(TENSORFLOW_ROOT)\tensorflow\contrib\cmake\build\grpc\src\grpc\Release\gpr.lib;wsock32.lib;ws2_32.lib;shlwapi.lib;$(CUDA_PATH)\lib\x64\cudart_static.lib;$(CUDA_PATH)\lib\x64\cuda.lib;$(CUDA_PATH)\lib\x64\cublas.lib;$(CUDA_PATH)\lib\x64\cublas_device.lib;$(CUDA_PATH)\lib\x64\cufft.lib;$(CUDA_PATH)\lib\x64\curand.lib;C:\local\cuda\lib\x64\cudnn.lib;$(CUDA_PATH)\extras\CUPTI\libx64\cupti.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalOptions>/WHOLEARCHIVE:tf_core_direct_session.lib  /WHOLEARCHIVE:tf_core_cpu.lib /WHOLEARCHIVE:tf_core_lib.lib /WHOLEARCHIVE:tf_core_kernels.lib  /WHOLEARCHIVE:tf_stream_executor.lib  /WHOLEARCHIVE:tf_core_ops.lib /ignore:4049 %(AdditionalOptions)</AdditionalOptions>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

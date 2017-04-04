@@ -88,6 +88,10 @@ C:\...\build> Release\tf_tutorials_example_trainer.exe
     - in ECF_lib.sln, set build configuration to Release x64
     - in solution properties, under C/C++ > Code Generation, set Runtime Library option
       to `Multi-threaded DLL` instead of `Multi-threaded`
+      
+* stop TensorFlow log messages (optional):
+    - set environment variable `TF_CPP_MIN_LOG_LEVEL` with value 2 (this disables warnings and debug log)
+    - to do it from Visual Studio, add `TF_CPP_MIN_LOG_LEVEL=2` to Configuration properties > Debugging > Environment in DeepModelTraining project properties
         
         
 ## Release notes ##
