@@ -71,43 +71,43 @@ void ModelEvalOp::createVariableData(const std::vector<NetworkConfiguration::Lay
 
 bool ModelEvalOp::initialize(StateP state)
 {
-	// load parameterization data
-	std::string configFilePath = *(static_cast<std::string*> (state->getRegistry()->getEntry("configFilePath").get()));
-	ConfigParser configParser(configFilePath);
-	std::vector<std::pair<std::string, std::vector<int>>> layerConfiguration = configParser.LayerConfiguration();
-	int numInputs = configParser.NumInputs();
-	int numOutputs = configParser.NumOutputs();
-	std::string datasetPath = configParser.DatasetPath();
-	std::string lossFunctionName = configParser.LossFunctionName();
-	// load training data
-	DatasetLoader<float> datasetParser("./dataset/dataset.txt", numInputs, numOutputs);
-	std::vector<float> inputs = datasetParser.getInputs();
-	std::vector<float> outputs = datasetParser.getOutputs();
-	// TODO: refactor this so that inputs and output shape do not have to be matrices (they can be tensors)
-	int inputShape_[] = { inputs.size() / numInputs, numInputs };
-	int outputShape_[] = { outputs.size() / numOutputs, numOutputs };
-	NetworkConfiguration::Shape inputShape(begin(inputShape_), end(inputShape_));
-	NetworkConfiguration::Shape outputShape(begin(outputShape_), end(outputShape_));
-	// create session
-	Status status;
 	try
 	{
+		// load parameterization data
+		std::string configFilePath = *(static_cast<std::string*> (state->getRegistry()->getEntry("configFilePath").get()));
+		ConfigParser configParser(configFilePath);
+		std::vector<std::pair<std::string, std::vector<int>>> layerConfiguration = configParser.LayerConfiguration();
+		int numInputs = configParser.NumInputs();
+		int numOutputs = configParser.NumOutputs();
+		std::string datasetPath = configParser.DatasetPath();
+		std::string lossFunctionName = configParser.LossFunctionName();
+		// load training data
+		DatasetLoader<float> datasetParser(datasetPath, numInputs, numOutputs);
+		std::vector<float> inputs = datasetParser.getInputs();
+		std::vector<float> outputs = datasetParser.getOutputs();
+		// TODO: refactor this so that inputs and output shape do not have to be matrices (they can be tensors)
+		int inputShape_[] = { inputs.size() / numInputs, numInputs };
+		int outputShape_[] = { outputs.size() / numOutputs, numOutputs };
+		NetworkConfiguration::Shape inputShape(begin(inputShape_), end(inputShape_));
+		NetworkConfiguration::Shape outputShape(begin(outputShape_), end(outputShape_));
+		// create session
+		Status status;
 		SessionOptions options;
 		NewSession(options, &m_Session);
 		GraphDef graphDef = createGraphDef(layerConfiguration, lossFunctionName, inputShape, outputShape);
 		status = m_Session->Create(graphDef);
+		// create tensors for inputs and outputs and fill them with values from dataset
+		m_Inputs = std::make_shared<Tensor>(Tensor(DT_FLOAT, inputShape.asTensorShape()));
+		setTensor<float>(*m_Inputs, inputs.begin(), inputs.end());
+		m_Outputs = std::make_shared<Tensor>(Tensor(DT_FLOAT, outputShape.asTensorShape()));
+		setTensor<float>(*m_Outputs, outputs.begin(), outputs.end());
+		return status.ok();
 	}
 	catch (std::exception& e)
 	{
 		std::cout << e.what() << std::endl;
 		return false;
 	}
-	// create tensors for inputs and outputs and fill them with values from dataset
-	m_Inputs = std::make_shared<Tensor>(Tensor(DT_FLOAT, inputShape.asTensorShape()));
-	setTensor<float>(*m_Inputs, inputs.begin(), inputs.end());
-	m_Outputs = std::make_shared<Tensor>(Tensor(DT_FLOAT, outputShape.asTensorShape()));
-	setTensor<float>(*m_Outputs, outputs.begin(), outputs.end());
-	return status.ok();
 }
 
 FitnessP ModelEvalOp::evaluate(IndividualP individual)

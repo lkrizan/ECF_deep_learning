@@ -1,4 +1,5 @@
 #include "ConfigParser.h"
+#include <sstream>
 
 void ConfigParser::parseLine(const std::string line)
 {
@@ -34,21 +35,30 @@ void ConfigParser::parseLine(const std::string line)
 				if (*currIterator == "NumInputs")
 				{
 					if (++currIterator != tokens.end())
+					{
 						m_NumInputs = std::stoi(*currIterator);
+						inputsConfigured = true;
+					}
 					else
 						throw std::logic_error(errorMsg);
 				}
 				else if (*currIterator == "NumOutputs")
 				{
 					if (++currIterator != tokens.end())
+					{
 						m_NumOutputs = std::stoi(*currIterator);
+						outputsConfigured = true;
+					}
 					else
 						throw std::logic_error(errorMsg);
 				}
 				else if (*currIterator == "DatasetPath")
 				{
 					if (++currIterator != tokens.end())
+					{
 						m_DatasetPath = *currIterator;
+						datasetPathConfigured = true;
+					}
 					else
 						throw std::logic_error(errorMsg);
 				}
@@ -63,10 +73,12 @@ void ConfigParser::parseLine(const std::string line)
 				shapeValues.resize(std::distance(++currIterator, tokens.end()));
 				std::transform(currIterator, tokens.end(), shapeValues.begin(), [](const std::string& val) { return std::stoi(val); });
 				m_LayerConfiguration.push_back(std::make_pair(layerName, shapeValues));
+				layerConfigurationConfigured = true;
 				break;
 			}
 			case eLoss:
 				m_LossFunctionName = *currIterator;
+				lossFunctionConfigured = true;
 				m_State = eLossFinished;
 				break;
 			case eLossFinished:
@@ -86,5 +98,34 @@ ConfigParser::ConfigParser(std::string pathToFile)
 	while (getline(fileP, line))
 	{
 		parseLine(line);
+	}
+
+	// create error messages (if errors exist)
+	bool parameterizationFailure = !(inputsConfigured && outputsConfigured && datasetPathConfigured && layerConfigurationConfigured && lossFunctionConfigured);
+	std::stringstream errorMessageStream;
+	if (!inputsConfigured)
+	{
+		errorMessageStream << "Input shape must be declared." << std::endl;
+	}
+	if (!outputsConfigured)
+	{
+		errorMessageStream << "Output shape must be declared." << std::endl;
+	}
+	if (!datasetPathConfigured)
+	{
+		errorMessageStream << "Dataset path is missing." << std::endl;
+	}
+	if (!layerConfigurationConfigured)
+	{
+		errorMessageStream << "Layer configuration is missing." << std::endl;
+	}
+	if (!lossFunctionConfigured)
+	{
+		errorMessageStream << "Loss function must be declared." << std::endl;
+	}
+
+	if (parameterizationFailure)
+	{
+		throw std::logic_error(errorMessageStream.str());
 	}
 }

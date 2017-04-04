@@ -15,6 +15,13 @@ private:
 	std::string m_DatasetPath;
 	std::string m_LossFunctionName;
 
+	// used for checking if all required parameters are configured
+	bool inputsConfigured = false;
+	bool outputsConfigured = false;
+	bool datasetPathConfigured = false;
+	bool layerConfigurationConfigured = false;
+	bool lossFunctionConfigured = false;
+
 	enum State {eStart, eGeneral, eLayers, eLoss, eLossFinished};
 	State m_State = eStart;
 
