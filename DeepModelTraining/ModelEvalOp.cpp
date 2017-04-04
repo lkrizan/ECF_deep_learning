@@ -25,10 +25,9 @@ void ModelEvalOp::setTensor(Tensor &tensor, InputIterator first, InputIterator l
         tensorMap(currentIdx++) = static_cast<T>(*it);
 }
 
-GraphDef ModelEvalOp::createGraphDef(const std::vector<std::pair<std::string, std::vector<int>>> & networkConfiguration, const std::string lossFunctionName, const NetworkConfiguration::Shape & inputShape, const NetworkConfiguration::Shape & outputShape)
+std::vector<NetworkConfiguration::LayerP> ModelEvalOp::createLayers(Scope &root, const std::vector<std::pair<std::string, std::vector<int>>>& networkConfiguration, const std::string lossFunctionName, const NetworkConfiguration::Shape & inputShape, const NetworkConfiguration::Shape & outputShape) const
 {
 	using NetworkConfiguration::Shape;
-	Scope root = Scope::NewRootScope();
 	// create placeholders for inputs and for expected outputs so network can be defined
 	auto inputPlaceholder = ops::Placeholder(root.WithOpName(INPUTS_PLACEHOLDER_NAME), DT_FLOAT);
 	auto outputPlaceholder = ops::Placeholder(root.WithOpName(OUTPUTS_PLACEHOLDER_NAME), DT_FLOAT);
@@ -46,17 +45,12 @@ GraphDef ModelEvalOp::createGraphDef(const std::vector<std::pair<std::string, st
 	}
 	// add loss function to graph
 	auto lossFunction = NetworkConfiguration::LossFunctionFactory::createLossFunction(lossFunctionName, root, layers.back()->forward(), layers.back()->outputShape(), outputPlaceholder, outputShape, LOSS_OUTPUT_NAME);
-	// layers are only used for helping in creating graph definition - layers themselves are not used anywhere else later
-	// instead of layers, create instances of VariableData class which carry only required information - symbolic parameter names, their shapes and number of elements
-	createVariableData(layers);
-	// create session
-	GraphDef def;
-	TF_CHECK_OK(root.ToGraphDef(&def));
-	return def;
+	return layers;
 }
 
-void ModelEvalOp::createVariableData(const std::vector<NetworkConfiguration::LayerP> &layers)
+std::vector<ModelEvalOp::VariableData> ModelEvalOp::createVariableData(const std::vector<NetworkConfiguration::LayerP> &layers) const
 {
+	std::vector<VariableData> data;
 	for (auto it = layers.begin(); it != layers.end(); it++)
 	{
 		if (!(*it)->hasParams())
@@ -64,8 +58,14 @@ void ModelEvalOp::createVariableData(const std::vector<NetworkConfiguration::Lay
 		auto layerPtr = std::dynamic_pointer_cast<NetworkConfiguration::ParameterizedLayer>(*it);
 		auto values = layerPtr->getParamShapes();
 		for (auto fwdit = values.begin(); fwdit != values.end(); fwdit++)
-			m_VariablesData.push_back(VariableData((*fwdit).first, (*fwdit).second.asTensorShape(), (*fwdit).second.numberOfElements()));
+			data.push_back(VariableData((*fwdit).first, (*fwdit).second.asTensorShape(), (*fwdit).second.numberOfElements()));
 	}
+	return data;
+}
+
+size_t ModelEvalOp::totalNumberOfParameters() const
+{
+	return std::accumulate(m_VariableData.begin(), m_VariableData.end(), 0, [](size_t sum, const VariableData & val) { return sum + val.m_NumberOfElements;});
 }
 
 
@@ -93,17 +93,29 @@ bool ModelEvalOp::initialize(StateP state)
 		NetworkConfiguration::Shape inputShape(begin(inputShape_), end(inputShape_));
 		NetworkConfiguration::Shape outputShape(begin(outputShape_), end(outputShape_));
 		ECF_LOG(state, 3, "Creating session...");
+		Scope root = Scope::NewRootScope();
+		// create network
+		std::vector<NetworkConfiguration::LayerP> layers = createLayers(root, layerConfiguration, lossFunctionName, inputShape, outputShape);
+		// layers are only used for helping in creating graph definition - layers themselves are not used anywhere else later
+		// instead of layers, create instances of VariableData class which carry only required information - symbolic parameter names, their shapes and number of elements
+		m_VariableData = createVariableData(layers);
 		// create session
 		Status status;
 		SessionOptions options;
 		NewSession(options, &m_Session);
-		GraphDef graphDef = createGraphDef(layerConfiguration, lossFunctionName, inputShape, outputShape);
-		status = m_Session->Create(graphDef);
+		GraphDef def;
+		TF_CHECK_OK(root.ToGraphDef(&def));
+		status = m_Session->Create(def);
 		// create tensors for inputs and outputs and fill them with values from dataset
 		m_Inputs = std::make_shared<Tensor>(Tensor(DT_FLOAT, inputShape.asTensorShape()));
 		setTensor<float>(*m_Inputs, inputs.begin(), inputs.end());
 		m_Outputs = std::make_shared<Tensor>(Tensor(DT_FLOAT, outputShape.asTensorShape()));
 		setTensor<float>(*m_Outputs, outputs.begin(), outputs.end());
+		// override size for FloatingPoint genotype
+		size_t numParameters = totalNumberOfParameters();
+		state->getRegistry()->modifyEntry("FloatingPoint.dimension", (voidP) new uint(numParameters));
+		// reinitialize population with updated size
+		state->getPopulation()->initialize(state);
 		return status.ok();
 	}
 	catch (std::exception& e)
@@ -121,9 +133,9 @@ FitnessP ModelEvalOp::evaluate(IndividualP individual)
     FloatingPoint::FloatingPoint* gen = (FloatingPoint::FloatingPoint*) individual->getGenotype().get();
 	// create tensors and fill them with values
 	std::vector<std::pair<string, tensorflow::Tensor>> inputs;
-	inputs.reserve(m_VariablesData.size());
+	inputs.reserve(m_VariableData.size());
 	auto currentIterator = gen->realValue.begin();
-	for (auto it = m_VariablesData.begin(); it != m_VariablesData.end(); it++)
+	for (auto it = m_VariableData.begin(); it != m_VariableData.end(); it++)
 	{
 		Tensor tensor(DT_FLOAT, (*it).m_Shape);
 		setTensor<float>(tensor, currentIterator, currentIterator + (*it).m_NumberOfElements);

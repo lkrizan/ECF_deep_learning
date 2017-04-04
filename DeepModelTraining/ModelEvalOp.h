@@ -9,9 +9,6 @@
 
 using namespace tensorflow;
 
-// TODO: check if dimensions of FloatingPoint genotype fit dimensions from configuration (or do something even more clever)
-// TODO: use ECF logging instead of direct output to stdout
-
 class ModelEvalOp: public EvaluateOp
 {
 public:
@@ -23,21 +20,25 @@ public:
     static void setTensor(Tensor &tensor, InputIterator first, InputIterator last);
 
 private:
-	struct VariableData 
+
+	struct VariableData
 	{
 		std::string m_VariableName;
 		TensorShape m_Shape;
 		int m_NumberOfElements;
 		VariableData(std::string variableName, TensorShape shape, int numberOfElements) : m_VariableName(variableName), m_Shape(shape), m_NumberOfElements(numberOfElements) {}
 	};
+
     Session *m_Session;
-	std::vector<VariableData> m_VariablesData;
+	std::vector<VariableData> m_VariableData;
     std::shared_ptr<Tensor> m_Inputs;
     std::shared_ptr<Tensor> m_Outputs;
 	// helper function for creating graph definition
-	GraphDef createGraphDef(const std::vector<std::pair<std::string, std::vector<int>>> & networkConfiguration, const std::string lossFunctionName, const NetworkConfiguration::Shape & inputShape, const NetworkConfiguration::Shape & outputShape);
+	std::vector<NetworkConfiguration::LayerP> createLayers(Scope &root, const std::vector<std::pair<std::string, std::vector<int>>> & networkConfiguration, const std::string lossFunctionName, const NetworkConfiguration::Shape & inputShape, const NetworkConfiguration::Shape & outputShape) const;
 	// helper function for creating variable data
-	void createVariableData(const std::vector<NetworkConfiguration::LayerP> &layers);
+	std::vector<VariableData> createVariableData(const std::vector<NetworkConfiguration::LayerP> &layers) const;
+	// helper function which calculates total number of parameters from network configuration - used for overriding size of FloatingPoint genotype
+	size_t totalNumberOfParameters() const;
 };
 
 typedef boost::shared_ptr<ModelEvalOp> ModelEvalOpP;

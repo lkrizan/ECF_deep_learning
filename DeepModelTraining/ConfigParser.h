@@ -6,8 +6,6 @@
 class ConfigParser
 {
 
-// TODO: parser should check if all required parameters are included
-
 private:
 	std::vector<std::pair<std::string, std::vector<int>>> m_LayerConfiguration;
 	int m_NumInputs;
