@@ -28,11 +28,21 @@ private:
 		int m_NumberOfElements;
 		VariableData(std::string variableName, TensorShape shape, int numberOfElements) : m_VariableName(variableName), m_Shape(shape), m_NumberOfElements(numberOfElements) {}
 	};
-
+	StateP m_ECFState = nullptr;
     Session *m_Session;
+	GraphDef m_GraphDef;
 	std::vector<VariableData> m_VariableData;
     std::shared_ptr<Tensor> m_Inputs;
     std::shared_ptr<Tensor> m_Outputs;
+
+	// TODO: add to parameterization, default should stay false
+	bool m_SaveModel = false;
+	std::string m_ModelExportPath;
+
+	// save graph definition and tensor values to disk
+	void saveDefinitionToFile(std::string folderPath) const;
+	// helper function for filling tensors with values from genotype
+	std::vector<std::pair<string, tensorflow::Tensor>> createTensorsFromGenotype(const IndividualP individual) const;
 	// helper function for creating graph definition
 	std::vector<NetworkConfiguration::LayerP> createLayers(Scope &root, const std::vector<std::pair<std::string, std::vector<int>>> & networkConfiguration, const std::string lossFunctionName, const NetworkConfiguration::Shape & inputShape, const NetworkConfiguration::Shape & outputShape) const;
 	// helper function for creating variable data

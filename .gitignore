@@ -7,6 +7,9 @@
 *.userosscache
 *.sln.docstates
 
+# Saved tensorflow graphs (I don't want them)
+*.pb
+
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 

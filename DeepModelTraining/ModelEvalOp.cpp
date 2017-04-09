@@ -13,7 +13,25 @@ void ModelEvalOp::registerParameters(StateP state)
 
 ModelEvalOp::~ModelEvalOp()
 {
+	try
+	{
+		if (m_SaveModel)
+			saveDefinitionToFile(m_ModelExportPath);
+	}
+	catch (std::exception &e)
+	{
+		auto err = e.what();
+		std::string errMsg = "Failed to save trained model: " + std::string(e.what());
+		ECF_LOG_ERROR(m_ECFState, errMsg);
+	}
 	m_Session->Close();
+}
+
+void ModelEvalOp::saveDefinitionToFile(std::string folderPath) const
+{
+	// save graph definition
+	tensorflow::WriteBinaryProto(tensorflow::Env::Default(), folderPath + "\\graph.pb", m_GraphDef);
+	// TODO: save tensor values - use ECFState to get Hall of Fame
 }
 
 template<class T, class InputIterator>
@@ -24,6 +42,7 @@ void ModelEvalOp::setTensor(Tensor &tensor, InputIterator first, InputIterator l
     for (auto it = first; it != last; it++)
         tensorMap(currentIdx++) = static_cast<T>(*it);
 }
+
 
 std::vector<NetworkConfiguration::LayerP> ModelEvalOp::createLayers(Scope &root, const std::vector<std::pair<std::string, std::vector<int>>>& networkConfiguration, const std::string lossFunctionName, const NetworkConfiguration::Shape & inputShape, const NetworkConfiguration::Shape & outputShape) const
 {
@@ -71,6 +90,7 @@ size_t ModelEvalOp::totalNumberOfParameters() const
 
 bool ModelEvalOp::initialize(StateP state)
 {
+	m_ECFState = state;
 	try
 	{
 		ECF_LOG(state, 3, "Loading network configuration...");
@@ -103,11 +123,11 @@ bool ModelEvalOp::initialize(StateP state)
 		Status status;
 		SessionOptions options;
 		NewSession(options, &m_Session);
-		GraphDef def;
-		TF_CHECK_OK(root.ToGraphDef(&def));
-		status = m_Session->Create(def);
+		TF_CHECK_OK(root.ToGraphDef(&m_GraphDef));
+		status = m_Session->Create(m_GraphDef);
 		ECF_LOG(state, 5, "Graph definition data:");
-		ECF_LOG(state, 5, def.DebugString());
+		ECF_LOG(state, 5, m_GraphDef.DebugString());
+		
 		// create tensors for inputs and outputs and fill them with values from dataset
 		m_Inputs = std::make_shared<Tensor>(Tensor(DT_FLOAT, inputShape.asTensorShape()));
 		setTensor<float>(*m_Inputs, inputs.begin(), inputs.end());
@@ -128,11 +148,10 @@ bool ModelEvalOp::initialize(StateP state)
 	}
 }
 
-FitnessP ModelEvalOp::evaluate(IndividualP individual)
+std::vector<std::pair<string, tensorflow::Tensor>> ModelEvalOp::createTensorsFromGenotype(const IndividualP individual) const
 {
-    FitnessP fitness (new FitnessMin);
 	// for FloatingPoint genotype
-    FloatingPoint::FloatingPoint* gen = (FloatingPoint::FloatingPoint*) individual->getGenotype().get();
+	FloatingPoint::FloatingPoint* gen = (FloatingPoint::FloatingPoint*) individual->getGenotype().get();
 	// create tensors and fill them with values
 	std::vector<std::pair<string, tensorflow::Tensor>> inputs;
 	inputs.reserve(m_VariableData.size());
@@ -144,6 +163,13 @@ FitnessP ModelEvalOp::evaluate(IndividualP individual)
 		currentIterator += (*it).m_NumberOfElements;
 		inputs.push_back(std::make_pair((*it).m_VariableName, tensor));
 	}
+	return inputs;
+}
+
+FitnessP ModelEvalOp::evaluate(IndividualP individual)
+{
+    FitnessP fitness (new FitnessMin);
+	std::vector<std::pair<string, tensorflow::Tensor>> inputs = createTensorsFromGenotype(individual);
 	inputs.push_back(std::make_pair(INPUTS_PLACEHOLDER_NAME, *m_Inputs));
 	inputs.push_back(std::make_pair(OUTPUTS_PLACEHOLDER_NAME, *m_Outputs));
     std::vector<tensorflow::Tensor> outputs;
