@@ -13,16 +13,17 @@ void ModelEvalOp::registerParameters(StateP state)
 
 ModelEvalOp::~ModelEvalOp()
 {
-	try
+	if (m_SaveModel)
 	{
-		if (m_SaveModel)
+		try
+		{
 			saveDefinitionToFile(m_ModelExportPath);
-	}
-	catch (std::exception &e)
-	{
-		auto err = e.what();
-		std::string errMsg = "Failed to save trained model: " + std::string(e.what());
-		ECF_LOG_ERROR(m_ECFState, errMsg);
+		}
+		catch (std::exception &e)
+		{
+			std::string errMsg = "Failed to save trained model: " + std::string(e.what());
+			ECF_LOG_ERROR(m_ECFState, errMsg);
+		}
 	}
 	m_Session->Close();
 }
@@ -31,7 +32,23 @@ void ModelEvalOp::saveDefinitionToFile(std::string folderPath) const
 {
 	// save graph definition
 	tensorflow::WriteBinaryProto(tensorflow::Env::Default(), folderPath + "\\graph.pb", m_GraphDef);
-	// TODO: save tensor values - use ECFState to get Hall of Fame
+	// get best individual from Hall of Fame
+	IndividualP bestIndividual = m_ECFState->getHoF()->getBest().at(0);
+	/*
+	// adjust data types - because google likes to complicate everything (python bindings use normal types)
+	std::vector<std::pair<std::string, tensorflow::Tensor>> values = createTensorsFromGenotype(bestIndividual);
+	std::vector<std::string> tensorNames;
+	std::vector<tensorflow::Input> tensorVals;
+	tensorNames.resize(values.size());
+	tensorVals.resize(values.size());
+	std::transform(values.begin(), values.end(), tensorNames.begin(), [](const std::pair<std::string, tensorflow::Tensor> &val) { return val.first; });
+	std::transform(values.begin(), values.end(), tensorVals.begin(), [](const std::pair<std::string, tensorflow::Tensor> &val) { return Input(val.second); });
+	Tensor names(DataType::DT_STRING, TensorShape({ static_cast<int64>(values.size()) }));
+	setTensor<std::string>(names, tensorNames.begin(), tensorNames.end());
+	tensorflow::ops::Save(m_Scope, folderPath + "\\model.ckpt", names, tensorflow::InputList(gtl::ArraySlice<Input>(tensorVals)));
+	*/
+	// this part here does not work with error 'tensorflow::Input &tensorflow::Input::operator =(const tensorflow::Input &)': attempting to reference a deleted function
+	// TODO: make your own format and function for saving tensors (with blackjack and hookers), and python implementation
 }
 
 template<class T, class InputIterator>
@@ -113,9 +130,8 @@ bool ModelEvalOp::initialize(StateP state)
 		NetworkConfiguration::Shape inputShape(begin(inputShape_), end(inputShape_));
 		NetworkConfiguration::Shape outputShape(begin(outputShape_), end(outputShape_));
 		ECF_LOG(state, 3, "Creating session...");
-		Scope root = Scope::NewRootScope();
 		// create network
-		std::vector<NetworkConfiguration::LayerP> layers = createLayers(root, layerConfiguration, lossFunctionName, inputShape, outputShape);
+		std::vector<NetworkConfiguration::LayerP> layers = createLayers(m_Scope, layerConfiguration, lossFunctionName, inputShape, outputShape);
 		// layers are only used for helping in creating graph definition - layers themselves are not used anywhere else later
 		// instead of layers, create instances of VariableData class which carry only required information - symbolic parameter names, their shapes and number of elements
 		m_VariableData = createVariableData(layers);
@@ -123,7 +139,7 @@ bool ModelEvalOp::initialize(StateP state)
 		Status status;
 		SessionOptions options;
 		NewSession(options, &m_Session);
-		TF_CHECK_OK(root.ToGraphDef(&m_GraphDef));
+		TF_CHECK_OK(m_Scope.ToGraphDef(&m_GraphDef));
 		status = m_Session->Create(m_GraphDef);
 		ECF_LOG(state, 5, "Graph definition data:");
 		ECF_LOG(state, 5, m_GraphDef.DebugString());

@@ -2,9 +2,10 @@
 #define MODELEVALOP_H_
 #include <ECF/ECF.h>
 #include <NetworkConfiguration/NetworkConfiguration.h>
-#include "tensorflow/core/public/session.h"
-#include "tensorflow/cc/ops/standard_ops.h"
-#include "tensorflow/core/framework/tensor.h"
+#include <tensorflow/core/public/session.h>
+#include <tensorflow/cc/ops/standard_ops.h>
+#include <tensorflow/core/framework/tensor.h>
+#include <tensorflow/contrib/cmake/build/tensorflow/cc/ops/io_ops.h>
 #include "DatasetLoader.h"
 
 using namespace tensorflow;
@@ -31,6 +32,7 @@ private:
 	StateP m_ECFState = nullptr;
     Session *m_Session;
 	GraphDef m_GraphDef;
+	Scope m_Scope = Scope::NewRootScope();
 	std::vector<VariableData> m_VariableData;
     std::shared_ptr<Tensor> m_Inputs;
     std::shared_ptr<Tensor> m_Outputs;
