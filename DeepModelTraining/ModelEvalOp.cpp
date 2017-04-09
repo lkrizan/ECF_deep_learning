@@ -106,6 +106,8 @@ bool ModelEvalOp::initialize(StateP state)
 		GraphDef def;
 		TF_CHECK_OK(root.ToGraphDef(&def));
 		status = m_Session->Create(def);
+		ECF_LOG(state, 5, "Graph definition data:");
+		ECF_LOG(state, 5, def.DebugString());
 		// create tensors for inputs and outputs and fill them with values from dataset
 		m_Inputs = std::make_shared<Tensor>(Tensor(DT_FLOAT, inputShape.asTensorShape()));
 		setTensor<float>(*m_Inputs, inputs.begin(), inputs.end());
