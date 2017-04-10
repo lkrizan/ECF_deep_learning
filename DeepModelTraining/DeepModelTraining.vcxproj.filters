@@ -38,6 +38,9 @@
     <ClInclude Include="ConfigParser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ModelExporter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="dataset.txt">

@@ -78,6 +78,7 @@
     <ClInclude Include="ConfigParser.h" />
     <ClInclude Include="DatasetLoader.h" />
     <ClInclude Include="ModelEvalOp.h" />
+    <ClInclude Include="ModelExporter.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="config.txt" />

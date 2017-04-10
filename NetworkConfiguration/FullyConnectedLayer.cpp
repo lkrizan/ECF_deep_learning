@@ -12,7 +12,7 @@ FullyConnectedLayer::FullyConnectedLayer(tensorflow::Scope &scope, const tensorf
 	if (!paramShape.validForParameterizedUse())
 	{
 		parameterizationFailure = true;
-		errorMessageStream << "Shape " << paramShape << " cannot be used for weights in fully connected layer." << std::endl;
+		errorMessageStream << "Shape [" << paramShape << "] cannot be used for weights in fully connected layer." << std::endl;
 	}
 	else if (paramShape.size() != 2 || previousLayerOutputShape.size() != 2)
 	{
@@ -23,7 +23,7 @@ FullyConnectedLayer::FullyConnectedLayer(tensorflow::Scope &scope, const tensorf
 	else if (previousLayerOutputShape.back() != paramShape.back())
 	{
 		parameterizationFailure = true;
-		errorMessageStream << "Shapes " << previousLayerOutputShape << " and " << paramShape << "are not compatible for multiplication." << std::endl;
+		errorMessageStream << "Shapes [" << previousLayerOutputShape << "] and [" << paramShape << "] are not compatible for multiplication." << std::endl;
 	}
 	if (parameterizationFailure) 
 	{

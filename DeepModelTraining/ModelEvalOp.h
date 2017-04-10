@@ -7,6 +7,7 @@
 #include <tensorflow/core/framework/tensor.h>
 #include <tensorflow/contrib/cmake/build/tensorflow/cc/ops/io_ops.h>
 #include "DatasetLoader.h"
+#include "ModelExporter.h"
 
 using namespace tensorflow;
 
@@ -24,10 +25,11 @@ private:
 
 	struct VariableData
 	{
+		NetworkConfiguration::Shape m_BasicShape;
 		std::string m_VariableName;
 		TensorShape m_Shape;
 		int m_NumberOfElements;
-		VariableData(std::string variableName, TensorShape shape, int numberOfElements) : m_VariableName(variableName), m_Shape(shape), m_NumberOfElements(numberOfElements) {}
+		VariableData(std::string variableName, NetworkConfiguration::Shape shape, int numberOfElements) : m_VariableName(variableName), m_BasicShape(shape), m_Shape(shape.asTensorShape()), m_NumberOfElements(numberOfElements) {}
 	};
 	StateP m_ECFState = nullptr;
     Session *m_Session;
@@ -42,7 +44,7 @@ private:
 	std::string m_ModelExportPath;
 
 	// save graph definition and tensor values to disk
-	void saveDefinitionToFile(std::string folderPath) const;
+	void saveDefinitionToFile() const;
 	// helper function for filling tensors with values from genotype
 	std::vector<std::pair<string, tensorflow::Tensor>> createTensorsFromGenotype(const IndividualP individual) const;
 	// helper function for creating graph definition

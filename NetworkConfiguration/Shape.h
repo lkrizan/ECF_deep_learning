@@ -44,10 +44,11 @@ public:
 
 	friend std::ostream& operator<< (std::ostream& os, const Shape& source)
 	{
-		os << "[";
+		/*
 		for(auto it = source.m_Values.cbegin(); it != source.m_Values.cend(); it++)
-			os << *it << "," ;
-		os << "]";
+			os << *it << " " ;
+		*/
+		for_each(source.m_Values.begin(), source.m_Values.end(), [&os](const int64 & value) {os << value << " "; });
 		return os;
 	}
 

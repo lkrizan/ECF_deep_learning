@@ -17,7 +17,7 @@ ModelEvalOp::~ModelEvalOp()
 	{
 		try
 		{
-			saveDefinitionToFile(m_ModelExportPath);
+			saveDefinitionToFile();
 		}
 		catch (std::exception &e)
 		{
@@ -28,27 +28,16 @@ ModelEvalOp::~ModelEvalOp()
 	m_Session->Close();
 }
 
-void ModelEvalOp::saveDefinitionToFile(std::string folderPath) const
+void ModelEvalOp::saveDefinitionToFile() const
 {
-	// save graph definition
-	tensorflow::WriteBinaryProto(tensorflow::Env::Default(), folderPath + "\\graph.pb", m_GraphDef);
+	ModelExporter exporter(m_ModelExportPath);
+	exporter.exportGraph(m_GraphDef);
 	// get best individual from Hall of Fame
 	IndividualP bestIndividual = m_ECFState->getHoF()->getBest().at(0);
-	/*
-	// adjust data types - because google likes to complicate everything (python bindings use normal types)
-	std::vector<std::pair<std::string, tensorflow::Tensor>> values = createTensorsFromGenotype(bestIndividual);
-	std::vector<std::string> tensorNames;
-	std::vector<tensorflow::Input> tensorVals;
-	tensorNames.resize(values.size());
-	tensorVals.resize(values.size());
-	std::transform(values.begin(), values.end(), tensorNames.begin(), [](const std::pair<std::string, tensorflow::Tensor> &val) { return val.first; });
-	std::transform(values.begin(), values.end(), tensorVals.begin(), [](const std::pair<std::string, tensorflow::Tensor> &val) { return Input(val.second); });
-	Tensor names(DataType::DT_STRING, TensorShape({ static_cast<int64>(values.size()) }));
-	setTensor<std::string>(names, tensorNames.begin(), tensorNames.end());
-	tensorflow::ops::Save(m_Scope, folderPath + "\\model.ckpt", names, tensorflow::InputList(gtl::ArraySlice<Input>(tensorVals)));
-	*/
-	// this part here does not work with error 'tensorflow::Input &tensorflow::Input::operator =(const tensorflow::Input &)': attempting to reference a deleted function
-	// TODO: make your own format and function for saving tensors (with blackjack and hookers), and python implementation
+	FloatingPoint::FloatingPoint* gen = (FloatingPoint::FloatingPoint*) bestIndividual->getGenotype().get();
+	auto currentIterator = gen->realValue.begin();
+	auto endIterator = gen->realValue.end();
+	for_each(m_VariableData.begin(), m_VariableData.end(), [&exporter, &currentIterator](const VariableData & data) {exporter.exportVariableValues(data.m_VariableName, data.m_BasicShape, currentIterator, currentIterator + data.m_NumberOfElements); currentIterator += data.m_NumberOfElements;});
 }
 
 template<class T, class InputIterator>
@@ -94,7 +83,7 @@ std::vector<ModelEvalOp::VariableData> ModelEvalOp::createVariableData(const std
 		auto layerPtr = std::dynamic_pointer_cast<NetworkConfiguration::ParameterizedLayer>(*it);
 		auto values = layerPtr->getParamShapes();
 		for (auto fwdit = values.begin(); fwdit != values.end(); fwdit++)
-			data.push_back(VariableData((*fwdit).first, (*fwdit).second.asTensorShape(), (*fwdit).second.numberOfElements()));
+			data.push_back(VariableData((*fwdit).first, (*fwdit).second, (*fwdit).second.numberOfElements()));
 	}
 	return data;
 }
