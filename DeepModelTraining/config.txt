@@ -10,3 +10,6 @@ FullyConnectedLayer 1 10
 
 [Loss]
 MeanSquaredLossFunction
+
+# [Save]
+# SavePath ./model/

@@ -104,6 +104,8 @@ bool ModelEvalOp::initialize(StateP state)
 		std::string configFilePath = *(static_cast<std::string*> (state->getRegistry()->getEntry("configFilePath").get()));
 		ConfigParser configParser(configFilePath);
 		std::vector<std::pair<std::string, std::vector<int>>> layerConfiguration = configParser.LayerConfiguration();
+		m_SaveModel = configParser.SaveModel();
+		m_ModelExportPath = configParser.SaveFolderPath();
 		int numInputs = configParser.NumInputs();
 		int numOutputs = configParser.NumOutputs();
 		std::string datasetPath = configParser.DatasetPath();

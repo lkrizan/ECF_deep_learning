@@ -22,16 +22,23 @@ public:
 	{
 		m_OutputStream.open(std::string(DEFAULT_EXPORT_PATH) + std::string(VARIABLE_FILE_NAME));
 		if (!m_OutputStream.is_open())
-			throw std::runtime_error("Failed to open export file." + m_FolderPath + VARIABLE_FILE_NAME);
+		{
+			std::string errMsg = "Failed to open export file: " + m_FolderPath + VARIABLE_FILE_NAME + ".\nCheck if model export folder exist.";
+			throw std::runtime_error(errMsg);
+		}
+			
 	}
 
 	ModelExporter(std::string folderPath) : m_FolderPath(folderPath) 
 	{ 
 		if (m_FolderPath.empty()) 
 			m_FolderPath = DEFAULT_EXPORT_PATH;
-		m_OutputStream.open(std::string(DEFAULT_EXPORT_PATH) + std::string(VARIABLE_FILE_NAME));
+		m_OutputStream.open(m_FolderPath + VARIABLE_FILE_NAME);
 		if (!m_OutputStream.is_open())
-			throw std::runtime_error("Failed to open export file." + m_FolderPath + VARIABLE_FILE_NAME);
+		{
+			std::string errMsg = "Failed to open export file: " + m_FolderPath + VARIABLE_FILE_NAME + ".\nCheck if model export folder exist.";
+			throw std::runtime_error(errMsg);
+		}
 	}
 
 	~ModelExporter()

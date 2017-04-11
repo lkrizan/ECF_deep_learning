@@ -8,6 +8,9 @@ void ConfigParser::parseLine(const std::string line)
 	tok_t tokens(line, sep);
 	if (tokens.begin() != tokens.end())
 	{
+		// handle comments
+		if (*tokens.begin() == "#")
+			return;
 		auto currIterator = tokens.begin();
 		if (isHeaderLine(*currIterator))
 		{
@@ -19,6 +22,8 @@ void ConfigParser::parseLine(const std::string line)
 				m_State = eLayers;
 			else if (header == "Loss")
 				m_State = eLoss;
+			else if (header == "Save")
+				m_State = eSave;
 			else
 				throw std::logic_error(*currIterator + " is not registered block in configuration file.\n");
 			return;
@@ -84,6 +89,19 @@ void ConfigParser::parseLine(const std::string line)
 			case eLossFinished:
 				throw std::logic_error("Only one loss function is allowed.\n");
 				break;
+			case eSave:
+			{
+				// optional parameters
+				m_SaveModel = true;
+				if (*currIterator == "SavePath")
+				{
+					if (++currIterator != tokens.end())
+					{
+						m_SaveFolderPath = *currIterator;
+					}
+				}
+				break;
+			}
 		}
 	}
 }
