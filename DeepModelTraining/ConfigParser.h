@@ -12,8 +12,6 @@ private:
 	int m_NumOutputs;
 	std::string m_DatasetPath;
 	std::string m_LossFunctionName;
-	bool m_SaveModel = false;
-	std::string m_SaveFolderPath;
 
 	// used for checking if all required parameters are configured
 	bool inputsConfigured = false;
@@ -22,7 +20,7 @@ private:
 	bool layerConfigurationConfigured = false;
 	bool lossFunctionConfigured = false;
 
-	enum State {eStart, eGeneral, eLayers, eLoss, eLossFinished, eSave};
+	enum State {eStart, eGeneral, eLayers, eLoss, eLossFinished};
 	State m_State = eStart;
 
 	void parseLine(const std::string line);
@@ -35,6 +33,4 @@ public:
 	int NumOutputs() { return m_NumOutputs; }
 	std::string DatasetPath() { return m_DatasetPath; }
 	std::string LossFunctionName() { return m_LossFunctionName; }
-	bool SaveModel() { return m_SaveModel; }
-	std::string SaveFolderPath() { return m_SaveFolderPath; }
 };

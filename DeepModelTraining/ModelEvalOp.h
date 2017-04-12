@@ -39,7 +39,6 @@ private:
     std::shared_ptr<Tensor> m_Inputs;
     std::shared_ptr<Tensor> m_Outputs;
 
-	// TODO: add to parameterization, default should stay false
 	bool m_SaveModel = false;
 	std::string m_ModelExportPath;
 

@@ -6,8 +6,8 @@
 #include <tensorflow/cc/ops/standard_ops.h>
 #include <tensorflow/core/framework/tensor.h>
 #include <NetworkConfiguration/Shape.h>
+#include <ECF/ECF.h>
 
-#define DEFAULT_EXPORT_PATH "./model/"
 #define VARIABLE_FILE_NAME "variables.dat"
 #define GRAPH_FILE_NAME "graph.pb"
 
@@ -18,26 +18,18 @@ class ModelExporter
 
 
 public:
-	ModelExporter() : m_FolderPath(DEFAULT_EXPORT_PATH) 
-	{
-		m_OutputStream.open(std::string(DEFAULT_EXPORT_PATH) + std::string(VARIABLE_FILE_NAME));
-		if (!m_OutputStream.is_open())
-		{
-			std::string errMsg = "Failed to open export file: " + m_FolderPath + VARIABLE_FILE_NAME + ".\nCheck if model export folder exist.";
-			throw std::runtime_error(errMsg);
-		}
-			
-	}
 
-	ModelExporter(std::string folderPath) : m_FolderPath(folderPath) 
+	ModelExporter(StateP ECFState, std::string folderPath) : m_FolderPath(folderPath)
 	{ 
-		if (m_FolderPath.empty()) 
-			m_FolderPath = DEFAULT_EXPORT_PATH;
 		m_OutputStream.open(m_FolderPath + VARIABLE_FILE_NAME);
 		if (!m_OutputStream.is_open())
 		{
-			std::string errMsg = "Failed to open export file: " + m_FolderPath + VARIABLE_FILE_NAME + ".\nCheck if model export folder exist.";
-			throw std::runtime_error(errMsg);
+			std::string msg = "Warning: failed to open export file: " + m_FolderPath + VARIABLE_FILE_NAME + ". Trying to save files to root directory...";
+			ECF_LOG(ECFState, 2, msg);
+			m_FolderPath = "";
+			m_OutputStream.open(VARIABLE_FILE_NAME);
+			if (!m_OutputStream.is_open())
+				throw std::logic_error("Failed to create export file.");
 		}
 	}
 

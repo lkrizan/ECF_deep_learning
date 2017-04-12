@@ -9,6 +9,9 @@
 void ModelEvalOp::registerParameters(StateP state)
 {
 	state->getRegistry()->registerEntry("configFilePath", (voidP)(new std::string), ECF::STRING);
+	state->getRegistry()->registerEntry("saveModel", (voidP)(new int(0)), ECF::INT);
+	state->getRegistry()->registerEntry("modelSavePath", (voidP)(new std::string), ECF::STRING);
+
 }
 
 ModelEvalOp::~ModelEvalOp()
@@ -30,7 +33,7 @@ ModelEvalOp::~ModelEvalOp()
 
 void ModelEvalOp::saveDefinitionToFile() const
 {
-	ModelExporter exporter(m_ModelExportPath);
+	ModelExporter exporter(m_ECFState, m_ModelExportPath);
 	exporter.exportGraph(m_GraphDef);
 	// get best individual from Hall of Fame
 	IndividualP bestIndividual = m_ECFState->getHoF()->getBest().at(0);
@@ -102,10 +105,10 @@ bool ModelEvalOp::initialize(StateP state)
 		ECF_LOG(state, 3, "Loading network configuration...");
 		// load parameterization data
 		std::string configFilePath = *(static_cast<std::string*> (state->getRegistry()->getEntry("configFilePath").get()));
+		m_SaveModel = *(static_cast<int*> (state->getRegistry()->getEntry("saveModel").get()));
+		m_ModelExportPath = *(static_cast<std::string*> (state->getRegistry()->getEntry("modelSavePath").get()));
 		ConfigParser configParser(configFilePath);
 		std::vector<std::pair<std::string, std::vector<int>>> layerConfiguration = configParser.LayerConfiguration();
-		m_SaveModel = configParser.SaveModel();
-		m_ModelExportPath = configParser.SaveFolderPath();
 		int numInputs = configParser.NumInputs();
 		int numOutputs = configParser.NumOutputs();
 		std::string datasetPath = configParser.DatasetPath();
