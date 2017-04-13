@@ -18,6 +18,12 @@ class ModelLoader:
         self.folder_path = folder_path
         self._open_graph_def()
         self._create_variable_data()
+        self._create_feed_dict()
+
+    def _create_feed_dict(self):
+        self.feed_dict = {}
+        for var in self._variables:
+            self.feed_dict[var.name+":0"] = var.values
 
     def _open_graph_def(self):
         self.graph_def = tf.GraphDef()
@@ -26,7 +32,7 @@ class ModelLoader:
 
     def _create_variable_data(self):
         # variables - list of tuples (name, shape, values)
-        self.variables = []
+        self._variables = []
         # states for reading file
         eStart, eName, eShape, eValues = range(0, 4)
         state = eName
@@ -49,19 +55,15 @@ class ModelLoader:
                 elif state == eValues:
                     var_data.values = np.array([float(x) for x in line])
                     var_data.values = var_data.values.reshape(var_data.shape)
-                    self.variables.append(var_data)
+                    self._variables.append(var_data)
                     state = eStart
                     continue
 
 if __name__ == "__main__":
-    import pdb
     loader = ModelLoader("./model")
-    feed_dict = {}
-    for val in loader.variables:
-        feed_dict[val.name+":0"] = val.values
+    feed_dict = loader.feed_dict
     tf.import_graph_def(loader.graph_def, name="")
     with tf.Session() as sess:
-        pdb.set_trace()
         feed_dict["inputs:0"] = np.array([[-3.0, -3.0],
                                         [2.0, 2.0]])
         output = sess.run(["FC2_out:0"], feed_dict=feed_dict)
