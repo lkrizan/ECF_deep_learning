@@ -15,36 +15,19 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ModelEvalOp.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ConfigParser.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="ModelEvalOp.h">
+    <ClInclude Include="DatasetLoader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ConfigParser.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ModelExporter.h">
+    <ClInclude Include="NumericDatasetLoader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="dataset.txt">
-      <Filter>Resource Files</Filter>
-    </Text>
-    <Text Include="parameters.txt">
-      <Filter>Resource Files</Filter>
-    </Text>
-    <Text Include="config.txt">
-      <Filter>Resource Files</Filter>
-    </Text>
+    <ClCompile Include="ImageDatasetLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NumericDatasetLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

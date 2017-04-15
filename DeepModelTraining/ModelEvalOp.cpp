@@ -114,13 +114,10 @@ bool ModelEvalOp::initialize(StateP state)
 		std::string datasetPath = configParser.DatasetPath();
 		std::string lossFunctionName = configParser.LossFunctionName();
 		ECF_LOG(state, 3, "Loading dataset...");
-		// load training data
-		DatasetLoader<float> datasetParser(datasetPath, numInputs, numOutputs);
-		std::vector<float> inputs = datasetParser.getInputs();
-		std::vector<float> outputs = datasetParser.getOutputs();
+		m_DatasetHandler = DatasetLoader::DatasetLoaderP(new DatasetLoader::NumericDatasetLoader(datasetPath));
 		// TODO: refactor this so that inputs and output shape do not have to be matrices (they can be tensors)
-		int inputShape_[] = { inputs.size() / numInputs, numInputs };
-		int outputShape_[] = { outputs.size() / numOutputs, numOutputs };
+		int inputShape_[] = { 0, numInputs };
+		int outputShape_[] = { 0, numOutputs };
 		NetworkConfiguration::Shape inputShape(begin(inputShape_), end(inputShape_));
 		NetworkConfiguration::Shape outputShape(begin(outputShape_), end(outputShape_));
 		ECF_LOG(state, 3, "Creating session...");
@@ -137,12 +134,6 @@ bool ModelEvalOp::initialize(StateP state)
 		status = m_Session->Create(m_GraphDef);
 		ECF_LOG(state, 5, "Graph definition data:");
 		ECF_LOG(state, 5, m_GraphDef.DebugString());
-		
-		// create tensors for inputs and outputs and fill them with values from dataset
-		m_Inputs = std::make_shared<Tensor>(Tensor(DT_FLOAT, inputShape.asTensorShape()));
-		setTensor<float>(*m_Inputs, inputs.begin(), inputs.end());
-		m_Outputs = std::make_shared<Tensor>(Tensor(DT_FLOAT, outputShape.asTensorShape()));
-		setTensor<float>(*m_Outputs, outputs.begin(), outputs.end());
 		// override size for FloatingPoint genotype
 		size_t numParameters = totalNumberOfParameters();
 		state->getRegistry()->modifyEntry("FloatingPoint.dimension", (voidP) new uint(numParameters));
@@ -180,12 +171,28 @@ FitnessP ModelEvalOp::evaluate(IndividualP individual)
 {
     FitnessP fitness (new FitnessMin);
 	std::vector<std::pair<string, tensorflow::Tensor>> inputs = createTensorsFromGenotype(individual);
-	inputs.push_back(std::make_pair(INPUTS_PLACEHOLDER_NAME, *m_Inputs));
-	inputs.push_back(std::make_pair(OUTPUTS_PLACEHOLDER_NAME, *m_Outputs));
-    std::vector<tensorflow::Tensor> outputs;
-	Status status = m_Session->Run(inputs, { LOSS_OUTPUT_NAME }, {}, &outputs);
-    auto outputRes = outputs[0].scalar<float>();
-    fitness->setValue(outputRes());
+	unsigned int batchCounter = 0;
+	float accumulatedBatchLoss = 0;
+	Tensor datasetInputs, datasetOutputs;
+	inputs.push_back(std::make_pair(INPUTS_PLACEHOLDER_NAME, datasetInputs));
+	std::pair<std::string, tensorflow::Tensor> *inputsPair = &inputs.back();
+	inputs.push_back(std::make_pair(OUTPUTS_PLACEHOLDER_NAME, datasetOutputs));
+	std::pair<std::string, tensorflow::Tensor> *outputsPair = &inputs.back();
+	m_DatasetHandler->resetBatchIterator();
+	while (m_DatasetHandler->nextBatch(datasetInputs, datasetOutputs))
+	{
+		// inputs.push_back(std::make_pair(INPUTS_PLACEHOLDER_NAME, datasetInputs));
+		// inputs.push_back(std::make_pair(OUTPUTS_PLACEHOLDER_NAME, datasetOutputs));
+		inputsPair->second = datasetInputs;
+		outputsPair->second = datasetOutputs;
+		std::vector<tensorflow::Tensor> outputs;
+		Status status = m_Session->Run(inputs, { LOSS_OUTPUT_NAME }, {}, &outputs);
+		auto outputRes = outputs[0].scalar<float>();
+		accumulatedBatchLoss += outputRes();
+		++batchCounter;
+	}
+    // fitness->setValue(outputRes());
+	fitness->setValue(accumulatedBatchLoss / batchCounter);
     return fitness;
 
 }

@@ -5,9 +5,9 @@
 #include <tensorflow/core/public/session.h>
 #include <tensorflow/cc/ops/standard_ops.h>
 #include <tensorflow/core/framework/tensor.h>
-#include <tensorflow/contrib/cmake/build/tensorflow/cc/ops/io_ops.h>
-#include "DatasetLoader.h"
+
 #include "ModelExporter.h"
+#include <DatasetLoader/NumericDatasetLoader.h>
 
 using namespace tensorflow;
 
@@ -36,11 +36,11 @@ private:
 	GraphDef m_GraphDef;
 	Scope m_Scope = Scope::NewRootScope();
 	std::vector<VariableData> m_VariableData;
-    std::shared_ptr<Tensor> m_Inputs;
-    std::shared_ptr<Tensor> m_Outputs;
 
 	bool m_SaveModel = false;
 	std::string m_ModelExportPath;
+
+	DatasetLoader::DatasetLoaderP m_DatasetHandler;
 
 	// save graph definition and tensor values to disk
 	void saveDefinitionToFile() const;
