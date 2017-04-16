@@ -3,7 +3,7 @@
 
 #include "DatasetLoader.h"
 #include <boost/tokenizer.hpp>
-#include <fstream>
+#include <fstream> 
 
 namespace DatasetLoader {
 
@@ -16,29 +16,12 @@ namespace DatasetLoader {
 
 */
 
-class NumericDatasetLoader : public DatasetLoader
+class NumericDatasetLoader : public DatasetLoader<std::vector<float>, std::vector<float>>
 {
-	unsigned int m_NumInputs;
-	unsigned int m_NumOutputs;
-	/// containers for inputs and outputs
-	std::vector<float> m_Inputs;
-	std::vector<float> m_Outputs;
-	// number of examples per batch; if set to zero, defaults to whole dataset
-	unsigned int m_BatchSize;
-
-	// iterators used for creating batches
-	std::vector<float>::iterator m_InputBatchIterator;
-	std::vector<float>::iterator m_OutputBatchIterator;
-
 	void parseLine(const std::string& line, std::vector<float> &values) const;
-
-protected:
-	void shuffleDataset() override;
 
 public:
 	NumericDatasetLoader(const std::string datasetPath, const unsigned int batchSize = 0);
-	bool nextBatch(tensorflow::Tensor& inputs, tensorflow::Tensor& expectedOutputs) override;
-	void resetBatchIterator() override;
 };
 
 }	// namespace DatasetLoader

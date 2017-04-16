@@ -102,8 +102,8 @@ bool ModelEvalOp::initialize(StateP state)
 	m_ECFState = state;
 	try
 	{
+		// load parameterization and configuration data
 		ECF_LOG(state, 3, "Loading network configuration...");
-		// load parameterization data
 		std::string configFilePath = *(static_cast<std::string*> (state->getRegistry()->getEntry("configFilePath").get()));
 		m_SaveModel = *(static_cast<int*> (state->getRegistry()->getEntry("saveModel").get()));
 		m_ModelExportPath = *(static_cast<std::string*> (state->getRegistry()->getEntry("modelSavePath").get()));
@@ -113,19 +113,23 @@ bool ModelEvalOp::initialize(StateP state)
 		int numOutputs = configParser.NumOutputs();
 		std::string datasetPath = configParser.DatasetPath();
 		std::string lossFunctionName = configParser.LossFunctionName();
-		ECF_LOG(state, 3, "Loading dataset...");
-		m_DatasetHandler = DatasetLoader::DatasetLoaderP(new DatasetLoader::NumericDatasetLoader(datasetPath));
 		// TODO: refactor this so that inputs and output shape do not have to be matrices (they can be tensors)
 		int inputShape_[] = { 0, numInputs };
 		int outputShape_[] = { 0, numOutputs };
 		NetworkConfiguration::Shape inputShape(begin(inputShape_), end(inputShape_));
 		NetworkConfiguration::Shape outputShape(begin(outputShape_), end(outputShape_));
+
+		// load dataset
+		ECF_LOG(state, 3, "Loading dataset...");
+		m_DatasetHandler = DatasetLoader::IDatasetLoaderP(new DatasetLoader::NumericDatasetLoader(datasetPath));
+
+		// create network and 
 		ECF_LOG(state, 3, "Creating session...");
-		// create network
 		std::vector<NetworkConfiguration::LayerP> layers = createLayers(m_Scope, layerConfiguration, lossFunctionName, inputShape, outputShape);
 		// layers are only used for helping in creating graph definition - layers themselves are not used anywhere else later
 		// instead of layers, create instances of VariableData class which carry only required information - symbolic parameter names, their shapes and number of elements
 		m_VariableData = createVariableData(layers);
+
 		// create session
 		Status status;
 		SessionOptions options;
@@ -134,6 +138,7 @@ bool ModelEvalOp::initialize(StateP state)
 		status = m_Session->Create(m_GraphDef);
 		ECF_LOG(state, 5, "Graph definition data:");
 		ECF_LOG(state, 5, m_GraphDef.DebugString());
+
 		// override size for FloatingPoint genotype
 		size_t numParameters = totalNumberOfParameters();
 		state->getRegistry()->modifyEntry("FloatingPoint.dimension", (voidP) new uint(numParameters));
@@ -181,17 +186,16 @@ FitnessP ModelEvalOp::evaluate(IndividualP individual)
 	m_DatasetHandler->resetBatchIterator();
 	while (m_DatasetHandler->nextBatch(datasetInputs, datasetOutputs))
 	{
-		// inputs.push_back(std::make_pair(INPUTS_PLACEHOLDER_NAME, datasetInputs));
-		// inputs.push_back(std::make_pair(OUTPUTS_PLACEHOLDER_NAME, datasetOutputs));
+		// set placeholders to batch inputs and expected outputs
 		inputsPair->second = datasetInputs;
 		outputsPair->second = datasetOutputs;
+		// run session and fetch loss
 		std::vector<tensorflow::Tensor> outputs;
 		Status status = m_Session->Run(inputs, { LOSS_OUTPUT_NAME }, {}, &outputs);
 		auto outputRes = outputs[0].scalar<float>();
 		accumulatedBatchLoss += outputRes();
 		++batchCounter;
 	}
-    // fitness->setValue(outputRes());
 	fitness->setValue(accumulatedBatchLoss / batchCounter);
     return fitness;
 

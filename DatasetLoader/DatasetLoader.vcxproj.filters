@@ -21,6 +21,9 @@
     <ClInclude Include="NumericDatasetLoader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="IDatasetLoader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ImageDatasetLoader.cpp">

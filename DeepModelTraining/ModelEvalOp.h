@@ -40,7 +40,7 @@ private:
 	bool m_SaveModel = false;
 	std::string m_ModelExportPath;
 
-	DatasetLoader::DatasetLoaderP m_DatasetHandler;
+	DatasetLoader::IDatasetLoaderP m_DatasetHandler;
 
 	// save graph definition and tensor values to disk
 	void saveDefinitionToFile() const;
