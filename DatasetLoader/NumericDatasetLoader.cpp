@@ -13,7 +13,7 @@ void NumericDatasetLoader::parseLine(const std::string & line, std::vector<float
 }
 
 
-NumericDatasetLoader::NumericDatasetLoader(const std::string datasetPath, const unsigned int batchSize)
+NumericDatasetLoader::NumericDatasetLoader(const std::string datasetPath, const unsigned int batchSize) : DatasetLoader(batchSize)
 {
 	std::ifstream fileP(datasetPath);
 	if (!fileP.is_open())
@@ -39,12 +39,8 @@ NumericDatasetLoader::NumericDatasetLoader(const std::string datasetPath, const 
 	}
 	fileP.close();
 
-	// initialize iterators for batching
-	m_InputBatchIterator = m_Inputs.begin();
-	m_OutputBatchIterator = m_Outputs.begin();
-
-	// if batch size is set to zero, there is no splitting into batches
-	m_BatchSize = (batchSize > 0) ? batchSize : m_Inputs.size();
+	// always call this method at the end of the DatasetLoader derived class constructor
+	initializeBatchIterator();
 }
 
 }	// namespace DatasetLoader

@@ -19,7 +19,7 @@ protected:
 	NetworkConfiguration::Shape m_InputShape;
 	NetworkConfiguration::Shape m_OutputShape;
 
-	// number of examples per batch; if set to zero, defaults to whole dataset
+	// number of examples per batch; defaults to whole dataset
 	unsigned int m_BatchSize;
 
 	// containers for inputs and outputs
@@ -30,6 +30,21 @@ protected:
 	typename std::vector<T1>::iterator m_InputBatchIterator;
 	typename std::vector<T2>::iterator m_OutputBatchIterator;
 
+	// constructor is protected to avoid misuse
+	DatasetLoader(unsigned int batchSize=0)
+	{
+		// if zero (no batches), set to maximum value
+		m_BatchSize = (batchSize == 0) ? static_cast<unsigned int>(-1) : batchSize;
+	}
+
+	// always call this in constructor of derived class after you set inputs and outputs
+	void initializeBatchIterator()
+	{
+		// initialize iterators for batching
+		m_InputBatchIterator = m_Inputs.begin();
+		m_OutputBatchIterator = m_Outputs.begin();
+	}
+
 
 public:
 	void shuffleDataset() override
@@ -37,8 +52,8 @@ public:
 		std::srand(unsigned(std::time(0)));
 		// zip inputs and outputs together so they get shuffled in the same way
 		typedef boost::tuple<std::vector<T1>::iterator, std::vector<T2>::iterator> IteratorTuple;
-		typedef boost::zip_iterator<IteratorTuple> zipIterator;
-		std::random_shuffle(zipIterator(IteratorTuple(m_Inputs.begin(), m_Outputs.begin())), zipIterator(IteratorTuple(m_Inputs.end(), m_Outputs.end())));
+		typedef boost::zip_iterator<IteratorTuple> ZipIterator;
+		std::random_shuffle(ZipIterator(IteratorTuple(m_Inputs.begin(), m_Outputs.begin())), ZipIterator(IteratorTuple(m_Inputs.end(), m_Outputs.end())));
 	}
 
 	// returns false if it has iterated through the whole dataset
