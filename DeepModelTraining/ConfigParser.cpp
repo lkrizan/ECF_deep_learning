@@ -35,21 +35,23 @@ void ConfigParser::parseLine(const std::string line)
 			case eGeneral:
 			{
 				std::string errorMsg = "Parameters in general block require argument.\n";
-				if (*currIterator == "NumInputs")
+				if (*currIterator == "InputShape")
 				{
 					if (++currIterator != tokens.end())
 					{
-						m_NumInputs = std::stoi(*currIterator);
+						m_InputShape.resize(std::distance(currIterator, tokens.end()));
+						std::transform(currIterator, tokens.end(), m_InputShape.begin(), [](const std::string val) { return std::stof(val); });
 						inputsConfigured = true;
 					}
 					else
 						throw std::logic_error(errorMsg);
 				}
-				else if (*currIterator == "NumOutputs")
+				else if (*currIterator == "OutputShape")
 				{
 					if (++currIterator != tokens.end())
 					{
-						m_NumOutputs = std::stoi(*currIterator);
+						m_OutputShape.resize(std::distance(currIterator, tokens.end()));
+						std::transform(currIterator, tokens.end(), m_OutputShape.begin(), [](const std::string val) { return std::stof(val); });
 						outputsConfigured = true;
 					}
 					else
@@ -66,7 +68,7 @@ void ConfigParser::parseLine(const std::string line)
 						throw std::logic_error(errorMsg);
 				}
 				else
-					throw std::logic_error(*currIterator + " is not a registered parameter in General block in configuration file.\n");
+					throw std::logic_error(*currIterator + " is not a valid parameter in General block in configuration file.\n");
 				break;
 			}
 			case eLayers:

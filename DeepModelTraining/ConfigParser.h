@@ -8,8 +8,8 @@ class ConfigParser
 
 private:
 	std::vector<std::pair<std::string, std::vector<int>>> m_LayerConfiguration;
-	int m_NumInputs;
-	int m_NumOutputs;
+	std::vector<unsigned int> m_InputShape;
+	std::vector<unsigned int> m_OutputShape;
 	std::string m_DatasetPath;
 	std::string m_LossFunctionName;
 
@@ -29,8 +29,8 @@ private:
 public:
 	ConfigParser(const std::string pathToFile);
 	std::vector<std::pair<std::string, std::vector<int>>> LayerConfiguration() { return m_LayerConfiguration; }
-	int NumInputs() { return m_NumInputs; }
-	int NumOutputs() { return m_NumOutputs; }
+	const std::vector<unsigned int>& InputShape() { return m_InputShape; }
+	const std::vector<unsigned int>& OutputShape() { return m_OutputShape; }
 	std::string DatasetPath() { return m_DatasetPath; }
 	std::string LossFunctionName() { return m_LossFunctionName; }
 };

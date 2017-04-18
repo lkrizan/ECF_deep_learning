@@ -1,6 +1,6 @@
 [General]
-NumInputs 2
-NumOutputs 1
+InputShape 2
+OutputShape 1
 DatasetPath ./dataset/dataset.txt
 
 [Layers]

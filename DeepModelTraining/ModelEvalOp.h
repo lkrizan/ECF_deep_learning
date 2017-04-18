@@ -32,6 +32,8 @@ private:
 		VariableData(std::string variableName, NetworkConfiguration::Shape shape, int numberOfElements) : m_VariableName(variableName), m_BasicShape(shape), m_Shape(shape.asTensorShape()), m_NumberOfElements(numberOfElements) {}
 	};
 	StateP m_ECFState = nullptr;
+
+	bool m_SessionCreated = false;
     Session *m_Session;
 	GraphDef m_GraphDef;
 	Scope m_Scope = Scope::NewRootScope();

@@ -28,7 +28,8 @@ ModelEvalOp::~ModelEvalOp()
 			ECF_LOG_ERROR(m_ECFState, errMsg);
 		}
 	}
-	m_Session->Close();
+	if (m_SessionCreated)
+		m_Session->Close();
 }
 
 void ModelEvalOp::saveDefinitionToFile() const
@@ -109,15 +110,13 @@ bool ModelEvalOp::initialize(StateP state)
 		m_ModelExportPath = *(static_cast<std::string*> (state->getRegistry()->getEntry("modelSavePath").get()));
 		ConfigParser configParser(configFilePath);
 		std::vector<std::pair<std::string, std::vector<int>>> layerConfiguration = configParser.LayerConfiguration();
-		int numInputs = configParser.NumInputs();
-		int numOutputs = configParser.NumOutputs();
 		std::string datasetPath = configParser.DatasetPath();
 		std::string lossFunctionName = configParser.LossFunctionName();
-		// TODO: refactor this so that inputs and output shape do not have to be matrices (they can be tensors)
-		int inputShape_[] = { 0, numInputs };
-		int outputShape_[] = { 0, numOutputs };
-		NetworkConfiguration::Shape inputShape(begin(inputShape_), end(inputShape_));
-		NetworkConfiguration::Shape outputShape(begin(outputShape_), end(outputShape_));
+		// set input and output shapes (zero prefix means that number of examples is not defined, which is legal)
+		NetworkConfiguration::Shape inputShape({0});
+		inputShape.insert(inputShape.end(), configParser.InputShape().begin(), configParser.InputShape().end());
+		NetworkConfiguration::Shape outputShape({ 0 });
+		outputShape.insert(outputShape.end(), configParser.OutputShape().begin(), configParser.OutputShape().end());
 
 		// load dataset
 		ECF_LOG(state, 3, "Loading dataset...");
@@ -138,13 +137,13 @@ bool ModelEvalOp::initialize(StateP state)
 		status = m_Session->Create(m_GraphDef);
 		ECF_LOG(state, 5, "Graph definition data:");
 		ECF_LOG(state, 5, m_GraphDef.DebugString());
-
+		m_SessionCreated = status.ok();
 		// override size for FloatingPoint genotype
 		size_t numParameters = totalNumberOfParameters();
 		state->getRegistry()->modifyEntry("FloatingPoint.dimension", (voidP) new uint(numParameters));
 		// reinitialize population with updated size
 		state->getPopulation()->initialize(state);
-		return status.ok();
+		return m_SessionCreated;
 	}
 	catch (std::exception& e)
 	{

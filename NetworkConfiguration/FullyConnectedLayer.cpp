@@ -23,7 +23,7 @@ FullyConnectedLayer::FullyConnectedLayer(tensorflow::Scope &scope, const tensorf
 	else if (previousLayerOutputShape.back() != paramShape.back())
 	{
 		parameterizationFailure = true;
-		errorMessageStream << "Shapes [" << previousLayerOutputShape << "] and [" << paramShape << "] are not compatible for multiplication." << std::endl;
+		errorMessageStream << "Shapes [" << previousLayerOutputShape << "] and [" << paramShape << "] ^ T are not compatible for multiplication." << std::endl;
 	}
 	if (parameterizationFailure) 
 	{
