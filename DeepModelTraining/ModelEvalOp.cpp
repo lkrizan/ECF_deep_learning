@@ -123,7 +123,7 @@ bool ModelEvalOp::initialize(StateP state)
 		ECF_LOG(state, 3, "Loading dataset...");
 		m_DatasetHandler = DatasetLoader::IDatasetLoaderP(new DatasetLoader::NumericDatasetLoader(datasetPath));
 
-		// create network and 
+		// create network and session 
 		ECF_LOG(state, 3, "Creating session...");
 		std::vector<NetworkConfiguration::LayerP> layers = createLayers(m_Scope, layerConfiguration, lossFunctionName, inputShape, outputShape);
 		// layers are only used for helping in creating graph definition - layers themselves are not used anywhere else later

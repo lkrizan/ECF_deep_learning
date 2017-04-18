@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <ctime>
 #include <cstdlib>
+#include <boost/iterator/zip_iterator.hpp>
 
 namespace DatasetLoader {
 
@@ -34,11 +35,10 @@ public:
 	void shuffleDataset() override
 	{
 		std::srand(unsigned(std::time(0)));
-		int randg = std::rand();
-		// ensure that both inputs and expected outputs are shuffled the same way
-		auto randomMember = [&randg](const int i) { return randg % i; };
-		std::random_shuffle(m_Inputs.begin(), m_Inputs.end(), randomMember);
-		std::random_shuffle(m_Outputs.begin(), m_Outputs.end(), randomMember);
+		// zip inputs and outputs together so they get shuffled in the same way
+		typedef boost::tuple<std::vector<T1>::iterator, std::vector<T2>::iterator> IteratorTuple;
+		typedef boost::zip_iterator<IteratorTuple> zipIterator;
+		std::random_shuffle(zipIterator(IteratorTuple(m_Inputs.begin(), m_Outputs.begin())), zipIterator(IteratorTuple(m_Inputs.end(), m_Outputs.end())));
 	}
 
 	// returns false if it has iterated through the whole dataset
