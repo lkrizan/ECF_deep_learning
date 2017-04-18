@@ -10,7 +10,7 @@ namespace DatasetLoader {
 class IDatasetLoader
 {
 public:
-	virtual ~IDatasetLoader() {};
+	virtual ~IDatasetLoader() = default;
 	virtual void shuffleDataset() = 0;
 	// returns false if it has iterated through the whole dataset
 	virtual bool nextBatch(tensorflow::Tensor& inputs, tensorflow::Tensor& expectedOutputs) = 0;

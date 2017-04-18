@@ -8,6 +8,7 @@ namespace NetworkConfiguration {
 class NonParameterizedLayer : public Layer
 {
 public:
+	virtual ~NonParameterizedLayer() = default;
 	bool hasParams() const override { return false; };
 };
 

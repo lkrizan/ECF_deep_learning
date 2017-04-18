@@ -13,7 +13,7 @@ public:
 	virtual const tensorflow::Output& forward() const = 0;
 	virtual Shape outputShape() const = 0;
 	virtual bool hasParams() const = 0;
-	virtual ~Layer() {}
+	virtual ~Layer() = default;
 };
 
 typedef std::shared_ptr<Layer> LayerP;

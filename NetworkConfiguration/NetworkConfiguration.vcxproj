@@ -16,11 +16,13 @@
     <ClInclude Include="ParameterizedLayer.h" />
     <ClInclude Include="Shape.h" />
     <ClInclude Include="SigmoidActivation.h" />
+    <ClInclude Include="SoftmaxActivation.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FullyConnectedLayer.cpp" />
     <ClCompile Include="MeanSquaredLossFunction.cpp" />
     <ClCompile Include="SigmoidActivation.cpp" />
+    <ClCompile Include="SoftmaxActivation.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{4E3DD63B-B30F-421C-98C0-53F88873BA7C}</ProjectGuid>
