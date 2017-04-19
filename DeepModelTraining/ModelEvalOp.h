@@ -33,8 +33,10 @@ private:
 	};
 	StateP m_ECFState = nullptr;
 
+  // TODO: replace this with unique_ptr
 	bool m_SessionCreated = false;
-    Session *m_Session;
+  Session *m_Session;
+
 	GraphDef m_GraphDef;
 	Scope m_Scope = Scope::NewRootScope();
 	std::vector<VariableData> m_VariableData;

@@ -20,6 +20,7 @@ NumericDatasetLoader::NumericDatasetLoader(const std::string datasetPath, const 
 		throw std::logic_error("Failed to open dataset file " + datasetPath);
 
 	std::string line;
+  std::vector<std::vector<float>> inputs, expectedOutputs;
 	std::vector<float> values;
 	// read first line with number of inputs and outputs
 	if (getline(fileP, line))
@@ -34,13 +35,14 @@ NumericDatasetLoader::NumericDatasetLoader(const std::string datasetPath, const 
 	while (getline(fileP, line))
 	{
 		parseLine(line, values);
-		m_Inputs.insert(m_Inputs.end(), std::vector<float>(values.begin(), values.begin() + m_InputShape.front()));
-		m_Outputs.insert(m_Outputs.end(), std::vector<float>(values.begin() + m_InputShape.front(), values.end()));
+		inputs.push_back(std::vector<float>(values.begin(), values.begin() + m_InputShape.front()));
+		expectedOutputs.push_back(std::vector<float>(values.begin() + m_InputShape.front(), values.end()));
 	}
 	fileP.close();
 
-	// always call this method at the end of the DatasetLoader derived class constructor
-	initializeBatchIterator();
+	// set inputs and outputs
+  setInputs(inputs.begin(), inputs.end());
+  setOutputs(expectedOutputs.begin(), expectedOutputs.end());
 }
 
 }	// namespace DatasetLoader

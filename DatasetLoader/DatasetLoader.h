@@ -14,6 +14,15 @@ namespace DatasetLoader {
 template <typename T1, typename T2>
 class DatasetLoader : public IDatasetLoader
 {
+private:
+  // containers for inputs and outputs
+  std::vector<T1> m_Inputs;
+  std::vector<T2> m_Outputs;
+
+  // iterators used for creating batches
+  typename std::vector<T1>::iterator m_InputBatchIterator;
+  typename std::vector<T2>::iterator m_OutputBatchIterator;
+
 
 protected:
 	NetworkConfiguration::Shape m_InputShape;
@@ -22,14 +31,6 @@ protected:
 	// number of examples per batch; defaults to whole dataset
 	unsigned int m_BatchSize;
 
-	// containers for inputs and outputs
-	std::vector<T1> m_Inputs;
-	std::vector<T2> m_Outputs;
-
-	// iterators used for creating batches
-	typename std::vector<T1>::iterator m_InputBatchIterator;
-	typename std::vector<T2>::iterator m_OutputBatchIterator;
-
 	// constructor is protected to avoid misuse
 	DatasetLoader(unsigned int batchSize=0)
 	{
@@ -37,13 +38,25 @@ protected:
 		m_BatchSize = (batchSize == 0) ? static_cast<unsigned int>(-1) : batchSize;
 	}
 
-	// always call this in constructor of derived class after you set inputs and outputs
-	void initializeBatchIterator()
+	/// setting inputs and expected outputs should also set batching iterators
+  template<typename InputIterator>
+	void setInputs(InputIterator first, InputIterator last)
 	{
-		// initialize iterators for batching
-		m_InputBatchIterator = m_Inputs.begin();
-		m_OutputBatchIterator = m_Outputs.begin();
+    m_Inputs.clear(); 
+    m_Inputs.reserve(std::distance(first, last));
+    m_Inputs.insert(m_Inputs.end(), first, last);
+    // set iterator for batching
+    m_InputBatchIterator = m_Inputs.begin();
 	}
+
+  template<typename InputIterator>
+  void setOutputs(InputIterator first, InputIterator last)
+  {
+    m_Outputs.clear();
+    m_Outputs.reserve(std::distance(first, last));
+    // set iterator for batching
+    m_Outputs.insert(m_Outputs.end(), first, last);
+  }
 
 
 public:
