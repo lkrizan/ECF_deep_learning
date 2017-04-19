@@ -14,12 +14,13 @@ using namespace tensorflow;
 class ModelEvalOp: public EvaluateOp
 {
 public:
+  ModelEvalOp() : m_pSession(NewSession({})) {}
   ~ModelEvalOp();
-    FitnessP evaluate(IndividualP individual);
-    void registerParameters(StateP);
-    bool initialize(StateP);
-    template <class T, class InputIterator>
-    static void setTensor(Tensor &tensor, InputIterator first, InputIterator last);
+  FitnessP evaluate(IndividualP individual);
+  void registerParameters(StateP);
+  bool initialize(StateP);
+  template <class T, class InputIterator>
+  static void setTensor(Tensor &tensor, InputIterator first, InputIterator last);
 
 private:
 
@@ -33,9 +34,7 @@ private:
   };
   StateP m_ECFState = nullptr;
 
-  // TODO: replace this with unique_ptr
-  bool m_SessionCreated = false;
-  Session *m_Session;
+  std::unique_ptr<Session> m_pSession;
 
   GraphDef m_GraphDef;
   Scope m_Scope = Scope::NewRootScope();

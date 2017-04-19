@@ -28,8 +28,8 @@ ModelEvalOp::~ModelEvalOp()
       ECF_LOG_ERROR(m_ECFState, errMsg);
     }
   }
-  if (m_SessionCreated)
-    m_Session->Close();
+
+  m_pSession->Close();
 }
 
 void ModelEvalOp::saveDefinitionToFile() const
@@ -131,19 +131,16 @@ bool ModelEvalOp::initialize(StateP state)
 
     // create session
     Status status;
-    SessionOptions options;
-    NewSession(options, &m_Session);
     TF_CHECK_OK(m_Scope.ToGraphDef(&m_GraphDef));
-    status = m_Session->Create(m_GraphDef);
+    status = m_pSession->Create(m_GraphDef);
     ECF_LOG(state, 5, "Graph definition data:");
     ECF_LOG(state, 5, m_GraphDef.DebugString());
-    m_SessionCreated = status.ok();
     // override size for FloatingPoint genotype
     size_t numParameters = totalNumberOfParameters();
     state->getRegistry()->modifyEntry("FloatingPoint.dimension", (voidP) new uint(numParameters));
     // reinitialize population with updated size
     state->getPopulation()->initialize(state);
-    return m_SessionCreated;
+    return status.ok();
   }
   catch (std::exception& e)
   {
@@ -190,7 +187,7 @@ FitnessP ModelEvalOp::evaluate(IndividualP individual)
     outputsPair->second = datasetOutputs;
     // run session and fetch loss
     std::vector<tensorflow::Tensor> outputs;
-    Status status = m_Session->Run(inputs, { LOSS_OUTPUT_NAME }, {}, &outputs);
+    Status status = m_pSession->Run(inputs, { LOSS_OUTPUT_NAME }, {}, &outputs);
     auto outputRes = outputs[0].scalar<float>();
     accumulatedBatchLoss += outputRes();
     ++batchCounter;
