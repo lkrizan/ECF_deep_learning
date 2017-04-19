@@ -14,7 +14,7 @@ using namespace tensorflow;
 class ModelEvalOp: public EvaluateOp
 {
 public:
-	~ModelEvalOp();
+  ~ModelEvalOp();
     FitnessP evaluate(IndividualP individual);
     void registerParameters(StateP);
     bool initialize(StateP);
@@ -23,39 +23,39 @@ public:
 
 private:
 
-	struct VariableData
-	{
-		NetworkConfiguration::Shape m_BasicShape;
-		std::string m_VariableName;
-		TensorShape m_Shape;
-		int m_NumberOfElements;
-		VariableData(std::string variableName, NetworkConfiguration::Shape shape, int numberOfElements) : m_VariableName(variableName), m_BasicShape(shape), m_Shape(shape.asTensorShape()), m_NumberOfElements(numberOfElements) {}
-	};
-	StateP m_ECFState = nullptr;
+  struct VariableData
+  {
+    NetworkConfiguration::Shape m_BasicShape;
+    std::string m_VariableName;
+    TensorShape m_Shape;
+    int m_NumberOfElements;
+    VariableData(std::string variableName, NetworkConfiguration::Shape shape, int numberOfElements) : m_VariableName(variableName), m_BasicShape(shape), m_Shape(shape.asTensorShape()), m_NumberOfElements(numberOfElements) {}
+  };
+  StateP m_ECFState = nullptr;
 
   // TODO: replace this with unique_ptr
-	bool m_SessionCreated = false;
+  bool m_SessionCreated = false;
   Session *m_Session;
 
-	GraphDef m_GraphDef;
-	Scope m_Scope = Scope::NewRootScope();
-	std::vector<VariableData> m_VariableData;
+  GraphDef m_GraphDef;
+  Scope m_Scope = Scope::NewRootScope();
+  std::vector<VariableData> m_VariableData;
 
-	bool m_SaveModel = false;
-	std::string m_ModelExportPath;
+  bool m_SaveModel = false;
+  std::string m_ModelExportPath;
 
-	DatasetLoader::IDatasetLoaderP m_DatasetHandler;
+  DatasetLoader::IDatasetLoaderP m_DatasetHandler;
 
-	// save graph definition and tensor values to disk
-	void saveDefinitionToFile() const;
-	// helper function for filling tensors with values from genotype
-	std::vector<std::pair<string, tensorflow::Tensor>> createTensorsFromGenotype(const IndividualP individual) const;
-	// helper function for creating graph definition
-	std::vector<NetworkConfiguration::LayerP> createLayers(Scope &root, const std::vector<std::pair<std::string, std::vector<int>>> & networkConfiguration, const std::string lossFunctionName, const NetworkConfiguration::Shape & inputShape, const NetworkConfiguration::Shape & outputShape) const;
-	// helper function for creating variable data
-	std::vector<VariableData> createVariableData(const std::vector<NetworkConfiguration::LayerP> &layers) const;
-	// helper function which calculates total number of parameters from network configuration - used for overriding size of FloatingPoint genotype
-	size_t totalNumberOfParameters() const;
+  // save graph definition and tensor values to disk
+  void saveDefinitionToFile() const;
+  // helper function for filling tensors with values from genotype
+  std::vector<std::pair<string, tensorflow::Tensor>> createTensorsFromGenotype(const IndividualP individual) const;
+  // helper function for creating graph definition
+  std::vector<NetworkConfiguration::LayerP> createLayers(Scope &root, const std::vector<std::pair<std::string, std::vector<int>>> & networkConfiguration, const std::string lossFunctionName, const NetworkConfiguration::Shape & inputShape, const NetworkConfiguration::Shape & outputShape) const;
+  // helper function for creating variable data
+  std::vector<VariableData> createVariableData(const std::vector<NetworkConfiguration::LayerP> &layers) const;
+  // helper function which calculates total number of parameters from network configuration - used for overriding size of FloatingPoint genotype
+  size_t totalNumberOfParameters() const;
 };
 
 typedef boost::shared_ptr<ModelEvalOp> ModelEvalOpP;

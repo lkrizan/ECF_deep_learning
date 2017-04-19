@@ -10,10 +10,10 @@ namespace NetworkConfiguration {
 class Layer
 {
 public:
-	virtual const tensorflow::Output& forward() const = 0;
-	virtual Shape outputShape() const = 0;
-	virtual bool hasParams() const = 0;
-	virtual ~Layer() = default;
+  virtual const tensorflow::Output& forward() const = 0;
+  virtual Shape outputShape() const = 0;
+  virtual bool hasParams() const = 0;
+  virtual ~Layer() = default;
 };
 
 typedef std::shared_ptr<Layer> LayerP;

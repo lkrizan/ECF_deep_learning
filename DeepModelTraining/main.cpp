@@ -4,12 +4,12 @@
 
 int main(int argc, char **argv)
 {
-	StateP state(new State);
-	// set the evaluation operator
-	ModelEvalOp evalOp;
-	state->setEvalOp(&evalOp);
+  StateP state(new State);
+  // set the evaluation operator
+  ModelEvalOp evalOp;
+  state->setEvalOp(&evalOp);
 
-	state->initialize(argc, argv);
-	state->run();
+  state->initialize(argc, argv);
+  state->run();
     return 0;
 }

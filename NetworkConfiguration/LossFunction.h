@@ -10,9 +10,9 @@ namespace NetworkConfiguration {
 class LossFunction
 {
 public:
-	virtual const tensorflow::Output& getLossOutput() const = 0;
-	virtual Shape outputShape() const = 0;
-	virtual ~LossFunction() = default;
+  virtual const tensorflow::Output& getLossOutput() const = 0;
+  virtual Shape outputShape() const = 0;
+  virtual ~LossFunction() = default;
 
 };	
 
