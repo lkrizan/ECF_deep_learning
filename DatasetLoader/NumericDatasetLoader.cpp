@@ -27,15 +27,15 @@ NumericDatasetLoader::NumericDatasetLoader(const std::string datasetPath, const 
     parseLine(line, values);
     if (values.size() != 2)
       throw std::logic_error("First line of dataset file should contain number of inputs and outputs.");
-    m_InputShape = NetworkConfiguration::Shape({ static_cast<unsigned int>(values[0]) });
-    m_OutputShape = NetworkConfiguration::Shape({ static_cast<unsigned int>(values[1]) });
+    m_LearningExampleShape = NetworkConfiguration::Shape({ static_cast<unsigned int>(values[0]) });
+    m_LabelShape = NetworkConfiguration::Shape({ static_cast<unsigned int>(values[1]) });
   }
   // read all other values
   while (getline(fileP, line))
   {
     parseLine(line, values);
-    addLearningExample(values.begin(), values.begin() + m_InputShape.front());
-    addLabel(values.begin() + m_InputShape.front(), values.end());
+    addLearningExample(values.begin(), values.begin() + m_LearningExampleShape.front());
+    addLabel(values.begin() + m_LearningExampleShape.front(), values.end());
   }
   fileP.close();
 

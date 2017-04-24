@@ -10,6 +10,15 @@
 
 namespace DatasetLoader {
 
+template<typename T>
+std::vector<T> oneHotEncode(size_t classIndex, size_t numClasses)
+{
+  // constructor initializes values to zeros
+  std::vector<T> values(numClasses);
+  values.at(classIndex) = 1;
+  return values;
+}
+
 // dataset loader implementation
 template <typename InputDataType, typename LabelDataType>
 class DatasetLoader : public IDatasetLoader
@@ -29,17 +38,19 @@ private:
   bool m_IteratorsInitialized = false;
 
 protected:
-  NetworkConfiguration::Shape m_InputShape;
-  NetworkConfiguration::Shape m_OutputShape;
+  NetworkConfiguration::Shape m_LearningExampleShape;
+  NetworkConfiguration::Shape m_LabelShape;
 
   // number of examples per batch; defaults to whole dataset
   unsigned int m_BatchSize;
 
   // constructor is protected to avoid misuse - this class should not be used without inheritance
-  DatasetLoader(unsigned int batchSize=0)
+  DatasetLoader(unsigned int batchSize)
   {
     // if zero (no batches), set to maximum value
     m_BatchSize = (batchSize == 0) ? static_cast<unsigned int>(-1) : batchSize;
+    // for dataset shuffling
+    std::srand(unsigned(std::time(0)));
   }
 
   template<typename InputIterator>
@@ -56,11 +67,30 @@ protected:
     m_IteratorsInitialized = false;
   }
 
+  // reserve space if number of training examples is known a priori 
+  void reserveSpace(const unsigned int numExamples)
+  {
+    m_Inputs.reserve(numExamples);
+    m_Outputs.reserve(numExamples);
+    m_IteratorsInitialized = false;
+  }
+
+  void reserveInputSpace(const unsigned int numExamples)
+  {
+    m_Inputs.reserve(numExamples);
+    m_IteratorsInitialized = false;
+  }
+
+  void reserveLabelSpace(const unsigned int numExamples)
+  {
+    m_Outputs.reserve(numExamples);
+    m_IteratorsInitialized = false;
+  }
+
 
 public:
   void shuffleDataset() override
   {
-    std::srand(unsigned(std::time(0)));
     // zip inputs and outputs together so they get shuffled in the same way
     typedef boost::tuple<std::vector<std::vector<T1>>::iterator, std::vector<std::vector<T2>>::iterator> IteratorTuple;
     typedef boost::zip_iterator<IteratorTuple> ZipIterator;
@@ -81,9 +111,9 @@ public:
 
     // create new tensors
     NetworkConfiguration::Shape inputBatchShape { numExamples };
-    inputBatchShape.insert(inputBatchShape.end(), m_InputShape.begin(), m_InputShape.end());
+    inputBatchShape.insert(inputBatchShape.end(), m_LearningExampleShape.begin(), m_LearningExampleShape.end());
     NetworkConfiguration::Shape outputBatchShape { numExamples };
-    outputBatchShape.insert(outputBatchShape.end(), m_OutputShape.begin(), m_OutputShape.end());
+    outputBatchShape.insert(outputBatchShape.end(), m_LabelShape.begin(), m_LabelShape.end());
     inputs = tensorflow::Tensor(tensorflow::DT_FLOAT, inputBatchShape.asTensorShape());
     expectedOutputs = tensorflow::Tensor(tensorflow::DT_FLOAT, outputBatchShape.asTensorShape());
 

@@ -1,5 +1,6 @@
 #include "ModelEvalOp.h"
 #include "ConfigParser.h"
+//#include <DatasetLoader/MNISTDatasetLoader.h>
 
 #define INPUTS_PLACEHOLDER_NAME "inputs"
 #define OUTPUTS_PLACEHOLDER_NAME "outputs"
@@ -119,6 +120,7 @@ bool ModelEvalOp::initialize(StateP state)
     // load dataset
     ECF_LOG(state, 3, "Loading dataset...");
     m_DatasetHandler = DatasetLoader::IDatasetLoaderP(new DatasetLoader::NumericDatasetLoader(datasetPath));
+    //m_DatasetHandler = DatasetLoader::IDatasetLoaderP(new DatasetLoader::MNISTDatasetLoader("C:/Users/Luka/Documents/FER/MNIST/train-images.idx3-ubyte", "C:/Users/Luka/Documents/FER/MNIST/train-labels.idx1-ubyte"));
 
     // create network and session 
     ECF_LOG(state, 3, "Creating session...");

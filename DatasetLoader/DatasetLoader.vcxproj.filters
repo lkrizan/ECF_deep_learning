@@ -24,9 +24,15 @@
     <ClInclude Include="IDatasetLoader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="MNISTDatasetLoader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="NumericDatasetLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MNISTDatasetLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
