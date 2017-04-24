@@ -16,7 +16,7 @@ namespace DatasetLoader {
 
 */
 
-class NumericDatasetLoader : public DatasetLoader<std::vector<float>, std::vector<float>>
+class NumericDatasetLoader : public DatasetLoader<float,float>
 {
   void parseLine(const std::string& line, std::vector<float> &values) const;
 

@@ -10,19 +10,23 @@
 
 namespace DatasetLoader {
 
-// dataset loader implementation - template typenames are types of container used for inputs and outputs - they must have begin and end methods implemented
-template <typename T1, typename T2>
+// dataset loader implementation
+template <typename InputDataType, typename LabelDataType>
 class DatasetLoader : public IDatasetLoader
 {
+  typedef InputDataType T1;
+  typedef LabelDataType T2;
+
 private:
-  // containers for inputs and outputs
-  std::vector<T1> m_Inputs;
-  std::vector<T2> m_Outputs;
+  // containers for inputs and outputs - every example and their according label set are vectors
+  std::vector<std::vector<T1>> m_Inputs;
+  std::vector<std::vector<T2>> m_Outputs;
 
   // iterators used for creating batches
-  typename std::vector<T1>::iterator m_InputBatchIterator;
-  typename std::vector<T2>::iterator m_OutputBatchIterator;
+  typename std::vector<std::vector<T1>>::iterator m_InputBatchIterator;
+  typename std::vector<std::vector<T2>>::iterator m_OutputBatchIterator;
 
+  bool m_IteratorsInitialized = false;
 
 protected:
   NetworkConfiguration::Shape m_InputShape;
@@ -31,31 +35,25 @@ protected:
   // number of examples per batch; defaults to whole dataset
   unsigned int m_BatchSize;
 
-  // constructor is protected to avoid misuse
+  // constructor is protected to avoid misuse - this class should not be used without inheritance
   DatasetLoader(unsigned int batchSize=0)
   {
     // if zero (no batches), set to maximum value
     m_BatchSize = (batchSize == 0) ? static_cast<unsigned int>(-1) : batchSize;
   }
 
-  /// setting inputs and expected outputs should also set batching iterators
   template<typename InputIterator>
-  void setInputs(InputIterator first, InputIterator last)
-  {
-    m_Inputs.clear(); 
-    m_Inputs.reserve(std::distance(first, last));
-    m_Inputs.insert(m_Inputs.end(), first, last);
-    // set iterator for batching
-    m_InputBatchIterator = m_Inputs.begin();
+  void addLearningExample(InputIterator first, InputIterator last)
+  { 
+    m_Inputs.push_back(std::vector<T1>(first, last));
+    m_IteratorsInitialized = false;
   }
 
   template<typename InputIterator>
-  void setOutputs(InputIterator first, InputIterator last)
+  void addLabel(InputIterator first, InputIterator last)
   {
-    m_Outputs.clear();
-    m_Outputs.reserve(std::distance(first, last));
-    // set iterator for batching
-    m_Outputs.insert(m_Outputs.end(), first, last);
+    m_Outputs.push_back(std::vector<T2>(first, last));
+    m_IteratorsInitialized = false;
   }
 
 
@@ -64,7 +62,7 @@ public:
   {
     std::srand(unsigned(std::time(0)));
     // zip inputs and outputs together so they get shuffled in the same way
-    typedef boost::tuple<std::vector<T1>::iterator, std::vector<T2>::iterator> IteratorTuple;
+    typedef boost::tuple<std::vector<std::vector<T1>>::iterator, std::vector<std::vector<T2>>::iterator> IteratorTuple;
     typedef boost::zip_iterator<IteratorTuple> ZipIterator;
     std::random_shuffle(ZipIterator(IteratorTuple(m_Inputs.begin(), m_Outputs.begin())), ZipIterator(IteratorTuple(m_Inputs.end(), m_Outputs.end())));
   }
@@ -72,8 +70,8 @@ public:
   // returns false if it has iterated through the whole dataset
   bool nextBatch(tensorflow::Tensor& inputs, tensorflow::Tensor& expectedOutputs) override
   {
-    // check if whole dataset has been used
-    if (m_InputBatchIterator == m_Inputs.end() || m_OutputBatchIterator == m_Outputs.end())
+    // check if dataset can be used (iterators initialized and whole dataset has not been iterated through
+    if (!readyForUse())
       return false;
 
     auto nextInputBatchIterator = (std::distance(m_InputBatchIterator, m_Inputs.end()) > m_BatchSize) ? m_InputBatchIterator + m_BatchSize : m_Inputs.end();
@@ -92,8 +90,8 @@ public:
     // fill tensors with values
     auto inputsTensorIterator = inputs.flat<float>().data();
     auto outputsTensorIterator = expectedOutputs.flat<float>().data();
-    std::for_each(m_InputBatchIterator, nextInputBatchIterator, [&inputsTensorIterator](const T1& example) {inputsTensorIterator = std::copy(example.begin(), example.end(), inputsTensorIterator);});
-    std::for_each(m_OutputBatchIterator, nextOutputBatchIterator, [&outputsTensorIterator](const T2& exampleOutput) {outputsTensorIterator = std::copy(exampleOutput.begin(), exampleOutput.end(), outputsTensorIterator);});
+    std::for_each(m_InputBatchIterator, nextInputBatchIterator, [&inputsTensorIterator](const std::vector<T1>& example) {inputsTensorIterator = std::copy(example.begin(), example.end(), inputsTensorIterator);});
+    std::for_each(m_OutputBatchIterator, nextOutputBatchIterator, [&outputsTensorIterator](const std::vector<T2>& exampleOutput) {outputsTensorIterator = std::copy(exampleOutput.begin(), exampleOutput.end(), outputsTensorIterator);});
 
     m_InputBatchIterator = nextInputBatchIterator;
     m_OutputBatchIterator = nextOutputBatchIterator;
@@ -101,11 +99,18 @@ public:
     return true;
   }
 
-  // resets dataset iterator so batching starts from the beginning
+  // resets dataset iterator so batching starts from the beginning - always call before exiting constructor of the derived class
   void resetBatchIterator() override
   {
+    m_IteratorsInitialized = true;
     m_InputBatchIterator = m_Inputs.begin();
     m_OutputBatchIterator = m_Outputs.begin();
+  }
+
+  // returns true if iterators are initialized and they are not pointing at the end of the containers
+  bool readyForUse() const override
+  {
+    return m_IteratorsInitialized && m_InputBatchIterator != m_Inputs.end() && m_OutputBatchIterator != m_Outputs.end();
   }
 };
 

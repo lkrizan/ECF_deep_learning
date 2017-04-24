@@ -16,6 +16,8 @@ public:
   virtual bool nextBatch(tensorflow::Tensor& inputs, tensorflow::Tensor& expectedOutputs) = 0;
   // resets dataset iterator so batching starts from the beginning
   virtual void resetBatchIterator() = 0;
+  // check loader status (iterators initialized, etc.)
+  virtual bool readyForUse() const = 0;
 };
 
 typedef std::shared_ptr<IDatasetLoader> IDatasetLoaderP;

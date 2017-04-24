@@ -48,9 +48,7 @@ template<class T, class InputIterator>
 void ModelEvalOp::setTensor(Tensor &tensor, InputIterator first, InputIterator last)
 {
     auto tensorMap = tensor.flat<T>();
-    int currentIdx = 0;
-    for (auto it = first; it != last; it++)
-        tensorMap(currentIdx++) = static_cast<T>(*it);
+    std::copy(first, last, tensorMap.data());
 }
 
 
@@ -170,7 +168,7 @@ std::vector<std::pair<string, tensorflow::Tensor>> ModelEvalOp::createTensorsFro
 
 FitnessP ModelEvalOp::evaluate(IndividualP individual)
 {
-    FitnessP fitness (new FitnessMin);
+  FitnessP fitness (new FitnessMin);
   std::vector<std::pair<string, tensorflow::Tensor>> inputs = createTensorsFromGenotype(individual);
   unsigned int batchCounter = 0;
   float accumulatedBatchLoss = 0;
@@ -193,6 +191,6 @@ FitnessP ModelEvalOp::evaluate(IndividualP individual)
     ++batchCounter;
   }
   fitness->setValue(accumulatedBatchLoss / batchCounter);
-    return fitness;
+  return fitness;
 
 }

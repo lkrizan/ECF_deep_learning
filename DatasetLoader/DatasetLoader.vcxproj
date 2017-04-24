@@ -117,7 +117,6 @@
     <ClInclude Include="NumericDatasetLoader.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ImageDatasetLoader.cpp" />
     <ClCompile Include="NumericDatasetLoader.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
