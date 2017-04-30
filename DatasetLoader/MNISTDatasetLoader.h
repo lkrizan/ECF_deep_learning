@@ -14,6 +14,7 @@ class MNISTDatasetLoader : public DatasetLoader<unsigned char, unsigned char>
 
 public:
   MNISTDatasetLoader(std::string imageFilePath, std::string labelFilePath, unsigned int batchSize=0);
+  MNISTDatasetLoader(const DatasetLoaderBaseParams & params) : MNISTDatasetLoader(params.inputFiles_.at(0), params.labelFiles_.at(0), params.batchSize_) {};
 };
 
 }

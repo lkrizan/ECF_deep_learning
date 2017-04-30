@@ -62,7 +62,7 @@
       <SubSystem>Console</SubSystem>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <ForceFileOutput>MultiplyDefinedSymbolOnly</ForceFileOutput>
-      <AdditionalOptions>/WHOLEARCHIVE:tf_core_direct_session.lib  /WHOLEARCHIVE:tf_core_cpu.lib /WHOLEARCHIVE:tf_core_lib.lib /WHOLEARCHIVE:tf_core_kernels.lib  /WHOLEARCHIVE:tf_stream_executor.lib  /WHOLEARCHIVE:tf_core_ops.lib /ignore:4049  /WHOLEARCHIVE:NetworkConfiguration.lib %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/WHOLEARCHIVE:tf_core_direct_session.lib  /WHOLEARCHIVE:tf_core_cpu.lib /WHOLEARCHIVE:tf_core_lib.lib /WHOLEARCHIVE:tf_core_kernels.lib  /WHOLEARCHIVE:tf_stream_executor.lib  /WHOLEARCHIVE:tf_core_ops.lib /ignore:4049  /WHOLEARCHIVE:NetworkConfiguration.lib  /WHOLEARCHIVE:DatasetLoader.lib %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <ProjectReference>
       <LinkLibraryDependencies>false</LinkLibraryDependencies>

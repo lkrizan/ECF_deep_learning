@@ -1,7 +1,10 @@
-[General]
+[Dataset]
+loader NumericDatasetLoader
+# loader MNISTDatasetLoader
 InputShape 2
 OutputShape 1
-DatasetPath ./dataset/dataset.txt
+inputFiles ./dataset/dataset.txt
+batchSize 0
 
 [Layers]
 FullyConnectedLayer 10 2

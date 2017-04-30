@@ -22,6 +22,7 @@ class NumericDatasetLoader : public DatasetLoader<float,float>
 
 public:
   NumericDatasetLoader(const std::string datasetPath, const unsigned int batchSize = 0);
+  NumericDatasetLoader(DatasetLoaderBaseParams params) : NumericDatasetLoader(params.inputFiles_.at(0), params.batchSize_) {};
 };
 
 }	// namespace DatasetLoader

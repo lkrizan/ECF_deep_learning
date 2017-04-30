@@ -30,21 +30,20 @@ bool MNISTDatasetLoader::readImageFile(std::string imageFilePath)
   m_LearningExampleShape = NetworkConfiguration::Shape({ numRows, numCols, 1 });
 
   // read actual images
+  // allocate reading memory block (size of one learning example)
+  unsigned int blockSize = numRows * numCols;
+  unsigned char * memblock = new unsigned char[blockSize];
   for (unsigned int i = 0; i < numImages; ++i)
   {
     std::vector<unsigned char> values;
-    values.reserve(numRows * numCols);
-    for (unsigned int j = 0; j < numCols * numRows; ++j)
-    {
-      unsigned char tmp;
-      file.read((char*)&tmp, sizeof(tmp));
-      values.push_back(tmp);
-    }
+    values.reserve(blockSize);
+    file.read((char*) memblock, blockSize);
     // set read values
-    addLearningExample(values.begin(), values.end());
+    addLearningExample(memblock, memblock + blockSize);
   }
-
   // all done
+  delete[] memblock;
+  file.close();
   return true;
 
 }
@@ -80,6 +79,7 @@ bool MNISTDatasetLoader::readLabelFile(std::string labelFilePath)
   }
 
   // all done
+  file.close();
   return true;
 
 
@@ -93,4 +93,12 @@ MNISTDatasetLoader::MNISTDatasetLoader(std::string imageFilePath, std::string la
     throw std::logic_error("Failed while opening label file.");
 }
 
+} // namespace DatasetLoader
+
+
+// register class in factory
+namespace {
+  using namespace DatasetLoader;
+  DatasetLoaderCreator ctor = [](DatasetLoaderBaseParams & params) {return new MNISTDatasetLoader(params);};
+  bool dummy = DatasetLoaderFactory::instance().registerClass("MNISTDatasetLoader", ctor);
 }

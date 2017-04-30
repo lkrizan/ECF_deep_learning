@@ -10,7 +10,10 @@ private:
   std::vector<std::pair<std::string, std::vector<int>>> m_LayerConfiguration;
   std::vector<unsigned int> m_InputShape;
   std::vector<unsigned int> m_OutputShape;
-  std::string m_DatasetPath;
+  std::vector<std::string> m_InputFiles;
+  std::vector<std::string> m_LabelFiles;
+  unsigned int m_BatchSize = 0;
+  std::string m_DatasetLoaderType;
   std::string m_LossFunctionName;
 
   // used for checking if all required parameters are configured
@@ -19,8 +22,9 @@ private:
   bool datasetPathConfigured = false;
   bool layerConfigurationConfigured = false;
   bool lossFunctionConfigured = false;
+  bool datasetLoaderTypeConfigured = false;
 
-  enum State {eStart, eGeneral, eLayers, eLoss, eLossFinished};
+  enum State {eStart, eDataset, eLayers, eLoss, eLossFinished};
   State m_State = eStart;
 
   void parseLine(const std::string line);
@@ -31,6 +35,9 @@ public:
   std::vector<std::pair<std::string, std::vector<int>>> LayerConfiguration() { return m_LayerConfiguration; }
   const std::vector<unsigned int>& InputShape() { return m_InputShape; }
   const std::vector<unsigned int>& OutputShape() { return m_OutputShape; }
-  std::string DatasetPath() { return m_DatasetPath; }
+  const std::vector<std::string> & InputFiles() { return m_InputFiles; }
+  const std::vector<std::string> & LabelFiles() { return m_LabelFiles; }
   std::string LossFunctionName() { return m_LossFunctionName; }
+  std::string DatasetLoaderType() { return m_DatasetLoaderType; }
+  unsigned int BatchSize() { return m_BatchSize; }
 };

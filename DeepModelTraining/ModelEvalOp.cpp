@@ -1,7 +1,6 @@
 #include "ModelEvalOp.h"
 #include "ConfigParser.h"
 
-//#include <DatasetLoader/MNISTDatasetLoader.h>
 
 #define INPUTS_PLACEHOLDER_NAME "inputs"
 #define OUTPUTS_PLACEHOLDER_NAME "outputs"
@@ -110,8 +109,11 @@ bool ModelEvalOp::initialize(StateP state)
     m_ModelExportPath = *(static_cast<std::string*> (state->getRegistry()->getEntry("modelSavePath").get()));
     ConfigParser configParser(configFilePath);
     std::vector<std::pair<std::string, std::vector<int>>> layerConfiguration = configParser.LayerConfiguration();
-    std::string datasetPath = configParser.DatasetPath();
+    const std::vector<std::string> & datasetInputFiles = configParser.InputFiles();
+    const std::vector<std::string> & datasetLabelFiles = configParser.LabelFiles();
+    std::string datasetLoaderType = configParser.DatasetLoaderType();
     std::string lossFunctionName = configParser.LossFunctionName();
+    unsigned int batchSize = configParser.BatchSize();
     // set input and output shapes (zero prefix means that number of examples is not defined, which is legal)
     NetworkConfiguration::Shape inputShape({0});
     inputShape.insert(inputShape.end(), configParser.InputShape().begin(), configParser.InputShape().end());
@@ -120,8 +122,7 @@ bool ModelEvalOp::initialize(StateP state)
 
     // load dataset
     ECF_LOG(state, 3, "Loading dataset...");
-    m_DatasetHandler = DatasetLoader::IDatasetLoaderP(new DatasetLoader::NumericDatasetLoader(datasetPath));
-    //m_DatasetHandler = DatasetLoader::IDatasetLoaderP(new DatasetLoader::MNISTDatasetLoader("C:/Users/Luka/Documents/FER/MNIST/train-images.idx3-ubyte", "C:/Users/Luka/Documents/FER/MNIST/train-labels.idx1-ubyte"));
+    m_DatasetHandler = DatasetLoader::DatasetLoaderFactory::instance().createObject(datasetLoaderType, DatasetLoader::DatasetLoaderBaseParams(datasetInputFiles, datasetLabelFiles, batchSize));
 
     // create network and session 
     ECF_LOG(state, 3, "Creating session...");

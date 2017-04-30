@@ -16,8 +16,8 @@ void ConfigParser::parseLine(const std::string line)
     {
       std::string header((*currIterator).begin() + 1, (*currIterator).end() - 1);
       // this is a header line - determine next state
-      if (header == "General")
-        m_State = eGeneral;
+      if (header == "Dataset")
+        m_State = eDataset;
       else if (header == "Layers")
         m_State = eLayers;
       else if (header == "Loss")
@@ -32,15 +32,25 @@ void ConfigParser::parseLine(const std::string line)
       case eStart:
         throw std::logic_error("Parameters cannot be declared outside of blocks in configuration file.\n");
         break;
-      case eGeneral:
+      case eDataset:
       {
         std::string errorMsg = "Parameters in general block require argument.\n";
-        if (*currIterator == "InputShape")
+        if (*currIterator == "loader")
         {
           if (++currIterator != tokens.end())
           {
-            m_InputShape.resize(std::distance(currIterator, tokens.end()));
-            std::transform(currIterator, tokens.end(), m_InputShape.begin(), [](const std::string val) { return std::stof(val); });
+            m_DatasetLoaderType = *currIterator;
+            datasetLoaderTypeConfigured = true;
+          }
+          else
+            throw std::logic_error(errorMsg);
+        }
+        else if (*currIterator == "InputShape")
+        {
+          if (++currIterator != tokens.end())
+          {
+            m_InputShape.reserve(std::distance(currIterator, tokens.end()));
+            std::transform(currIterator, tokens.end(), std::back_inserter(m_InputShape), [](const std::string val) { return std::stof(val); });
             inputsConfigured = true;
           }
           else
@@ -50,22 +60,40 @@ void ConfigParser::parseLine(const std::string line)
         {
           if (++currIterator != tokens.end())
           {
-            m_OutputShape.resize(std::distance(currIterator, tokens.end()));
-            std::transform(currIterator, tokens.end(), m_OutputShape.begin(), [](const std::string val) { return std::stof(val); });
+            m_OutputShape.reserve(std::distance(currIterator, tokens.end()));
+            std::transform(currIterator, tokens.end(), std::back_inserter(m_OutputShape), [](const std::string val) { return std::stof(val); });
             outputsConfigured = true;
           }
           else
             throw std::logic_error(errorMsg);
         }
-        else if (*currIterator == "DatasetPath")
+        else if (*currIterator == "inputFiles")
         {
           if (++currIterator != tokens.end())
           {
-            m_DatasetPath = *currIterator;
-            datasetPathConfigured = true;
+            m_InputFiles.reserve(std::distance(currIterator, tokens.end()));
+            m_InputFiles.insert(m_InputFiles.end(), currIterator, tokens.end());
+            if (m_InputFiles.size() >= 1)
+              datasetPathConfigured = true;
           }
           else
             throw std::logic_error(errorMsg);
+        }
+
+        // optional
+        else if (*currIterator == "labelFiles")
+        {
+          if (++currIterator != tokens.end())
+          {
+            m_LabelFiles.reserve(std::distance(currIterator, tokens.end()));
+            m_LabelFiles.insert(m_LabelFiles.end(), currIterator, tokens.end());
+          }
+        }
+
+        else if (*currIterator == "batchSize")
+        {
+          if (++currIterator != tokens.end())
+            m_BatchSize = std::stoi(*currIterator);
         }
         else
           throw std::logic_error(*currIterator + " is not a valid parameter in General block in configuration file.\n");
@@ -127,6 +155,10 @@ ConfigParser::ConfigParser(std::string pathToFile)
   if (!lossFunctionConfigured)
   {
     errorMessageStream << "Loss function must be declared." << std::endl;
+  }
+  if (!datasetLoaderTypeConfigured)
+  {
+    errorMessageStream << "Dataset loader type must be declared." << std::endl;
   }
 
   if (parameterizationFailure)

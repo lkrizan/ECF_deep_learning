@@ -3,6 +3,7 @@
 
 #include "IDatasetLoader.h"
 #include <common/Shape.h>
+#include <common/Factory.h>
 #include <algorithm>
 #include <ctime>
 #include <cstdlib>
@@ -18,6 +19,16 @@ std::vector<T> oneHotEncode(size_t classIndex, size_t numClasses)
   values.at(classIndex) = 1;
   return values;
 }
+
+// data structure used to pass parameters to any/all dataset loader classes
+struct DatasetLoaderBaseParams 
+{
+  const std::vector<std::string> & inputFiles_;
+  const std::vector<std::string> & labelFiles_;
+  const unsigned int batchSize_;
+  DatasetLoaderBaseParams(const std::vector<std::string> & inputFiles, const std::vector<std::string> & outputFiles, const unsigned int batchSize) :
+    inputFiles_(inputFiles), labelFiles_(outputFiles), batchSize_(batchSize) {};
+};
 
 // dataset loader implementation
 template <typename InputDataType, typename LabelDataType>
@@ -52,6 +63,8 @@ protected:
     // for dataset shuffling
     std::srand(unsigned(std::time(0)));
   }
+
+  DatasetLoader(const DatasetLoaderBaseParams & params) : DatasetLoader(params.batchSize_) {};
 
   template<typename InputIterator>
   void addLearningExample(InputIterator first, InputIterator last)
@@ -143,6 +156,9 @@ public:
     return m_IteratorsInitialized && m_InputBatchIterator != m_Inputs.end() && m_OutputBatchIterator != m_Outputs.end();
   }
 };
+
+typedef std::function<IDatasetLoader*(DatasetLoaderBaseParams &)> DatasetLoaderCreator;
+typedef Common::Factory<IDatasetLoader, std::string, DatasetLoaderCreator> DatasetLoaderFactory;
 
 }
 

@@ -44,3 +44,11 @@ NumericDatasetLoader::NumericDatasetLoader(const std::string datasetPath, const 
 }
 
 }	// namespace DatasetLoader
+
+
+// register class in factory
+namespace {
+  using namespace DatasetLoader;
+  DatasetLoaderCreator ctor = [](DatasetLoaderBaseParams & params) {return new NumericDatasetLoader(params);};
+  bool dummy = DatasetLoaderFactory::instance().registerClass("NumericDatasetLoader", ctor);
+}
