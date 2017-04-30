@@ -8,8 +8,8 @@ void NumericDatasetLoader::parseLine(const std::string & line, std::vector<float
   typedef boost::tokenizer<boost::char_separator<char>> tok_t;
   boost::char_separator<char> sep(" ");
   tok_t tok(line, sep);
-  values.resize(std::distance(tok.begin(), tok.end()));
-  std::transform(tok.begin(), tok.end(), values.begin(), [](const std::string val) { return std::stof(val); });
+  values.reserve(std::distance(tok.begin(), tok.end()));
+  std::transform(tok.begin(), tok.end(), std::back_inserter(values), [](const std::string val) { return std::stof(val); });
 }
 
 

@@ -103,8 +103,8 @@ void ConfigParser::parseLine(const std::string line)
       {
         std::vector<int> shapeValues;
         std::string layerName = *currIterator;
-        shapeValues.resize(std::distance(++currIterator, tokens.end()));
-        std::transform(currIterator, tokens.end(), shapeValues.begin(), [](const std::string& val) { return std::stoi(val); });
+        shapeValues.reserve(std::distance(++currIterator, tokens.end()));
+        std::transform(currIterator, tokens.end(), std::back_inserter(shapeValues), [](const std::string& val) { return std::stoi(val); });
         m_LayerConfiguration.push_back(std::make_pair(layerName, shapeValues));
         layerConfigurationConfigured = true;
         break;
