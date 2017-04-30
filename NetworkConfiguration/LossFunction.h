@@ -7,22 +7,22 @@
 #include <common/Factory.h>
 
 namespace NetworkConfiguration {
+  
+struct LossBaseParams
+{
+  tensorflow::Scope & scope_;
+  const tensorflow::Input & networkOutput_;
+  const Shape & networkOutputShape_;
+  const tensorflow::Input & expectedOutputsPlaceholder_;
+  const Shape & expectedOutputShape_;
+  std::string placeholderName_;
+  LossBaseParams(tensorflow::Scope & scope, const tensorflow::Input & networkOutput, const Shape & networkOutputShape, const tensorflow::Input & expectedOutputsPlaceholder, const Shape & expectedOutputShape, std::string placeholderName) :
+     scope_(scope), networkOutput_(networkOutput), networkOutputShape_(networkOutputShape), expectedOutputsPlaceholder_(expectedOutputsPlaceholder), expectedOutputShape_(expectedOutputShape), placeholderName_(placeholderName) {};
+};
+
 
 class LossFunction
 {
-public:
-  struct LossBaseParams
-  {
-    tensorflow::Scope & scope_;
-    const tensorflow::Input & networkOutput_;
-    const Shape & networkOutputShape_;
-    const tensorflow::Input & expectedOutputsPlaceholder_;
-    const Shape & expectedOutputShape_;
-    std::string placeholderName_;
-    LossBaseParams(tensorflow::Scope & scope, const tensorflow::Input & networkOutput, const Shape & networkOutputShape, const tensorflow::Input & expectedOutputsPlaceholder, const Shape & expectedOutputShape, std::string placeholderName) :
-      scope_(scope), networkOutput_(networkOutput), networkOutputShape_(networkOutputShape), expectedOutputsPlaceholder_(expectedOutputsPlaceholder), expectedOutputShape_(expectedOutputShape), placeholderName_(placeholderName) {};
-  };
-
 protected:
   tensorflow::Output m_Loss;
   tensorflow::Scope & m_Scope;
@@ -36,7 +36,7 @@ public:
 };	
 
 typedef std::shared_ptr<LossFunction> LossFunctionP;
-typedef std::function<LossFunction*(LossFunction::LossBaseParams &)> LossCreator;
+typedef std::function<LossFunction*(LossBaseParams &)> LossCreator;
 typedef Common::Factory<LossFunction, std::string, LossCreator> LossFactory;
 }// namespace NetworkConfiguration
 

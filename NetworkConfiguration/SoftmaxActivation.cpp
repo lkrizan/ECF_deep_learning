@@ -15,6 +15,6 @@ SoftmaxActivation::SoftmaxActivation(tensorflow::Scope & scope, const tensorflow
   // register class in LayerFactory
 namespace {
   using namespace NetworkConfiguration;
-  LayerCreator ctor = [](Layer::LayerBaseParams & params) {return new SoftmaxActivation(params);};
+  LayerCreator ctor = [](LayerBaseParams & params) {return new SoftmaxActivation(params);};
   bool dummy = LayerFactory::instance().registerClass("SoftmaxActivation", ctor);
 }

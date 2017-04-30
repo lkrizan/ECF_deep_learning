@@ -66,13 +66,13 @@ std::vector<NetworkConfiguration::LayerP> ModelEvalOp::createLayers(Scope &root,
     Shape paramShape(iter->second.begin(), iter->second.end());
     NetworkConfiguration::LayerP layer;
     if (iter == networkConfiguration.begin())
-      layer = NetworkConfiguration::LayerFactory::instance().createObject(iter->first, NetworkConfiguration::ParameterizedLayer::LayerShapeParams(root, inputPlaceholder, inputShape, paramShape));
+      layer = NetworkConfiguration::LayerFactory::instance().createObject(iter->first, NetworkConfiguration::LayerShapeParams(root, inputPlaceholder, inputShape, paramShape));
     else
-      layer = NetworkConfiguration::LayerFactory::instance().createObject(iter->first, NetworkConfiguration::ParameterizedLayer::LayerShapeParams(root, layers.back()->forward(), layers.back()->outputShape(), paramShape));
+      layer = NetworkConfiguration::LayerFactory::instance().createObject(iter->first, NetworkConfiguration::LayerShapeParams(root, layers.back()->forward(), layers.back()->outputShape(), paramShape));
     layers.push_back(layer);
   }
   // add loss function to graph
-  auto lossFunction = NetworkConfiguration::LossFactory::instance().createObject(lossFunctionName, NetworkConfiguration::LossFunction::LossBaseParams(root, layers.back()->forward(), layers.back()->outputShape(), outputPlaceholder, outputShape, LOSS_OUTPUT_NAME));
+  auto lossFunction = NetworkConfiguration::LossFactory::instance().createObject(lossFunctionName, NetworkConfiguration::LossBaseParams(root, layers.back()->forward(), layers.back()->outputShape(), outputPlaceholder, outputShape, LOSS_OUTPUT_NAME));
   return layers;
 }
 
