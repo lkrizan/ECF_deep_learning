@@ -2,7 +2,7 @@
 #define DatasetLoader_h
 
 #include "IDatasetLoader.h"
-#include <NetworkConfiguration/Shape.h>
+#include <common/Shape.h>
 #include <algorithm>
 #include <ctime>
 #include <cstdlib>

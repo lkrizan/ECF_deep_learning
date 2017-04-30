@@ -5,7 +5,7 @@
 #include <tensorflow/core/public/session.h>
 #include <tensorflow/cc/ops/standard_ops.h>
 #include <tensorflow/core/framework/tensor.h>
-#include <NetworkConfiguration/Shape.h>
+#include <common/Shape.h>
 #include <ECF/ECF.h>
 
 #define VARIABLE_FILE_NAME "variables.dat"

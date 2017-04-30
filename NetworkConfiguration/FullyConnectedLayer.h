@@ -1,15 +1,13 @@
 #ifndef FullyConnectedLayer_h
 #define FullyConnectedLayer_h
 
-#include "ParameterizedLayer.h"
+#include "Layer.h"
 
 namespace NetworkConfiguration {
 
 class FullyConnectedLayer : public ParameterizedLayer
 {
 private:
-  // scope for placeholder variables
-  tensorflow::Scope &m_Scope;
   // index of this layer - used for unique variable names
   int m_Index;
   // counter of class instances
@@ -21,14 +19,10 @@ private:
   // parameters shape
   Shape m_WeightsShape;
   Shape m_BiasShape;
-  Shape m_OutputShape;
-  // placeholder for output out of the layer
-  tensorflow::Output m_Output;
 
 public:
   FullyConnectedLayer(tensorflow::Scope &scope, const tensorflow::Input &previousLayerOutput, const Shape& previousLayerOutputShape, const Shape &paramShape);
-  const tensorflow::Output& forward() const override;
-  Shape outputShape() const override;
+  FullyConnectedLayer(LayerShapeParams & params);
   std::vector<std::pair<std::string, Shape>> getParamShapes() const override;
 };
 

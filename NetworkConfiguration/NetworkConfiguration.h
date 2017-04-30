@@ -2,8 +2,6 @@
 #define Layers_all_h
 
 #include "Layer.h"
-#include "ParameterizedLayer.h"
-#include "NonParameterizedLayer.h"
 #include "LossFunction.h"
 #include "FullyConnectedLayer.h"
 #include "MeanSquaredLossFunction.h"

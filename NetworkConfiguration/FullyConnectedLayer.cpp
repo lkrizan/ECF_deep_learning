@@ -2,7 +2,7 @@
 
 namespace NetworkConfiguration {
 
-FullyConnectedLayer::FullyConnectedLayer(tensorflow::Scope &scope, const tensorflow::Input &previousLayerOutput, const Shape& previousLayerOutputShape, const Shape &paramShape) : m_Scope(scope)
+FullyConnectedLayer::FullyConnectedLayer(tensorflow::Scope &scope, const tensorflow::Input &previousLayerOutput, const Shape& previousLayerOutputShape, const Shape &paramShape) : ParameterizedLayer(scope)
 {
   using namespace tensorflow::ops;
   
@@ -48,15 +48,8 @@ FullyConnectedLayer::FullyConnectedLayer(tensorflow::Scope &scope, const tensorf
   m_OutputShape.push_back(m_WeightsShape.front());
 }
 
-const tensorflow::Output& FullyConnectedLayer::forward() const
-{
-  return m_Output;
-}
-
-Shape FullyConnectedLayer::outputShape() const 
-{
-  return m_OutputShape;
-}
+FullyConnectedLayer::FullyConnectedLayer(LayerShapeParams & params) :
+  FullyConnectedLayer(params.scope_, params.previousLayerOutput_, params.previousLayerOutputShape_, params.paramShape_) {};
 
 std::vector<std::pair<std::string, Shape>> FullyConnectedLayer::getParamShapes() const
 {

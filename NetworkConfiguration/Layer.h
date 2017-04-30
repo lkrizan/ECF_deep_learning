@@ -3,20 +3,73 @@
 
 #include "tensorflow/cc/ops/standard_ops.h"
 #include "tensorflow/core/framework/tensor.h"
-#include "Shape.h"
+#include <common/Shape.h>
 
 namespace NetworkConfiguration {
 
 class Layer
 {
+protected:
+  // scope for placeholder variables
+  tensorflow::Scope &m_Scope;
+  // placeholder for output out of the layer
+  tensorflow::Output m_Output;
+  Shape m_OutputShape;
+  // forward declaration
+  class LayerBaseParams;
+  Layer(tensorflow::Scope & scope) : m_Scope(scope) {};
+  Layer(LayerBaseParams & params) : m_Scope(params.scope_) {};
 public:
-  virtual const tensorflow::Output& forward() const = 0;
-  virtual Shape outputShape() const = 0;
+  struct LayerBaseParams
+  {
+    tensorflow::Scope &scope_;
+    const tensorflow::Input &previousLayerOutput_;
+    const Shape& previousLayerOutputShape_;
+    LayerBaseParams(tensorflow::Scope & scope, const tensorflow::Input &previousLayerOutput, const Shape& previousLayerOutputShape) : 
+      scope_(scope), previousLayerOutput_(previousLayerOutput), previousLayerOutputShape_(previousLayerOutputShape) {};
+  };
+  virtual const tensorflow::Output& forward() const { return m_Output; }
+  virtual Shape outputShape() const { return m_OutputShape; }
   virtual bool hasParams() const = 0;
   virtual ~Layer() = default;
 };
 
 typedef std::shared_ptr<Layer> LayerP;
+
+
+class NonParameterizedLayer : public Layer
+{
+protected:
+  NonParameterizedLayer(tensorflow::Scope & scope) : Layer(scope) {};
+  NonParameterizedLayer(Layer::LayerBaseParams & params) : Layer(params) {};
+public:
+  virtual ~NonParameterizedLayer() = default;
+  bool hasParams() const override { return false; };
+};
+
+typedef std::shared_ptr<NonParameterizedLayer> NonParameterizedLayerP;
+
+
+class ParameterizedLayer : public Layer
+{
+protected:
+  class LayerShapeParams;
+  ParameterizedLayer(LayerShapeParams & params) : Layer(params) {};
+  ParameterizedLayer(tensorflow::Scope & scope) : Layer(scope) {};
+public:
+  struct LayerShapeParams : LayerBaseParams
+  {
+    const Shape & paramShape_;
+    LayerShapeParams(tensorflow::Scope & scope, const tensorflow::Input &previousLayerOutput, const Shape& previousLayerOutputShape, const Shape& paramShape) :
+      LayerBaseParams(scope, previousLayerOutput, previousLayerOutputShape), paramShape_(paramShape) {};
+  };
+  virtual ~ParameterizedLayer() = default;
+  bool hasParams() const override { return true; };
+  // returns shapes of all parameters
+  virtual std::vector<std::pair<std::string, Shape>> getParamShapes() const = 0;
+};
+
+typedef std::shared_ptr<ParameterizedLayer> ParameterizedLayerP;
 
 }	// namespace NetworkConfiguration
 #endif

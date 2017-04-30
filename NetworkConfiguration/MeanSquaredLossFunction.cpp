@@ -2,7 +2,7 @@
 
 namespace NetworkConfiguration {
 
-NetworkConfiguration::MeanSquaredLossFunction::MeanSquaredLossFunction(tensorflow::Scope & scope, const tensorflow::Input & networkOutput, const Shape & networkOutputShape, const tensorflow::Input & expectedOutputsPlaceholder, const Shape & expectedOutputShape, std::string placeholderName)
+MeanSquaredLossFunction::MeanSquaredLossFunction(tensorflow::Scope & scope, const tensorflow::Input & networkOutput, const Shape & networkOutputShape, const tensorflow::Input & expectedOutputsPlaceholder, const Shape & expectedOutputShape, std::string placeholderName) : LossFunction(scope)
 {
   if (!shapesFormEqual(networkOutputShape, expectedOutputShape))
   {
@@ -15,18 +15,6 @@ NetworkConfiguration::MeanSquaredLossFunction::MeanSquaredLossFunction(tensorflo
   auto squaredDiff = Square(scope, diff);
   m_Loss = Mean(scope.WithOpName(placeholderName), squaredDiff, 0);
 
-  // set output shape
-  m_OutputShape.push_back(1);
-}
-
-const tensorflow::Output & MeanSquaredLossFunction::getLossOutput() const
-{
-  return m_Loss;
-}
-
-Shape MeanSquaredLossFunction::outputShape() const
-{
-  return m_OutputShape;
 }
 
 }	// namespace NetworkConfiguration

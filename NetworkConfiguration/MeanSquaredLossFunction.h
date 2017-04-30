@@ -7,13 +7,10 @@ namespace NetworkConfiguration {
 
 class MeanSquaredLossFunction : public LossFunction
 {
-  tensorflow::Output m_Loss;
-  Shape m_OutputShape;
-
 public:
   MeanSquaredLossFunction(tensorflow::Scope &scope, const tensorflow::Input &networkOutput, const Shape &networkOutputShape, const tensorflow::Input & expectedOutputsPlaceholder, const Shape &expectedOutputShape, std::string placeholderName="MeanSquaredLoss");
-  const tensorflow::Output& getLossOutput() const override;
-  Shape outputShape() const override;
+  MeanSquaredLossFunction(LossBaseParams params) :
+    MeanSquaredLossFunction(params.scope_, params.networkOutput_, params.networkOutputShape_, params.expectedOutputsPlaceholder_, params.expectedOutputShape_, params.placeholderName_) {};
 };
 
 }	// namespace NetworkConfiguration
