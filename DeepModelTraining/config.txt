@@ -8,7 +8,7 @@ batchSize 0
 
 [Layers]
 FullyConnectedLayer 10 2
-ReLUActivation
+SigmoidActivation
 FullyConnectedLayer 1 10
 
 [Loss]

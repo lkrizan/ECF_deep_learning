@@ -22,7 +22,7 @@ private:
 
 public:
   FullyConnectedLayer(tensorflow::Scope &scope, const tensorflow::Input &previousLayerOutput, const Shape& previousLayerOutputShape, const Shape &paramShape);
-  FullyConnectedLayer(LayerShapeParams & params);
+  FullyConnectedLayer(LayerShapeL1Params & params);
   std::vector<std::pair<std::string, Shape>> getParamShapes() const override;
 };
 

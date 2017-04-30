@@ -48,7 +48,7 @@ FullyConnectedLayer::FullyConnectedLayer(tensorflow::Scope &scope, const tensorf
   m_OutputShape.push_back(m_WeightsShape.front());
 }
 
-FullyConnectedLayer::FullyConnectedLayer(LayerShapeParams & params) :
+FullyConnectedLayer::FullyConnectedLayer(LayerShapeL1Params & params) :
   FullyConnectedLayer(params.scope_, params.previousLayerOutput_, params.previousLayerOutputShape_, params.paramShape_) {};
 
 std::vector<std::pair<std::string, Shape>> FullyConnectedLayer::getParamShapes() const
@@ -62,6 +62,6 @@ std::vector<std::pair<std::string, Shape>> FullyConnectedLayer::getParamShapes()
 // register class in LayerFactory
 namespace {
   using namespace NetworkConfiguration;
-  LayerCreator ctor = [](LayerBaseParams & params) {return new FullyConnectedLayer(static_cast<LayerShapeParams &>(params));};
+  LayerCreator ctor = [](LayerBaseParams & params) {return new FullyConnectedLayer(static_cast<LayerShapeL1Params &>(params));};
   bool dummy = LayerFactory::instance().registerClass("FullyConnectedLayer", ctor);
 }

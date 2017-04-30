@@ -66,9 +66,9 @@ std::vector<NetworkConfiguration::LayerP> ModelEvalOp::createLayers(Scope &root,
     Shape paramShape(iter->second.begin(), iter->second.end());
     NetworkConfiguration::LayerP layer;
     if (iter == networkConfiguration.begin())
-      layer = NetworkConfiguration::LayerFactory::instance().createObject(iter->first, NetworkConfiguration::LayerShapeParams(root, inputPlaceholder, inputShape, paramShape));
+      layer = NetworkConfiguration::LayerFactory::instance().createObject(iter->first, NetworkConfiguration::LayerShapeL1Params(root, inputPlaceholder, inputShape, paramShape));
     else
-      layer = NetworkConfiguration::LayerFactory::instance().createObject(iter->first, NetworkConfiguration::LayerShapeParams(root, layers.back()->forward(), layers.back()->outputShape(), paramShape));
+      layer = NetworkConfiguration::LayerFactory::instance().createObject(iter->first, NetworkConfiguration::LayerShapeL1Params(root, layers.back()->forward(), layers.back()->outputShape(), paramShape));
     layers.push_back(layer);
   }
   // add loss function to graph
