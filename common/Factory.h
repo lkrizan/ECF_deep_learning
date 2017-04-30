@@ -16,13 +16,13 @@ namespace Common {
 template 
 <
   typename AbstractProduct,                   // base-class type
-  typename IdentifierType,                    // key type (e.g., std::string)
-  typename ProductCreator                     // object constructor
+  typename IdentifierType                     // key type (e.g., std::string)
 >
 class Factory
 {
   // map that holds object type and its constructor
-  typedef std::map<IdentifierType, ProductCreator> AssocMap;
+  typedef std::function<AbstractProduct*()> AbstractCreator;
+  typedef std::map<IdentifierType, AbstractCreator> AssocMap;
   AssocMap m_AssocMap;
   
   // make constructors and operator= private so it cannot be instanced
@@ -33,18 +33,10 @@ class Factory
 public:
   static Factory & instance() { static Factory f; return f; }
 
-  // returns true if registering succeeded
-  bool registerClass(const IdentifierType& id, ProductCreator creator)
+  template<typename ProductCreator>
+  void registerClass(const IdentifierType& id, ProductCreator creator)
   {
-    // insert returns pair<iterator, bool>
-    return m_AssocMap.insert(std::pair<IdentifierType, ProductCreator>(id, creator)).second;
-  }
-
-  // returns true if erasing succeeded
-  bool unregisterClass(const IdentifierType &id)
-  {
-    // this erase overload returns number of elements erased
-    return m_AssocMap.erase(id) == 1;
+    m_AssocMap.insert(std::pair<IdentifierType, AbstractCreator>(id, creator));
   }
 
   std::shared_ptr<AbstractProduct> createObject(const IdentifierType& id)
@@ -56,6 +48,28 @@ public:
     }
     // error handling (unregistered factory)
     throw std::exception("Unknown object type passed to factory.");
+  }
+
+};
+
+template
+<
+  typename AbstractProduct,
+  typename ManufacturedType,
+  typename IdentifierType=std::string
+>
+
+class RegisterInFactory
+{
+public:
+  static AbstractProduct* CreateInstance()
+  {
+    return new ManufacturedType();
+  }
+
+  RegisterInFactory(const IdentifierType &id)
+  {
+    Factory<AbstractProduct, IdentifierType>::instance().registerClass(id, CreateInstance);
   }
 
 };
