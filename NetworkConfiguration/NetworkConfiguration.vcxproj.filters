@@ -27,9 +27,6 @@
     <ClInclude Include="LossFunction.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="NetworkConfiguration.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="MeanSquaredLossFunction.h">
       <Filter>Header Files</Filter>
     </ClInclude>

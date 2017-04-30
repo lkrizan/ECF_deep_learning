@@ -57,3 +57,11 @@ std::vector<std::pair<std::string, Shape>> FullyConnectedLayer::getParamShapes()
 }
 
 } // namespace NetworkConfiguration
+
+
+// register class in LayerFactory
+namespace {
+  using namespace NetworkConfiguration;
+  LayerCreator ctor = [](Layer::LayerBaseParams & params) {return new FullyConnectedLayer(static_cast<ParameterizedLayer::LayerShapeParams &>(params));};
+  bool dummy = LayerFactory::instance().registerClass("FullyConnectedLayer", ctor);
+}

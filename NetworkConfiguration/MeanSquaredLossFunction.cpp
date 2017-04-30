@@ -18,3 +18,11 @@ MeanSquaredLossFunction::MeanSquaredLossFunction(tensorflow::Scope & scope, cons
 }
 
 }	// namespace NetworkConfiguration
+
+  // register class in factory
+namespace {
+  using namespace NetworkConfiguration;
+  LossCreator ctor = [](LossFunction::LossBaseParams & params) { return new MeanSquaredLossFunction(params);};
+  bool dummy = LossFactory::instance().registerClass("MeanSquaredLossFunction", ctor);
+}
+

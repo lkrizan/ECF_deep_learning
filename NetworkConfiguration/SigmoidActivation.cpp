@@ -12,4 +12,11 @@ SigmoidActivation::SigmoidActivation(tensorflow::Scope &scope, const tensorflow:
 
 }	// namespace NetworkConfiguration
 
+// register class in LayerFactory
+namespace {
+  using namespace NetworkConfiguration;
+  LayerCreator ctor = [](Layer::LayerBaseParams & params) {return new SigmoidActivation(params);};
+  bool dummy = LayerFactory::instance().registerClass("SigmoidActivation", ctor);
+}
+
 
