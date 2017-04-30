@@ -26,6 +26,8 @@ struct LayerShapeParams : LayerBaseParams
     LayerBaseParams(scope, previousLayerOutput, previousLayerOutputShape), paramShape_(paramShape) {};
 };
 
+
+// do not inherit from this class, use this only as an interface
 class Layer
 { 
 protected:
@@ -47,6 +49,7 @@ public:
 typedef std::shared_ptr<Layer> LayerP;
 
 
+// for implementing new layers, inherit from these two classes and make sure you set m_Output and m_OutputShape in class constructor
 class NonParameterizedLayer : public Layer
 {
 protected:

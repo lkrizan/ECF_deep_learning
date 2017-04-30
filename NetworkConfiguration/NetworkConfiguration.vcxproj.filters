@@ -33,6 +33,9 @@
     <ClInclude Include="SoftmaxActivation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ReLUActivation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FullyConnectedLayer.cpp">
@@ -45,6 +48,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SoftmaxActivation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ReLUActivation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

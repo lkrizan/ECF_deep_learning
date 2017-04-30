@@ -11,12 +11,14 @@
     <ClInclude Include="Layer.h" />
     <ClInclude Include="LossFunction.h" />
     <ClInclude Include="MeanSquaredLossFunction.h" />
+    <ClInclude Include="ReLUActivation.h" />
     <ClInclude Include="SigmoidActivation.h" />
     <ClInclude Include="SoftmaxActivation.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FullyConnectedLayer.cpp" />
     <ClCompile Include="MeanSquaredLossFunction.cpp" />
+    <ClCompile Include="ReLUActivation.cpp" />
     <ClCompile Include="SigmoidActivation.cpp" />
     <ClCompile Include="SoftmaxActivation.cpp" />
   </ItemGroup>
