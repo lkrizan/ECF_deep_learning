@@ -22,6 +22,7 @@ public:
   Shape(std::initializer_list<tensorflow::int64> list) : m_Values(list) {}
   Shape() : m_Values() {}
   void reserve(size_t n) { m_Values.reserve(n); }
+  const std::vector<int64> & data() const { return m_Values; }
   std::vector<int64>::iterator begin() { return m_Values.begin(); }
   std::vector<int64>::iterator end() { return m_Values.end(); }
   std::vector<int64>::const_iterator cbegin() const { return m_Values.cbegin(); }

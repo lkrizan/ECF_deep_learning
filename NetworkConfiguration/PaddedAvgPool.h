@@ -13,6 +13,7 @@ class PaddedAvgPool : public NonParameterizedLayer
   static const std::string s_LayerName;
 
 public:
+  // windowShape - poolSize (1D), strideShape (1D)
   PaddedAvgPool(tensorflow::Scope &scope, const tensorflow::Input &previousLayerOutput, const Shape& previousLayerOutputShape, const Shape& windowShape, const Shape & strideShape);
   PaddedAvgPool(LayerShapeL2Params & params) : PaddedAvgPool(params.scope_, params.previousLayerOutput_, params.previousLayerOutputShape_, params.paramShape_, params.strideShape_) {};
 };

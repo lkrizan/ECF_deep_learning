@@ -8,12 +8,12 @@ PaddedAvgPool::PaddedAvgPool(tensorflow::Scope & scope, const tensorflow::Input 
   // check if parameters are valid
   bool parameterizationFailure = false;
   std::ostringstream errorMessageStream;
-  if (!windowShape.validForParameterizedUse() || windowShape.size() != 4)
+  if (!windowShape.validForParameterizedUse() || windowShape.size() != 1)
   {
     parameterizationFailure = true;
     errorMessageStream << "Shape [" << windowShape << "] is not a valid shape for pooling window." << std::endl;
   }
-  if (!strideShape.validForParameterizedUse() || strideShape.size() != 4 || strideShape.front() != 1 || strideShape.back() != 1)
+  if (!strideShape.validForParameterizedUse() || strideShape.size() != 1)
   {
     parameterizationFailure = true;
     errorMessageStream << "Shape [" << windowShape << "] is not a valid stride parameter." << std::endl;
@@ -29,8 +29,17 @@ PaddedAvgPool::PaddedAvgPool(tensorflow::Scope & scope, const tensorflow::Input 
   }
   m_Index = ++s_TotalNumber;
   std::string outputName = s_LayerName + std::to_string(m_Index) + "_out";
-  m_OutputShape = previousLayerOutputShape;
-  m_Output = tensorflow::ops::AvgPool(scope.WithOpName(outputName), previousLayerOutput, windowShape.asArraySlice<int>(), strideShape.asArraySlice<int>(), tensorflow::StringPiece("SAME"));
+  std::vector<tensorflow::int64> previousLayerShapeValues = previousLayerOutputShape.data();
+  const unsigned int numExamples = previousLayerShapeValues[0];
+  const unsigned int height = previousLayerShapeValues[1];
+  const unsigned int width = previousLayerShapeValues[2];
+  const unsigned int numFiltersInput = previousLayerShapeValues[3];
+  const int stride = strideShape.front();
+  const int poolSize = windowShape.front();
+  m_OutputShape = Shape({ numExamples, height / stride, width / stride, numFiltersInput });
+  tensorflow::gtl::ArraySlice<int> finalStrideShape = { 1, stride, stride, 1 };
+  tensorflow::gtl::ArraySlice<int> finalWindowShape = { 1, poolSize, poolSize, 1 };
+  m_Output = tensorflow::ops::AvgPool(scope.WithOpName(outputName), previousLayerOutput, finalWindowShape, finalStrideShape, tensorflow::StringPiece("SAME"));
 }
 
 }   // namespace NetworkConfiguration
