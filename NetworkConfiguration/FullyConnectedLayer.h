@@ -21,6 +21,7 @@ private:
   Shape m_BiasShape;
 
 public:
+  // paramShape - number of neurons
   FullyConnectedLayer(tensorflow::Scope &scope, const tensorflow::Input &previousLayerOutput, const Shape& previousLayerOutputShape, const Shape &paramShape);
   FullyConnectedLayer(LayerShapeL1Params & params);
   std::vector<std::pair<std::string, Shape>> getParamShapes() const override;
