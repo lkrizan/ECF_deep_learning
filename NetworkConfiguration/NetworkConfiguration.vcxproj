@@ -8,6 +8,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Conv2D.h" />
+    <ClInclude Include="Flatten.h" />
     <ClInclude Include="FullyConnectedLayer.h" />
     <ClInclude Include="Layer.h" />
     <ClInclude Include="LossFunction.h" />
@@ -21,6 +22,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Conv2D.cpp" />
+    <ClCompile Include="Flatten.cpp" />
     <ClCompile Include="FullyConnectedLayer.cpp" />
     <ClCompile Include="MeanSquaredLossFunction.cpp" />
     <ClCompile Include="PaddedAvgPool.cpp" />
