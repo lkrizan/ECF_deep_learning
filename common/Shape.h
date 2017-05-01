@@ -40,7 +40,16 @@ public:
   
   }
   
-  tensorflow::TensorShape asTensorShape() const { return tensorflow::TensorShape(tensorflow::gtl::ArraySlice<int64>(this->m_Values)); }
+  tensorflow::TensorShape asTensorShape() const { return tensorflow::TensorShape(tensorflow::gtl::ArraySlice<int64>(m_Values)); }
+
+  template <typename T>
+  tensorflow::gtl::ArraySlice<T> asArraySlice() const
+  {
+    std::vector<T> tempValues;
+    tempValues.reserve(m_Values.size());
+    std::copy(m_Values.begin(), m_Values.end(), std::back_inserter(tempValues));
+    return tensorflow::gtl::ArraySlice<T>(tempValues); 
+  }
 
   friend std::ostream& operator<< (std::ostream& os, const Shape& source)
   {
