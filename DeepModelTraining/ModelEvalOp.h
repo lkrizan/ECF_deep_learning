@@ -51,7 +51,7 @@ private:
   // helper function for filling tensors with values from genotype
   std::vector<std::pair<string, tensorflow::Tensor>> createTensorsFromGenotype(const IndividualP individual) const;
   // helper function for creating graph definition
-  std::vector<NetworkConfiguration::LayerP> createLayers(Scope &root, const std::vector<std::pair<std::string, std::vector<int>>> & networkConfiguration, const std::string lossFunctionName, const NetworkConfiguration::Shape & inputShape, const NetworkConfiguration::Shape & outputShape) const;
+  std::vector<NetworkConfiguration::LayerP> createLayers(Scope &root, const std::vector<std::pair<std::string, std::vector<NetworkConfiguration::Shape>>> & networkConfiguration, const std::string lossFunctionName, const NetworkConfiguration::Shape & inputShape, const NetworkConfiguration::Shape & outputShape) const;
   // helper function for creating variable data
   std::vector<VariableData> createVariableData(const std::vector<NetworkConfiguration::LayerP> &layers) const;
   // helper function which calculates total number of parameters from network configuration - used for overriding size of FloatingPoint genotype

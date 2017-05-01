@@ -101,10 +101,20 @@ void ConfigParser::parseLine(const std::string line)
       }
       case eLayers:
       {
-        std::vector<int> shapeValues;
+        std::vector<NetworkConfiguration::Shape> shapeValues;
         std::string layerName = *currIterator;
-        shapeValues.reserve(std::distance(++currIterator, tokens.end()));
-        std::transform(currIterator, tokens.end(), std::back_inserter(shapeValues), [](const std::string& val) { return std::stoi(val); });
+        // currIterator still points at the name of the layer
+        shapeValues.reserve(std::distance(currIterator, tokens.end()) - 1);
+        // iterate through all shapes (they are tokens, sparated by comma ','
+        boost::char_separator<char> commaSep(",");
+        while (++currIterator != tokens.end())
+        {
+          tok_t shapeTokens(*currIterator, commaSep);
+          std::vector<unsigned int> values;
+          values.reserve(std::distance(shapeTokens.begin(), shapeTokens.end()));
+          std::transform(shapeTokens.begin(), shapeTokens.end(), std::back_inserter(values), [](const std::string& val) {return std::stoi(val);});
+          shapeValues.push_back(NetworkConfiguration::Shape(values.begin(), values.end()));
+        }
         m_LayerConfiguration.push_back(std::make_pair(layerName, shapeValues));
         layerConfigurationConfigured = true;
         break;

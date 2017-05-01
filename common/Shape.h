@@ -21,7 +21,7 @@ public:
   Shape(InputIterator valuesFirst, InputIterator valuesLast) : m_Values(valuesFirst, valuesLast) {}
   Shape(std::initializer_list<tensorflow::int64> list) : m_Values(list) {}
   Shape() : m_Values() {}
-  void transpose() { std::reverse(m_Values.begin(), m_Values.end()); }
+  void reserve(size_t n) { m_Values.reserve(n); }
   std::vector<int64>::iterator begin() { return m_Values.begin(); }
   std::vector<int64>::iterator end() { return m_Values.end(); }
   std::vector<int64>::const_iterator cbegin() const { return m_Values.cbegin(); }

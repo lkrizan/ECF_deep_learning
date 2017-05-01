@@ -7,9 +7,9 @@ inputFiles ./dataset/dataset.txt
 batchSize 0
 
 [Layers]
-FullyConnectedLayer 10 2
+FullyConnectedLayer 10,2
 SigmoidActivation
-FullyConnectedLayer 1 10
+FullyConnectedLayer 1,10
 
 [Loss]
 MeanSquaredLossFunction
