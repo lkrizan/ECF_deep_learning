@@ -20,7 +20,7 @@ Flatten::Flatten(tensorflow::Scope & scope, const tensorflow::Input & previousLa
   const unsigned int height = previousLayerShapeValues[1];
   const unsigned int width = previousLayerShapeValues[2];
   const unsigned int numFiltersInput = previousLayerShapeValues[3];
-  const unsigned int numElements = height * width * numFiltersInput;
+  const int numElements = height * width * numFiltersInput;
   m_OutputShape = Shape({ numExamples, numElements });
   m_Output = tensorflow::ops::Reshape(m_Scope.WithOpName(outputName), previousLayerOutput,
     tensorflow::Input(tensorflow::Input::Initializer({ -1, numElements })));
