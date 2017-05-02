@@ -91,6 +91,7 @@ MNISTDatasetLoader::MNISTDatasetLoader(std::string imageFilePath, std::string la
     throw std::logic_error("Failed while opening image file.");
   if (!readLabelFile(labelFilePath))
     throw std::logic_error("Failed while opening label file.");
+  resetBatchIterator();
 }
 
 } // namespace DatasetLoader

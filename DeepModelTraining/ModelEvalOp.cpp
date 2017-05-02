@@ -143,6 +143,9 @@ bool ModelEvalOp::initialize(StateP state)
     state->getRegistry()->modifyEntry("FloatingPoint.dimension", (voidP) new uint(numParameters));
     // reinitialize population with updated size
     state->getPopulation()->initialize(state);
+
+    // shuffle the dataset
+    m_DatasetHandler->shuffleDataset();
     return status.ok();
   }
   catch (std::exception& e)
@@ -173,29 +176,28 @@ std::vector<std::pair<string, tensorflow::Tensor>> ModelEvalOp::createTensorsFro
 
 FitnessP ModelEvalOp::evaluate(IndividualP individual)
 {
+  // set new inputs and outputs if generation has changed
+  int currGeneration = m_ECFState->getGenerationNo();
+  if (currGeneration != m_CurrentGeneration)
+  {
+    m_CurrentGeneration = currGeneration;
+    // if whole dataset has been used, restart batching
+    if (!m_DatasetHandler->nextBatch(m_CurrentInputs, m_CurrentOutputs))
+    {
+      m_DatasetHandler->resetBatchIterator();
+      m_DatasetHandler->nextBatch(m_CurrentInputs, m_CurrentOutputs);
+    }
+  }
+  // set placeholders
   FitnessP fitness (new FitnessMin);
   std::vector<std::pair<string, tensorflow::Tensor>> inputs = createTensorsFromGenotype(individual);
-  unsigned int batchCounter = 0;
-  float accumulatedBatchLoss = 0;
-  Tensor datasetInputs, datasetOutputs;
-  inputs.push_back(std::make_pair(INPUTS_PLACEHOLDER_NAME, datasetInputs));
-  std::pair<std::string, tensorflow::Tensor> *inputsPair = &inputs.back();
-  inputs.push_back(std::make_pair(OUTPUTS_PLACEHOLDER_NAME, datasetOutputs));
-  std::pair<std::string, tensorflow::Tensor> *outputsPair = &inputs.back();
-  m_DatasetHandler->resetBatchIterator();
-  while (m_DatasetHandler->nextBatch(datasetInputs, datasetOutputs))
-  {
-    // set placeholders to batch inputs and expected outputs
-    inputsPair->second = datasetInputs;
-    outputsPair->second = datasetOutputs;
-    // run session and fetch loss
-    std::vector<tensorflow::Tensor> outputs;
-    Status status = m_pSession->Run(inputs, { LOSS_OUTPUT_NAME }, {}, &outputs);
-    auto outputRes = outputs[0].scalar<float>();
-    accumulatedBatchLoss += outputRes();
-    ++batchCounter;
-  }
-  fitness->setValue(accumulatedBatchLoss / batchCounter);
+  inputs.push_back(std::make_pair(INPUTS_PLACEHOLDER_NAME, m_CurrentInputs));
+  inputs.push_back(std::make_pair(OUTPUTS_PLACEHOLDER_NAME, m_CurrentOutputs));
+  // run session and fetch loss
+  std::vector<tensorflow::Tensor> outputs;
+  Status status = m_pSession->Run(inputs, { LOSS_OUTPUT_NAME }, {}, &outputs);
+  auto loss = outputs[0].scalar<float>();
+  fitness->setValue(loss());
   return fitness;
 
 }

@@ -56,6 +56,11 @@ private:
   std::vector<VariableData> createVariableData(const std::vector<NetworkConfiguration::LayerP> &layers) const;
   // helper function which calculates total number of parameters from network configuration - used for overriding size of FloatingPoint genotype
   size_t totalNumberOfParameters() const;
+
+  // used for tracking dataset batches (every generation - new batch) 
+  int m_CurrentGeneration = -1;
+  Tensor m_CurrentInputs;
+  Tensor m_CurrentOutputs;
 };
 
 typedef boost::shared_ptr<ModelEvalOp> ModelEvalOpP;

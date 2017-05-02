@@ -1,25 +1,25 @@
 <ECF>
 	<Algorithm>
-		<GenHookeJeeves>
-		</GenHookeJeeves>
+		<SteadyStateTournament>
+		</SteadyStateTournament>
 	</Algorithm>
 	<Genotype>
 		<FloatingPoint>
 			<Entry key="dimension">5</Entry>
-			<Entry key="lbound">-2</Entry>
-			<Entry key="ubound">2</Entry>
+			<Entry key="lbound">-5</Entry>
+			<Entry key="ubound">5</Entry>
 		</FloatingPoint>
 	</Genotype>
 	<Registry>
 		<Entry key="configFilePath">./config.txt</Entry>
-		<Entry key="saveModel">0</Entry>
+		<Entry key="saveModel">1</Entry>
 		<Entry key="modelSavePath">./model/</Entry>
-		<Entry key="population.size">1</Entry>
+		<Entry key="population.size">50</Entry>
 		<Entry key="mutation.indprob">0.3</Entry>
-		<Entry key="term.maxgen">500</Entry>
-		<Entry key="term.eval">100000</Entry>
+		<Entry key="term.maxgen">50000</Entry>
+		<Entry key="term.eval">200000</Entry>
 		<Entry key="term.fitnessval">1e-12</Entry>
-		<Entry key="log.frequency">1</Entry>
+		<Entry key="log.frequency">10</Entry>
 		<Entry key="log.level">3</Entry>
 	</Registry>
 </ECF>
