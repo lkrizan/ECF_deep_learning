@@ -6,15 +6,15 @@
 	<Genotype>
 		<FloatingPoint>
 			<Entry key="dimension">5</Entry>
-			<Entry key="lbound">-5</Entry>
-			<Entry key="ubound">5</Entry>
+			<Entry key="lbound">-2</Entry>
+			<Entry key="ubound">2</Entry>
 		</FloatingPoint>
 	</Genotype>
 	<Registry>
 		<Entry key="configFilePath">./config.txt</Entry>
 		<Entry key="saveModel">0</Entry>
 		<Entry key="modelSavePath">./model/</Entry>
-		<Entry key="population.size">5</Entry>
+		<Entry key="population.size">1</Entry>
 		<Entry key="mutation.indprob">0.3</Entry>
 		<Entry key="term.maxgen">500</Entry>
 		<Entry key="term.eval">100000</Entry>

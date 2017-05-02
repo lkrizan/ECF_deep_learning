@@ -4,7 +4,7 @@ InputShape 28 28 1
 OutputShape 10
 inputFiles ../MNIST/train-images.idx3-ubyte
 labelFiles ../MNIST/train-labels.idx1-ubyte
-batchSize 50
+batchSize 100
 
 [Layers]
 PaddedConv2D 16,5 1
@@ -15,7 +15,6 @@ Flatten
 FullyConnectedLayer 64
 ReLUActivation
 FullyConnectedLayer 10
-SoftmaxActivation
 
 [Loss]
-CrossEntropyLossFunction
+SoftmaxCrossEntropyLossFunction

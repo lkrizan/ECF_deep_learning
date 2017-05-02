@@ -20,6 +20,7 @@
     <ClInclude Include="ReLUActivation.h" />
     <ClInclude Include="SigmoidActivation.h" />
     <ClInclude Include="SoftmaxActivation.h" />
+    <ClInclude Include="SoftmaxCrossEntropyLossFunction.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Conv2D.cpp" />
@@ -33,6 +34,7 @@
     <ClCompile Include="ReLUActivation.cpp" />
     <ClCompile Include="SigmoidActivation.cpp" />
     <ClCompile Include="SoftmaxActivation.cpp" />
+    <ClCompile Include="SoftmaxCrossEntropyLossFunction.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{4E3DD63B-B30F-421C-98C0-53F88873BA7C}</ProjectGuid>
