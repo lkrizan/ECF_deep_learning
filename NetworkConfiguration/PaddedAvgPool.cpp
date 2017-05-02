@@ -37,9 +37,8 @@ PaddedAvgPool::PaddedAvgPool(tensorflow::Scope & scope, const tensorflow::Input 
   const int stride = strideShape.front();
   const int poolSize = windowShape.front();
   m_OutputShape = Shape({ numExamples, height / stride, width / stride, numFiltersInput });
-  tensorflow::gtl::ArraySlice<int> finalStrideShape = { 1, stride, stride, 1 };
-  tensorflow::gtl::ArraySlice<int> finalWindowShape = { 1, poolSize, poolSize, 1 };
-  m_Output = tensorflow::ops::AvgPool(scope.WithOpName(outputName), previousLayerOutput, finalWindowShape, finalStrideShape, tensorflow::StringPiece("SAME"));
+  using namespace tensorflow::gtl;
+  m_Output = tensorflow::ops::AvgPool(scope.WithOpName(outputName), previousLayerOutput, ArraySlice<int>({ 1, poolSize, poolSize, 1 }), ArraySlice<int>({1, stride, stride, 1}), tensorflow::StringPiece("SAME"));
 }
 
 }   // namespace NetworkConfiguration

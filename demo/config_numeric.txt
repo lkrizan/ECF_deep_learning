@@ -1,0 +1,15 @@
+[Dataset]
+loader NumericDatasetLoader
+# loader MNISTDatasetLoader
+InputShape 2
+OutputShape 1
+inputFiles ./dataset/dataset.txt
+batchSize 0
+
+[Layers]
+FullyConnectedLayer 10
+SigmoidActivation
+FullyConnectedLayer 1
+
+[Loss]
+MeanSquaredLossFunction

@@ -14,7 +14,7 @@
 		<Entry key="configFilePath">./config.txt</Entry>
 		<Entry key="saveModel">0</Entry>
 		<Entry key="modelSavePath">./model/</Entry>
-		<Entry key="population.size">50</Entry>
+		<Entry key="population.size">5</Entry>
 		<Entry key="mutation.indprob">0.3</Entry>
 		<Entry key="term.maxgen">500</Entry>
 		<Entry key="term.eval">100000</Entry>

@@ -24,7 +24,7 @@ CrossEntropyLossFunction::CrossEntropyLossFunction(tensorflow::Scope & scope, co
   // apply log function
   auto tempLog = Log(m_Scope, tempMax);
   // multiply by -1
-  auto multiplyConstant = Const(m_Scope, 1);
+  auto multiplyConstant = Const(m_Scope, -1.f);
   auto totalError = Multiply(m_Scope, tempLog, multiplyConstant);
   // take mean value
   m_Loss = Mean(scope.WithOpName(placeholderName), totalError, 0);
