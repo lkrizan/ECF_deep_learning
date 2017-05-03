@@ -13,7 +13,8 @@ MeanSquaredLossFunction::MeanSquaredLossFunction(tensorflow::Scope & scope, cons
   using namespace tensorflow::ops;
   auto diff = Subtract(scope, networkOutput, expectedOutputsPlaceholder);
   auto squaredDiff = Square(scope, diff);
-  m_Loss = Mean(scope.WithOpName(placeholderName), squaredDiff, 0);
+  auto exampleMean = Mean(scope, squaredDiff, 1);
+  m_Loss = Mean(scope.WithOpName(placeholderName), exampleMean, 0);
 
 }
 
