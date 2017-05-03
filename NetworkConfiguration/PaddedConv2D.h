@@ -5,6 +5,7 @@
 
 namespace NetworkConfiguration {
 
+// does not support strided convolution
 class PaddedConv2D : public ParameterizedLayer
 {
   // index of this layer - used for unique variable names
@@ -20,9 +21,8 @@ class PaddedConv2D : public ParameterizedLayer
   Shape m_BiasShape;
 
 public:
-  // parameters : paramShape(kernelSize, numFilters), strideShape - only one element
-  PaddedConv2D(tensorflow::Scope &scope, const tensorflow::Input &previousLayerOutput, const Shape& previousLayerOutputShape, const Shape &paramShape, const Shape &strideShape);
-  PaddedConv2D(LayerShapeL2Params & params) : PaddedConv2D(params.scope_, params.previousLayerOutput_, params.previousLayerOutputShape_, params.paramShape_, params.strideShape_) {};
+  PaddedConv2D(tensorflow::Scope &scope, const tensorflow::Input &previousLayerOutput, const Shape& previousLayerOutputShape, const std::vector<int> &paramShapeArgs);
+  PaddedConv2D(LayerShapeL1Params & params) : PaddedConv2D(params.scope_, params.previousLayerOutput_, params.previousLayerOutputShape_, params.paramShapeArgs_) {};
   std::vector<std::pair<std::string, Shape>> getParamShapes() const override;
 };
 

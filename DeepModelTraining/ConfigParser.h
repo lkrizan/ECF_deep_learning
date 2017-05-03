@@ -8,7 +8,7 @@ class ConfigParser
 {
 
 private:
-  std::vector<std::pair<std::string, std::vector<NetworkConfiguration::Shape>>> m_LayerConfiguration;
+  std::vector<std::pair<std::string, std::vector<std::vector<int>>>> m_LayerConfiguration;
   std::vector<unsigned int> m_InputShape;
   std::vector<unsigned int> m_OutputShape;
   std::vector<std::string> m_InputFiles;
@@ -33,7 +33,7 @@ private:
 
 public:
   ConfigParser(const std::string pathToFile);
-  std::vector<std::pair<std::string, std::vector<NetworkConfiguration::Shape>>> LayerConfiguration() { return m_LayerConfiguration; }
+  std::vector<std::pair<std::string, std::vector<std::vector<int>>>> & LayerConfiguration() { return m_LayerConfiguration; }
   const std::vector<unsigned int>& InputShape() { return m_InputShape; }
   const std::vector<unsigned int>& OutputShape() { return m_OutputShape; }
   const std::vector<std::string> & InputFiles() { return m_InputFiles; }

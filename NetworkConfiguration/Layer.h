@@ -22,17 +22,17 @@ struct LayerBaseParams
 // base shape with one more parameter (for layers which have one additional parameter with shape (FullyConnectedLayer, etc.)
 struct LayerShapeL1Params : public LayerBaseParams
 {
-  const Shape & paramShape_;
-  LayerShapeL1Params(tensorflow::Scope & scope, const tensorflow::Input &previousLayerOutput, const Shape& previousLayerOutputShape, const Shape& paramShape) :
-    LayerBaseParams(scope, previousLayerOutput, previousLayerOutputShape), paramShape_(paramShape) {};
+  const std::vector<int> & paramShapeArgs_;
+  LayerShapeL1Params(tensorflow::Scope & scope, const tensorflow::Input &previousLayerOutput, const Shape& previousLayerOutputShape, const std::vector<int>& paramShapeArgs) :
+    LayerBaseParams(scope, previousLayerOutput, previousLayerOutputShape), paramShapeArgs_(paramShapeArgs) {};
 };
 
 // base shape with 2 more parameters (parameter shape and stride shape: convolution and pooling layers)
 struct LayerShapeL2Params : public LayerShapeL1Params
 {
-  const Shape & strideShape_;
-  LayerShapeL2Params(tensorflow::Scope & scope, const tensorflow::Input &previousLayerOutput, const Shape& previousLayerOutputShape, const Shape& paramShape, const Shape & strideShape) :
-    strideShape_(strideShape), LayerShapeL1Params(scope, previousLayerOutput, previousLayerOutputShape, paramShape) {};
+  const std::vector<int> & strideShapeArgs_;
+  LayerShapeL2Params(tensorflow::Scope & scope, const tensorflow::Input &previousLayerOutput, const Shape& previousLayerOutputShape, const std::vector<int>& paramShapeArgs, const std::vector<int> & strideShapeArgs) :
+    strideShapeArgs_(strideShapeArgs), LayerShapeL1Params(scope, previousLayerOutput, previousLayerOutputShape, paramShapeArgs) {};
 };
 
 

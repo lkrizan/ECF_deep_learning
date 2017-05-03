@@ -53,7 +53,7 @@ void ModelEvalOp::setTensor(Tensor &tensor, InputIterator first, InputIterator l
 }
 
 
-std::vector<NetworkConfiguration::LayerP> ModelEvalOp::createLayers(Scope &root, const std::vector<std::pair<std::string, std::vector<NetworkConfiguration::Shape>>>& networkConfiguration, const std::string lossFunctionName, const NetworkConfiguration::Shape & inputShape, const NetworkConfiguration::Shape & outputShape) const
+std::vector<NetworkConfiguration::LayerP> ModelEvalOp::createLayers(Scope &root, const std::vector<std::pair<std::string, std::vector<std::vector<int>>>>& networkConfiguration, const std::string lossFunctionName, const NetworkConfiguration::Shape & inputShape, const NetworkConfiguration::Shape & outputShape) const
 {
   using NetworkConfiguration::Shape;
   // create placeholders for inputs and for expected outputs so network can be defined
@@ -63,13 +63,13 @@ std::vector<NetworkConfiguration::LayerP> ModelEvalOp::createLayers(Scope &root,
   std::vector<NetworkConfiguration::LayerP> layers;
   for (auto iter = networkConfiguration.begin(); iter != networkConfiguration.end(); iter++)
   {
-    Shape paramShape = (iter->second.size() >= 1) ? iter->second.at(0) : Shape();
-    Shape strideShape = (iter->second.size() >= 2) ? iter->second.at(1) : Shape();
+    std::vector<int> paramShapeArgs = (iter->second.size() >= 1) ? iter->second.at(0) : std::vector<int>();
+    std::vector<int> strideShapeArgs = (iter->second.size() >= 2) ? iter->second.at(1) : std::vector<int>();
     NetworkConfiguration::LayerP layer;
     if (iter == networkConfiguration.begin())
-      layer = NetworkConfiguration::LayerFactory::instance().createObject(iter->first, NetworkConfiguration::LayerShapeL2Params(root, inputPlaceholder, inputShape, paramShape, strideShape));
+      layer = NetworkConfiguration::LayerFactory::instance().createObject(iter->first, NetworkConfiguration::LayerShapeL2Params(root, inputPlaceholder, inputShape, paramShapeArgs, strideShapeArgs));
     else
-      layer = NetworkConfiguration::LayerFactory::instance().createObject(iter->first, NetworkConfiguration::LayerShapeL2Params(root, layers.back()->forward(), layers.back()->outputShape(), paramShape, strideShape));
+      layer = NetworkConfiguration::LayerFactory::instance().createObject(iter->first, NetworkConfiguration::LayerShapeL2Params(root, layers.back()->forward(), layers.back()->outputShape(), paramShapeArgs, strideShapeArgs));
     layers.push_back(layer);
   }
   // add loss function to graph
@@ -109,7 +109,7 @@ bool ModelEvalOp::initialize(StateP state)
     m_SaveModel = *(static_cast<int*> (state->getRegistry()->getEntry("saveModel").get()));
     m_ModelExportPath = *(static_cast<std::string*> (state->getRegistry()->getEntry("modelSavePath").get()));
     ConfigParser configParser(configFilePath);
-    std::vector<std::pair<std::string, std::vector<NetworkConfiguration::Shape>>> layerConfiguration = configParser.LayerConfiguration();
+    std::vector<std::pair<std::string, std::vector<std::vector<int>>>> layerConfiguration = configParser.LayerConfiguration();
     const std::vector<std::string> & datasetInputFiles = configParser.InputFiles();
     const std::vector<std::string> & datasetLabelFiles = configParser.LabelFiles();
     std::string datasetLoaderType = configParser.DatasetLoaderType();

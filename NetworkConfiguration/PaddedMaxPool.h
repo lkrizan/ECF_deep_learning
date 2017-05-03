@@ -14,8 +14,8 @@ class PaddedMaxPool : public NonParameterizedLayer
 
 public:
   // windowShape - poolSize (1D), strideShape (1D)
-  PaddedMaxPool(tensorflow::Scope &scope, const tensorflow::Input &previousLayerOutput, const Shape& previousLayerOutputShape, const Shape& windowShape, const Shape & strideShape);
-  PaddedMaxPool(LayerShapeL2Params & params) : PaddedMaxPool(params.scope_, params.previousLayerOutput_, params.previousLayerOutputShape_, params.paramShape_, params.strideShape_) {};
+  PaddedMaxPool(tensorflow::Scope &scope, const tensorflow::Input &previousLayerOutput, const Shape& previousLayerOutputShape, const std::vector<int>& windowShapeArgs, const std::vector<int> & strideShapeArgs);
+  PaddedMaxPool(LayerShapeL2Params & params) : PaddedMaxPool(params.scope_, params.previousLayerOutput_, params.previousLayerOutputShape_, params.paramShapeArgs_, params.strideShapeArgs_) {};
 };
 
 

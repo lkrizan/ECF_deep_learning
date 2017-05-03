@@ -3,28 +3,22 @@
 namespace NetworkConfiguration {
 
   // paramShape: kernelSize, numFilters
-  Conv2D::Conv2D(tensorflow::Scope & scope, const tensorflow::Input & previousLayerOutput, const Shape & previousLayerOutputShape, const Shape & paramShape, const Shape & strideShape) :
+  Conv2D::Conv2D(tensorflow::Scope & scope, const tensorflow::Input & previousLayerOutput, const Shape & previousLayerOutputShape, const std::vector<int> & paramShapeArgs) :
     ParameterizedLayer(scope)
   {
     using namespace tensorflow::ops;
     // check if parameters are valid
     bool parameterizationFailure = false;
     std::ostringstream errorMessageStream;
-    if (!paramShape.validForParameterizedUse() || paramShape.size() != 2)
+    if (paramShapeArgs.size() != 2 || paramShapeArgs[0] <= 0 || paramShapeArgs[1] <= 0)
     {
       parameterizationFailure = true;
-      errorMessageStream << "Shape [" << paramShape << "] cannot be used as a kernel for convolution." << std::endl;
+      errorMessageStream << "Convolution parameters should have 2 greater than zero arguments." << std::endl;
     }
     if (previousLayerOutputShape.size() != 4)
     {
       parameterizationFailure = true;
       errorMessageStream << "Input to a convolution layer must be a rank 4 tensor" << std::endl;
-    }
-    // check if compatible for matrix multiplication ( forward pass is x dot wT
-    else if (!strideShape.validForParameterizedUse() || strideShape.size() != 1)
-    {
-      parameterizationFailure = true;
-      errorMessageStream << "Shapes [" << strideShape << "] is not a valid shape for stride. Only one element allowed." << std::endl;
     }
     if (parameterizationFailure)
     {
@@ -36,9 +30,8 @@ namespace NetworkConfiguration {
     m_WeightsName = name + "_w";
     m_BiasName = name + "_b";
     // get data from shapes to create variables
-    const int stride = strideShape.front();
-    const unsigned int kernelSize = paramShape.front();
-    const unsigned int numFilters = paramShape.back();
+    const unsigned int kernelSize = paramShapeArgs.front();
+    const unsigned int numFilters = paramShapeArgs.back();
     const std::vector<int64> & previousLayerShapeValues = previousLayerOutputShape.data();
     const unsigned int numExamples = previousLayerShapeValues[0];
     const unsigned int height = previousLayerShapeValues[1];
@@ -51,7 +44,7 @@ namespace NetworkConfiguration {
     auto weights = Placeholder(m_Scope.WithOpName(m_WeightsName), tensorflow::DataType::DT_FLOAT);
     auto bias = Placeholder(m_Scope.WithOpName(m_BiasName), tensorflow::DataType::DT_FLOAT);
     // for some reason, build with optimization (max speed) throws exception unless array slice which describes stride is passed directly through function (?)
-    auto tempResult = tensorflow::ops::Conv2D(m_Scope, previousLayerOutput, weights, tensorflow::gtl::ArraySlice<int>({1, stride, stride, 1}), tensorflow::StringPiece("VALID"));
+    auto tempResult = tensorflow::ops::Conv2D(m_Scope, previousLayerOutput, weights, tensorflow::gtl::ArraySlice<int>({1, 1, 1, 1}), tensorflow::StringPiece("VALID"));
     m_Output = Add(m_Scope.WithOpName(name + "_out"), tempResult, bias);
   }
 
@@ -65,6 +58,6 @@ namespace NetworkConfiguration {
 // register class in factory
 namespace {
   using namespace NetworkConfiguration;
-  LayerCreator ctor = [](LayerBaseParams & params) {return new Conv2D(static_cast<LayerShapeL2Params&>(params));};
+  LayerCreator ctor = [](LayerBaseParams & params) {return new Conv2D(static_cast<LayerShapeL1Params&>(params));};
   bool dummy = LayerFactory::instance().registerClass("Conv2D", ctor);
 }

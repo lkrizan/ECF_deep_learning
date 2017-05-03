@@ -2,21 +2,21 @@
 
 namespace NetworkConfiguration {
 
-PaddedMaxPool::PaddedMaxPool(tensorflow::Scope & scope, const tensorflow::Input & previousLayerOutput, const Shape & previousLayerOutputShape, const Shape & windowShape, const Shape & strideShape) :
+PaddedMaxPool::PaddedMaxPool(tensorflow::Scope & scope, const tensorflow::Input & previousLayerOutput, const Shape & previousLayerOutputShape, const std::vector<int> & windowShapeArgs, const std::vector<int> & strideShapeArgs) :
   NonParameterizedLayer(scope)
 {
   // check if parameters are valid
   bool parameterizationFailure = false;
   std::ostringstream errorMessageStream;
-  if (!windowShape.validForParameterizedUse() || windowShape.size() != 1)
+  if (windowShapeArgs.size() != 1 || windowShapeArgs.front() <= 0)
   {
     parameterizationFailure = true;
-    errorMessageStream << "Shape [" << windowShape << "] is not a valid shape for pooling window." << std::endl;
+    errorMessageStream << "Pool size arguments should contain one greater than zero element." << std::endl;
   }
-  if (!strideShape.validForParameterizedUse() || strideShape.size() != 1)
+  if (strideShapeArgs.size() != 1 || strideShapeArgs.front() <= 0)
   {
     parameterizationFailure = true;
-    errorMessageStream << "Shape [" << windowShape << "] is not a valid stride parameter." << std::endl;
+    errorMessageStream << "Stride arguments should contain one greater than zero element." << std::endl;
   }
   if (previousLayerOutputShape.size() != 4)
   {
@@ -34,8 +34,8 @@ PaddedMaxPool::PaddedMaxPool(tensorflow::Scope & scope, const tensorflow::Input 
   const unsigned int height = previousLayerShapeValues[1];
   const unsigned int width = previousLayerShapeValues[2];
   const unsigned int numFiltersInput = previousLayerShapeValues[3];
-  const int stride = strideShape.front();
-  const int poolSize = windowShape.front();
+  const int stride = strideShapeArgs.front();
+  const int poolSize = windowShapeArgs.front();
   m_OutputShape = Shape({ numExamples, height / stride, width / stride, numFiltersInput });
   using namespace tensorflow::gtl;
   m_Output = tensorflow::ops::MaxPool(scope.WithOpName(outputName), previousLayerOutput, ArraySlice<int>({ 1, poolSize, poolSize, 1 }), ArraySlice<int>({ 1, stride, stride, 1 }), tensorflow::StringPiece("SAME"));

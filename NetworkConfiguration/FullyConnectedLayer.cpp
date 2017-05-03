@@ -2,17 +2,17 @@
 
 namespace NetworkConfiguration {
 
-FullyConnectedLayer::FullyConnectedLayer(tensorflow::Scope &scope, const tensorflow::Input &previousLayerOutput, const Shape& previousLayerOutputShape, const Shape &paramShape) : ParameterizedLayer(scope)
+FullyConnectedLayer::FullyConnectedLayer(tensorflow::Scope &scope, const tensorflow::Input &previousLayerOutput, const Shape& previousLayerOutputShape, const std::vector<int> &paramShapeArgs) : ParameterizedLayer(scope)
 {
   using namespace tensorflow::ops;
   
   // check if parameters are valid
   bool parameterizationFailure = false;
   std::ostringstream errorMessageStream;
-  if (!paramShape.validForParameterizedUse() || paramShape.size() != 1)
+  if (paramShapeArgs.size() != 1 || paramShapeArgs.front() <= 0)
   {
     parameterizationFailure = true;
-    errorMessageStream << "Shape [" << paramShape << "] cannot be used for weights in fully connected layer." << std::endl;
+    errorMessageStream << "Fully connected layer shape argument must be single greater than zero element." << std::endl;
   }
   if (previousLayerOutputShape.size() != 2)
   {
@@ -37,14 +37,14 @@ FullyConnectedLayer::FullyConnectedLayer(tensorflow::Scope &scope, const tensorf
 
   // set shapes
   unsigned int numDimension = previousLayerOutputShape.back();
-  unsigned int numNeurons = paramShape.front();
+  unsigned int numNeurons = paramShapeArgs.front();
   m_WeightsShape = Shape({ numNeurons, numDimension });
   m_BiasShape = Shape({ numNeurons });
   m_OutputShape = Shape({ previousLayerOutputShape.front(), m_WeightsShape.front() });
 }
 
 FullyConnectedLayer::FullyConnectedLayer(LayerShapeL1Params & params) :
-  FullyConnectedLayer(params.scope_, params.previousLayerOutput_, params.previousLayerOutputShape_, params.paramShape_) {};
+  FullyConnectedLayer(params.scope_, params.previousLayerOutput_, params.previousLayerOutputShape_, params.paramShapeArgs_) {};
 
 std::vector<std::pair<std::string, Shape>> FullyConnectedLayer::getParamShapes() const
 {

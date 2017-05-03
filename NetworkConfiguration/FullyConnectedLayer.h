@@ -22,7 +22,7 @@ private:
 
 public:
   // paramShape - number of neurons
-  FullyConnectedLayer(tensorflow::Scope &scope, const tensorflow::Input &previousLayerOutput, const Shape& previousLayerOutputShape, const Shape &paramShape);
+  FullyConnectedLayer(tensorflow::Scope &scope, const tensorflow::Input &previousLayerOutput, const Shape& previousLayerOutputShape, const std::vector<int> &paramShapeArgs);
   FullyConnectedLayer(LayerShapeL1Params & params);
   std::vector<std::pair<std::string, Shape>> getParamShapes() const override;
 };
