@@ -81,7 +81,7 @@ C:\...\build> Release\tf_tutorials_example_trainer.exe
 * all include paths in the DeepModelTraining.vcxproj are set over user-defined macro in Visual Studio, so after loading the solution, do the following:
     - select View > Property manager
     - select Release | x64 and right click on property ending with `.user`, then select Properties
-    - under User Macro in common properties, add TENSORFLOW_ROOT and ECF_ROOT variables with value of location of their root directories
+    - under User Macro in common properties, add TENSORFLOW_ROOT, ECF_ROOT and BOOST_ROOT variables with value of location of their root directories
     - make sure you set option `Set this macro as an environment variable in the build environment`
     
 * building ECF:
