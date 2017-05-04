@@ -3,7 +3,7 @@
 namespace NetworkConfiguration {
 
   // paramShape: kernelSize, numFilters
-  Conv2D::Conv2D(tensorflow::Scope & scope, const tensorflow::Input & previousLayerOutput, const Shape & previousLayerOutputShape, const std::vector<int> & paramShapeArgs) :
+  Conv2D::Conv2D(tensorflow::Scope & scope, const tensorflow::Input & previousLayerOutput, const Shape & previousLayerOutputShape, const std::vector<int> & paramShapeArgs, const std::vector<int> & strideShapeArgs) :
     ParameterizedLayer(scope)
   {
     using namespace tensorflow::ops;
@@ -19,6 +19,11 @@ namespace NetworkConfiguration {
     {
       parameterizationFailure = true;
       errorMessageStream << "Input to a convolution layer must be a rank 4 tensor" << std::endl;
+    }
+    if (strideShapeArgs.size() != 1 || strideShapeArgs.front() <= 0)
+    {
+      parameterizationFailure = true;
+      errorMessageStream << "Stride parameter should be 1 greater than zero argument." << std::endl;
     }
     if (parameterizationFailure)
     {
@@ -37,15 +42,16 @@ namespace NetworkConfiguration {
     const unsigned int height = previousLayerShapeValues[1];
     const unsigned int width = previousLayerShapeValues[2];
     const unsigned int numFiltersInput = previousLayerShapeValues[3];
-    m_OutputShape = Shape({ numExamples, height - kernelSize + 1, width - kernelSize + 1, numFilters });
+    const int stride = strideShapeArgs.front();
+    m_OutputShape = Shape({ numExamples, (height - kernelSize) / stride + 1, (width - kernelSize) / stride + 1, numFilters });
     m_WeightsShape = Shape({ kernelSize, kernelSize, numFiltersInput, numFilters });
     m_BiasShape = Shape({ numFilters });
     // create placeholders and graph nodes for layer 
     auto weights = Placeholder(m_Scope.WithOpName(m_WeightsName), tensorflow::DataType::DT_FLOAT);
     auto bias = Placeholder(m_Scope.WithOpName(m_BiasName), tensorflow::DataType::DT_FLOAT);
     // for some reason, build with optimization (max speed) throws exception unless array slice which describes stride is passed directly through function (?)
-    auto tempResult = tensorflow::ops::Conv2D(m_Scope, previousLayerOutput, weights, tensorflow::gtl::ArraySlice<int>({1, 1, 1, 1}), tensorflow::StringPiece("VALID"));
-    m_Output = Add(m_Scope.WithOpName(name + "_out"), tempResult, bias);
+    auto tempResult = tensorflow::ops::Conv2D(m_Scope, previousLayerOutput, weights, tensorflow::gtl::ArraySlice<int>({1, stride, stride, 1}), tensorflow::StringPiece("VALID"));
+    m_Output = BiasAdd(m_Scope.WithOpName(name + "_out"), tempResult, bias);
   }
 
   std::vector<std::pair<std::string, Shape>> Conv2D::getParamShapes() const
@@ -58,6 +64,6 @@ namespace NetworkConfiguration {
 // register class in factory
 namespace {
   using namespace NetworkConfiguration;
-  LayerCreator ctor = [](LayerBaseParams & params) {return new Conv2D(static_cast<LayerShapeL1Params&>(params));};
+  LayerCreator ctor = [](LayerBaseParams & params) {return new Conv2D(static_cast<LayerShapeL2Params&>(params));};
   bool dummy = LayerFactory::instance().registerClass("Conv2D", ctor);
 }

@@ -33,7 +33,7 @@ FullyConnectedLayer::FullyConnectedLayer(tensorflow::Scope &scope, const tensorf
   auto weights = Placeholder(m_Scope.WithOpName(m_WeightsName), tensorflow::DataType::DT_FLOAT);
   auto bias = Placeholder(m_Scope.WithOpName(m_BiasName), tensorflow::DataType::DT_FLOAT);
   auto tempResult = MatMul(m_Scope, previousLayerOutput, weights, MatMul::TransposeB(true));
-  m_Output = Add(m_Scope.WithOpName(name + "_out"), tempResult, bias);
+  m_Output = BiasAdd(m_Scope.WithOpName(name + "_out"), tempResult, bias);
 
   // set shapes
   unsigned int numDimension = previousLayerOutputShape.back();

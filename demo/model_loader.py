@@ -27,7 +27,7 @@ class ModelLoader:
 
     def _open_graph_def(self):
         self.graph_def = tf.GraphDef()
-        with open(self.folder_path + "/graph.pb", "rb") as f:
+        with open(self.folder_path + "graph.pb", "rb") as f:
             self.graph_def.ParseFromString(f.read())
 
     def _create_variable_data(self):
@@ -36,7 +36,7 @@ class ModelLoader:
         # states for reading file
         eStart, eName, eShape, eValues = range(0, 4)
         state = eName
-        with open(self.folder_path + "./variables.dat") as f:
+        with open(self.folder_path + "variables.dat") as f:
             var_data = VariableData()
             for line in f:
                 line = line.split()
@@ -60,7 +60,7 @@ class ModelLoader:
                     continue
 
 if __name__ == "__main__":
-    loader = ModelLoader("./model")
+    loader = ModelLoader("./model/")
     feed_dict = loader.feed_dict
     tf.import_graph_def(loader.graph_def, name="")
     with tf.Session() as sess:

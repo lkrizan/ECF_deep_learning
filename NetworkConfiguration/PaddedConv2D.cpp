@@ -3,7 +3,8 @@
 namespace NetworkConfiguration {
 
 // paramShape: kernelSize, numFilters
-PaddedConv2D::PaddedConv2D(tensorflow::Scope & scope, const tensorflow::Input & previousLayerOutput, const Shape & previousLayerOutputShape, const std::vector<int> & paramShapeArgs) :
+PaddedConv2D::PaddedConv2D(tensorflow::Scope & scope, const tensorflow::Input & previousLayerOutput, const Shape & previousLayerOutputShape, 
+  const std::vector<int> & paramShapeArgs, const std::vector<int> & strideShapeArgs) :
   ParameterizedLayer(scope)
 {
   using namespace tensorflow::ops;
@@ -19,6 +20,11 @@ PaddedConv2D::PaddedConv2D(tensorflow::Scope & scope, const tensorflow::Input & 
   {
     parameterizationFailure = true;
     errorMessageStream << "Input to a convolution layer must be a rank 4 tensor" << std::endl;
+  }
+  if (strideShapeArgs.size() != 1 || strideShapeArgs.front() <= 0)
+  {
+    parameterizationFailure = true;
+    errorMessageStream << "Stride parameter should be 1 greater than zero argument." << std::endl;
   }
   if (parameterizationFailure)
   {
@@ -37,15 +43,16 @@ PaddedConv2D::PaddedConv2D(tensorflow::Scope & scope, const tensorflow::Input & 
   const unsigned int height = previousLayerShapeValues[1];
   const unsigned int width = previousLayerShapeValues[2];
   const unsigned int numFiltersInput = previousLayerShapeValues[3];
-  m_OutputShape = Shape({ numExamples, height, width, numFilters });
+  const int stride = strideShapeArgs.front();
+  m_OutputShape = Shape({ numExamples, (int)std::ceil(float(height) / stride), (int)std::ceil(float(width) / stride), numFilters });
   m_WeightsShape = Shape({ kernelSize, kernelSize, numFiltersInput, numFilters });
   m_BiasShape = Shape({ numFilters });
   // create placeholders and graph nodes for layer 
   auto weights = Placeholder(m_Scope.WithOpName(m_WeightsName), tensorflow::DataType::DT_FLOAT);
   auto bias = Placeholder(m_Scope.WithOpName(m_BiasName), tensorflow::DataType::DT_FLOAT);
   // for some reason, build with optimization (max speed) throws exception unless array slice which describes stride is passed directly through function (?)
-  auto tempResult = Conv2D(m_Scope, previousLayerOutput, weights, tensorflow::gtl::ArraySlice<int>({ 1, 1, 1, 1 }), tensorflow::StringPiece("SAME"));
-  m_Output = Add(m_Scope.WithOpName(name + "_out"), tempResult, bias);
+  auto tempResult = Conv2D(m_Scope, previousLayerOutput, weights, tensorflow::gtl::ArraySlice<int>({ 1, stride, stride, 1 }), tensorflow::StringPiece("SAME"));
+  m_Output = BiasAdd(m_Scope.WithOpName(name + "_out"), tempResult, bias);
 }
 
 std::vector<std::pair<std::string, Shape>> PaddedConv2D::getParamShapes() const
@@ -58,6 +65,6 @@ std::vector<std::pair<std::string, Shape>> PaddedConv2D::getParamShapes() const
 // register class in factory
 namespace {
   using namespace NetworkConfiguration;
-  LayerCreator ctor = [](LayerBaseParams & params) {return new PaddedConv2D(static_cast<LayerShapeL1Params&>(params));};
+  LayerCreator ctor = [](LayerBaseParams & params) {return new PaddedConv2D(static_cast<LayerShapeL2Params&>(params));};
   bool dummy = LayerFactory::instance().registerClass("PaddedConv2D", ctor);
 }
