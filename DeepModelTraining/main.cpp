@@ -11,5 +11,5 @@ int main(int argc, char **argv)
 
   state->initialize(argc, argv);
   state->run();
-    return 0;
+  return 0;
 }
