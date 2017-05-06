@@ -29,18 +29,19 @@ FullyConnectedLayer::FullyConnectedLayer(tensorflow::Scope &scope, const tensorf
   m_WeightsName = name + "_w";
   m_BiasName = name + "_b";
   
-  // create placeholders and graph nodes for layer 
-  auto weights = Placeholder(m_Scope.WithOpName(m_WeightsName), tensorflow::DataType::DT_FLOAT);
-  auto bias = Placeholder(m_Scope.WithOpName(m_BiasName), tensorflow::DataType::DT_FLOAT);
-  auto tempResult = MatMul(m_Scope, previousLayerOutput, weights, MatMul::TransposeB(true));
-  m_Output = BiasAdd(m_Scope.WithOpName(name + "_out"), tempResult, bias);
-
   // set shapes
   unsigned int numDimension = previousLayerOutputShape.back();
   unsigned int numNeurons = paramShapeArgs.front();
   m_WeightsShape = Shape({ numNeurons, numDimension });
   m_BiasShape = Shape({ numNeurons });
   m_OutputShape = Shape({ previousLayerOutputShape.front(), m_WeightsShape.front() });
+
+  // create placeholders and graph nodes for layer 
+  auto weights = Variable(m_Scope.WithOpName(m_WeightsName), m_WeightsShape.asTensorShape(), tensorflow::DataType::DT_FLOAT);
+  auto bias = Variable(m_Scope.WithOpName(m_BiasName), m_BiasShape.asTensorShape(), tensorflow::DataType::DT_FLOAT);
+  auto tempResult = MatMul(m_Scope, previousLayerOutput, weights, MatMul::TransposeB(true));
+  m_Output = BiasAdd(m_Scope.WithOpName(name + "_out"), tempResult, bias);
+
 }
 
 FullyConnectedLayer::FullyConnectedLayer(LayerShapeL1Params & params) :

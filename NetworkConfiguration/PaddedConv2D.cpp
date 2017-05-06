@@ -48,8 +48,8 @@ PaddedConv2D::PaddedConv2D(tensorflow::Scope & scope, const tensorflow::Input & 
   m_WeightsShape = Shape({ kernelSize, kernelSize, numFiltersInput, numFilters });
   m_BiasShape = Shape({ numFilters });
   // create placeholders and graph nodes for layer 
-  auto weights = Placeholder(m_Scope.WithOpName(m_WeightsName), tensorflow::DataType::DT_FLOAT);
-  auto bias = Placeholder(m_Scope.WithOpName(m_BiasName), tensorflow::DataType::DT_FLOAT);
+  auto weights = Variable(m_Scope.WithOpName(m_WeightsName), m_WeightsShape.asTensorShape(), tensorflow::DataType::DT_FLOAT);
+  auto bias = Variable(m_Scope.WithOpName(m_BiasName), m_BiasShape.asTensorShape(), tensorflow::DataType::DT_FLOAT);
   // for some reason, build with optimization (max speed) throws exception unless array slice which describes stride is passed directly through function (?)
   auto tempResult = Conv2D(m_Scope, previousLayerOutput, weights, tensorflow::gtl::ArraySlice<int>({ 1, stride, stride, 1 }), tensorflow::StringPiece("SAME"));
   m_Output = BiasAdd(m_Scope.WithOpName(name + "_out"), tempResult, bias);
