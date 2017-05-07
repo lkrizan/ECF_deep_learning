@@ -55,6 +55,10 @@ public:
   virtual Shape outputShape() const { return m_OutputShape; }
   virtual bool hasParams() const = 0;
   virtual ~Layer() = default;
+  /*
+  // returns gradient over inputs
+  virtual const tensorflow::Output& backwardInputs(const tensorflow::Input & previousInputsGradient) = 0;
+  */
 };
 
 typedef std::shared_ptr<Layer> LayerP;
@@ -83,11 +87,20 @@ protected:
 
   ParameterizedLayer(LayerShapeL1Params & params) : Layer(params) {};
   ParameterizedLayer(tensorflow::Scope & scope, const tensorflow::Input & previousLayerOutput) : Layer(scope, previousLayerOutput) {};
+
 public:
   virtual ~ParameterizedLayer() = default;
   bool hasParams() const override { return true; };
   // returns shapes of all parameters
   virtual std::vector<std::pair<std::string, Shape>> getParamShapes() const = 0;
+  const tensorflow::Output & getWeights() const { return m_Weights; }
+  const tensorflow::Output & getBias() const { return m_Bias; }
+  /*
+  // returns gradient over weights
+  virtual const tensorflow::Output& backwardWeights(const tensorflow::Input & previousInputsGradient) = 0;
+  // returns gradient over bias
+  virtual const tensorflow::Output& backwardBias(const tensorflow::Input & previousInputsGradient) = 0;
+  */
 };
 
 typedef std::shared_ptr<ParameterizedLayer> ParameterizedLayerP;
