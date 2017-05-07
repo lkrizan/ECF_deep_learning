@@ -35,10 +35,8 @@ protected:
 public:
   virtual const tensorflow::Output& getLossOutput() { return m_Loss; };
   virtual ~LossFunction() = default;
-  /*
   // returns gradient through loss function
-  virtual const tensorflow::Output & backward() = 0;
-  */
+  virtual tensorflow::Output backward() = 0;
 
 };	
 

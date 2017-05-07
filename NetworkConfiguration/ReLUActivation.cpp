@@ -13,9 +13,11 @@ ReLUActivation::ReLUActivation(tensorflow::Scope & scope, const tensorflow::Inpu
 
 }   // namespace NetworkConfiguration
 
+/*
 // register class in factory
 namespace {
   using namespace NetworkConfiguration;
   LayerCreator ctor = [](LayerBaseParams & params) { return new ReLUActivation(params);};
   bool dummy = LayerFactory::instance().registerClass("ReLUActivation", ctor);
 }
+*/

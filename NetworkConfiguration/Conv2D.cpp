@@ -61,9 +61,11 @@ namespace NetworkConfiguration {
 
 }   // namespace NetworkConfiguration
 
+/*
 // register class in factory
 namespace {
   using namespace NetworkConfiguration;
   LayerCreator ctor = [](LayerBaseParams & params) {return new Conv2D(static_cast<LayerShapeL2Params&>(params));};
   bool dummy = LayerFactory::instance().registerClass("Conv2D", ctor);
 }
+*/

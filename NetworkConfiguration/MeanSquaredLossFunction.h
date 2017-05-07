@@ -12,7 +12,7 @@ public:
   MeanSquaredLossFunction(LossBaseParams params) :
     MeanSquaredLossFunction(params.scope_, params.networkOutput_, params.networkOutputShape_, params.expectedOutputsPlaceholder_, params.expectedOutputShape_, params.placeholderName_) {};
 
-  tensorflow::Output backward();
+  tensorflow::Output backward() override;
 };
 
 }	// namespace NetworkConfiguration

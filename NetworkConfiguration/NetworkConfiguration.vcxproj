@@ -11,6 +11,7 @@
     <ClInclude Include="CrossEntropyLossFunction.h" />
     <ClInclude Include="Flatten.h" />
     <ClInclude Include="FullyConnectedLayer.h" />
+    <ClInclude Include="GradientDescentOptimizer.h" />
     <ClInclude Include="Layer.h" />
     <ClInclude Include="LossFunction.h" />
     <ClInclude Include="MeanSquaredLossFunction.h" />
@@ -26,6 +27,7 @@
     <ClCompile Include="CrossEntropyLossFunction.cpp" />
     <ClCompile Include="Flatten.cpp" />
     <ClCompile Include="FullyConnectedLayer.cpp" />
+    <ClCompile Include="GradientDescentOptimizer.cpp" />
     <ClCompile Include="MeanSquaredLossFunction.cpp" />
     <ClCompile Include="PaddedConv2D.cpp" />
     <ClCompile Include="PaddedMaxPool.cpp" />

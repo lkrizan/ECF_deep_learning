@@ -25,9 +25,9 @@ public:
   FullyConnectedLayer(tensorflow::Scope &scope, const tensorflow::Input &previousLayerOutput, const Shape& previousLayerOutputShape, const std::vector<int> &paramShapeArgs);
   FullyConnectedLayer(LayerShapeL1Params & params);
   std::vector<std::pair<std::string, Shape>> getParamShapes() const override;
-  const tensorflow::Output& backwardInputs(const tensorflow::Input & previousInputsGradient);
-  const tensorflow::Output& backwardWeights(const tensorflow::Input & previousInputsGradient);
-  const tensorflow::Output& backwardBias(const tensorflow::Input & previousInputsGradient);
+  tensorflow::Output backwardInputs(const tensorflow::Input & previousInputsGradient) override;
+  tensorflow::Output backwardWeights(const tensorflow::Input & previousInputsGradient) override;
+  tensorflow::Output backwardBias(const tensorflow::Input & previousInputsGradient) override;
 };
 
 int FullyConnectedLayer::s_TotalNumber = 0;

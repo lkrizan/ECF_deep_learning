@@ -22,9 +22,11 @@ SoftmaxCrossEntropyLossFunction::SoftmaxCrossEntropyLossFunction(tensorflow::Sco
 
 }   // namespace NetworkConfiguration
 
+/*
 // register class in factory
 namespace {
   using namespace NetworkConfiguration;
   LossCreator ctor = [](LossBaseParams & params) { return new SoftmaxCrossEntropyLossFunction(params);};
   bool dummy = LossFactory::instance().registerClass("SoftmaxCrossEntropyLossFunction", ctor);
 }
+*/

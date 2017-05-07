@@ -62,9 +62,11 @@ std::vector<std::pair<std::string, Shape>> PaddedConv2D::getParamShapes() const
 
 }   // namespace NetworkConfiguration
 
+/*
 // register class in factory
 namespace {
   using namespace NetworkConfiguration;
   LayerCreator ctor = [](LayerBaseParams & params) {return new PaddedConv2D(static_cast<LayerShapeL2Params&>(params));};
   bool dummy = LayerFactory::instance().registerClass("PaddedConv2D", ctor);
 }
+*/

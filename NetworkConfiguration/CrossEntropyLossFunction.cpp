@@ -33,9 +33,11 @@ CrossEntropyLossFunction::CrossEntropyLossFunction(tensorflow::Scope & scope, co
 
 }   // namespace NetworkConfiguration
 
+/*/
 // register class in factory
 namespace {
   using namespace NetworkConfiguration;
   LossCreator ctor = [](LossBaseParams & params) { return new CrossEntropyLossFunction(params);};
   bool dummy = LossFactory::instance().registerClass("CrossEntropyLossFunction", ctor);
 }
+*/

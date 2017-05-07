@@ -11,6 +11,15 @@ SigmoidActivation::SigmoidActivation(tensorflow::Scope &scope, const tensorflow:
   m_Output = tensorflow::ops::Sigmoid(scope.WithOpName(outputName), m_Input);
 }
 
+tensorflow::Output SigmoidActivation::backwardInputs(const tensorflow::Input & previousInputsGradient)
+{
+  using namespace tensorflow::ops;
+  auto subConstant = Const(m_Scope, 1.f);
+  auto sigmoidGradInputs = Sigmoid(m_Scope, previousInputsGradient);
+  auto temp = Subtract(m_Scope, subConstant, sigmoidGradInputs);
+  return Multiply(m_Scope, sigmoidGradInputs, temp);
+}
+
 }	// namespace NetworkConfiguration
 
 // register class in LayerFactory

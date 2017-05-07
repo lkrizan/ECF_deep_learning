@@ -28,10 +28,11 @@ Flatten::Flatten(tensorflow::Scope & scope, const tensorflow::Input & previousLa
 
 }   // namespace NetworkConfiguration
 
-
+/*
 // register class in factory
 namespace {
   using namespace NetworkConfiguration;
   LayerCreator ctor = [](LayerBaseParams & params) {return new Flatten(params);};
   bool dummy = LayerFactory::instance().registerClass("Flatten", ctor);
 }
+*/

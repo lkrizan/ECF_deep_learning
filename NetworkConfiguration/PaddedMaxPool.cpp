@@ -42,10 +42,11 @@ PaddedMaxPool::PaddedMaxPool(tensorflow::Scope & scope, const tensorflow::Input 
 
 }   // namespace NetworkConfiguration
 
-
+/*
 // register in factory
 namespace {
   using namespace NetworkConfiguration;
   LayerCreator ctor = [](LayerBaseParams & params) {return new PaddedMaxPool(static_cast<LayerShapeL2Params &> (params));};
   bool dummy = LayerFactory::instance().registerClass("PaddedMaxPool", ctor);
 }
+*/

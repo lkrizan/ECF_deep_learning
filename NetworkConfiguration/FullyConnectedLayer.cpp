@@ -53,19 +53,19 @@ std::vector<std::pair<std::string, Shape>> FullyConnectedLayer::getParamShapes()
   return std::vector<std::pair<std::string, Shape>>({ {m_WeightsName, m_WeightsShape}, {m_BiasName, m_BiasShape} });
 }
 
-const tensorflow::Output & FullyConnectedLayer::backwardInputs(const tensorflow::Input & previousInputsGradient)
+tensorflow::Output FullyConnectedLayer::backwardInputs(const tensorflow::Input & previousInputsGradient)
 {
   using namespace tensorflow::ops;
   return MatMul(m_Scope, previousInputsGradient, m_Weights);
 }
 
-const tensorflow::Output & FullyConnectedLayer::backwardWeights(const tensorflow::Input & previousInputsGradient)
+tensorflow::Output FullyConnectedLayer::backwardWeights(const tensorflow::Input & previousInputsGradient)
 {
   using namespace tensorflow::ops;
   return MatMul(m_Scope, previousInputsGradient, m_Input, MatMul::TransposeA(true));
 }
 
-const tensorflow::Output & FullyConnectedLayer::backwardBias(const tensorflow::Input & previousInputsGradient)
+tensorflow::Output FullyConnectedLayer::backwardBias(const tensorflow::Input & previousInputsGradient)
 {
   using namespace tensorflow::ops;
   return Sum(m_Scope, previousInputsGradient, 0);
