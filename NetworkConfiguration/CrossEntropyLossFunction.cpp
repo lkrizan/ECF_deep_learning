@@ -3,7 +3,7 @@
 namespace NetworkConfiguration {
 
 CrossEntropyLossFunction::CrossEntropyLossFunction(tensorflow::Scope & scope, const tensorflow::Input & networkOutput, const Shape & networkOutputShape, const tensorflow::Input & expectedOutputsPlaceholder, const Shape & expectedOutputShape, std::string placeholderName) :
-  LossFunction(scope)
+  LossFunction(scope, networkOutput, expectedOutputsPlaceholder)
 {
   /// expected outputs should also be one hot encoded
   /// should be used only after softmax
@@ -18,7 +18,7 @@ CrossEntropyLossFunction::CrossEntropyLossFunction(tensorflow::Scope & scope, co
   using namespace tensorflow::ops;
 
   // only probablity relevant to the actual class are left in the matrix
-  auto tempMultiply = Multiply(m_Scope, networkOutput, expectedOutputsPlaceholder);
+  auto tempMultiply = Multiply(m_Scope, m_NetworkOutput, m_ExpectedOutputs);
   // now take those values
   auto tempMax = Max(m_Scope, tempMultiply, 1);
   // apply log function

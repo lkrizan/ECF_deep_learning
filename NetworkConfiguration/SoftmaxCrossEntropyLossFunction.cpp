@@ -3,7 +3,7 @@
 namespace NetworkConfiguration {
 
 SoftmaxCrossEntropyLossFunction::SoftmaxCrossEntropyLossFunction(tensorflow::Scope & scope, const tensorflow::Input & networkOutput, const Shape & networkOutputShape, const tensorflow::Input & expectedOutputsPlaceholder, const Shape & expectedOutputShape, std::string placeholderName) :
-  LossFunction(scope)
+  LossFunction(scope, networkOutput, expectedOutputsPlaceholder)
 {
   /// expected outputs should also be one hot encoded
   if (networkOutputShape.size() != 2 || expectedOutputShape.size() != 2)
@@ -16,7 +16,7 @@ SoftmaxCrossEntropyLossFunction::SoftmaxCrossEntropyLossFunction(tensorflow::Sco
   }
   using namespace tensorflow::ops;
 
-  auto loss = SoftmaxCrossEntropyWithLogits(m_Scope, networkOutput, expectedOutputsPlaceholder);
+  auto loss = SoftmaxCrossEntropyWithLogits(m_Scope, m_NetworkOutput, m_ExpectedOutputs);
   m_Loss = Mean(m_Scope.WithOpName(placeholderName), loss.loss, 0);
 }
 
