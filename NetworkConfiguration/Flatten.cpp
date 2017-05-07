@@ -12,8 +12,8 @@ Flatten::Flatten(tensorflow::Scope & scope, const tensorflow::Input & previousLa
   }
 
   // set name
-  m_Index = ++s_TotalNumber;
-  std::string outputName = s_LayerName + std::to_string(m_Index) + "_out";
+  m_LayerName = s_LayerName + std::to_string(++s_TotalNumber);
+  std::string outputName = m_LayerName + "_out";
 
   const std::vector<tensorflow::int64> & previousLayerShapeValues = previousLayerOutputShape.data();
   const unsigned int numExamples = previousLayerShapeValues[0];

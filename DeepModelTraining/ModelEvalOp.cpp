@@ -127,10 +127,9 @@ bool ModelEvalOp::initialize(StateP state)
 
     // create network and session 
     ECF_LOG(state, 3, "Creating session...");
-    std::vector<NetworkConfiguration::LayerP> layers = createLayers(m_Scope, layerConfiguration, lossFunctionName, inputShape, outputShape);
-    // layers are only used for helping in creating graph definition - layers themselves are not used anywhere else later
-    // instead of layers, create instances of VariableData class which carry only required information - symbolic parameter names, their shapes and number of elements
-    m_VariableData = createVariableData(layers);
+    // TODO: refactor this, can be much better
+    m_Network = createLayers(m_Scope, layerConfiguration, lossFunctionName, inputShape, outputShape);
+    m_VariableData = createVariableData(m_Network);
 
     // create session
     Status status;

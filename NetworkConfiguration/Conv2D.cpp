@@ -30,10 +30,9 @@ namespace NetworkConfiguration {
       throw std::logic_error(errorMessageStream.str());
     }
     // set names for variables
-    m_Index = ++s_TotalNumber;
-    std::string name = s_LayerName + std::to_string(m_Index);
-    m_WeightsName = name + "_w";
-    m_BiasName = name + "_b";
+    m_LayerName = s_LayerName + std::to_string(++s_TotalNumber);
+    m_WeightsName = m_LayerName + "_w";
+    m_BiasName = m_LayerName + "_b";
     // get data from shapes to create variables
     const unsigned int kernelSize = paramShapeArgs.front();
     const unsigned int numFilters = paramShapeArgs.back();
@@ -51,7 +50,7 @@ namespace NetworkConfiguration {
     m_Bias = Variable(m_Scope.WithOpName(m_BiasName), m_BiasShape.asTensorShape(), tensorflow::DataType::DT_FLOAT);
     // for some reason, build with optimization (max speed) throws exception unless array slice which describes stride is passed directly through function (?)
     auto tempResult = tensorflow::ops::Conv2D(m_Scope, m_Input, m_Weights, tensorflow::gtl::ArraySlice<int>({1, m_Stride, m_Stride, 1}), tensorflow::StringPiece("VALID"));
-    m_Output = BiasAdd(m_Scope.WithOpName(name + "_out"), tempResult, m_Bias);
+    m_Output = BiasAdd(m_Scope.WithOpName(m_LayerName + "_out"), tempResult, m_Bias);
   }
 
   std::vector<std::pair<std::string, Shape>> Conv2D::getParamShapes() const

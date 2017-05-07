@@ -8,8 +8,6 @@ namespace NetworkConfiguration {
 class SoftmaxActivation : public NonParameterizedLayer
 {
 private:
-  // used for placeholder symbolic names
-  int m_Index;
   static int s_TotalNumber;
   static const std::string s_LayerName;
 

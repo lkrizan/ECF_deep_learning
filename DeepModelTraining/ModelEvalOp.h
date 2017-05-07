@@ -22,6 +22,8 @@ public:
   bool initialize(StateP);
   template <class T, class InputIterator>
   static void setTensor(Tensor &tensor, InputIterator first, InputIterator last);
+  Scope & getScope() { return m_Scope; }
+  const std::vector<NetworkConfiguration::LayerP> & getNetwork() { return m_Network; }
 
 private:
 
@@ -43,6 +45,8 @@ private:
 
   bool m_SaveModel = false;
   std::string m_ModelExportPath;
+
+  std::vector<NetworkConfiguration::LayerP> m_Network;
 
   DatasetLoader::IDatasetLoaderP m_DatasetHandler;
 

@@ -7,8 +7,6 @@ namespace NetworkConfiguration {
 
 class PaddedConv2D : public ParameterizedLayer
 {
-  // index of this layer - used for unique variable names
-  int m_Index;
   // counter of class instances
   static int s_TotalNumber;
   static const std::string s_LayerName;

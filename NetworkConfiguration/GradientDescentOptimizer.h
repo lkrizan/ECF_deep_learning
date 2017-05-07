@@ -4,10 +4,6 @@
 #include "Layer.h"
 #include "LossFunction.h"
 
-// TODO: after refactoring all layers, remove this
-#include "FullyConnectedLayer.h"
-#include "MeanSquaredLossFunction.h"
-
 namespace NetworkConfiguration {
 
 class GradientDescentOptimizer 
@@ -15,12 +11,12 @@ class GradientDescentOptimizer
   tensorflow::Scope & m_Scope;
   tensorflow::Output m_LearningRate;
 
-  virtual void applyGradient(const tensorflow::Input & variable, const tensorflow::Input & gradient);
+  virtual void applyGradient(const std::string & name, const tensorflow::Input & variable, const tensorflow::Input & gradient);
 
 public:
   GradientDescentOptimizer(tensorflow::Scope & scope, float learningRate);
-  // propagates error through whole network and updates parameters
-  void propagate(std::vector<LayerP> & network, LossFunctionP lossFunctionPtr);
+  // propagates error through whole network and updates parameters, returns collection of names through which to fetch new values
+  std::vector<std::string> propagate(std::vector<LayerP> & network, LossFunctionP lossFunctionPtr);
 };
 
 typedef std::shared_ptr<GradientDescentOptimizer> OptimizerP;

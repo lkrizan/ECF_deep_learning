@@ -7,8 +7,6 @@ namespace NetworkConfiguration {
 
 class PaddedMaxPool : public NonParameterizedLayer
 {
-  // used for placeholder symbolic names
-  int m_Index;
   static int s_TotalNumber;
   static const std::string s_LayerName;
   // layer arguments

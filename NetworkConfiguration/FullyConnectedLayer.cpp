@@ -25,10 +25,9 @@ FullyConnectedLayer::FullyConnectedLayer(tensorflow::Scope &scope, const tensorf
     throw std::logic_error(errorMessageStream.str());
   }
   // set names for variables
-  m_Index = ++s_TotalNumber;
-  std::string name = s_LayerName + std::to_string(m_Index);
-  m_WeightsName = name + "_w";
-  m_BiasName = name + "_b";
+  m_LayerName = s_LayerName + std::to_string(++s_TotalNumber);
+  m_WeightsName = m_LayerName + "_w";
+  m_BiasName = m_LayerName + "_b";
   
   // set shapes
   unsigned int numDimension = previousLayerOutputShape.back();
@@ -41,7 +40,7 @@ FullyConnectedLayer::FullyConnectedLayer(tensorflow::Scope &scope, const tensorf
   m_Weights = Variable(m_Scope.WithOpName(m_WeightsName), m_WeightsShape.asTensorShape(), tensorflow::DataType::DT_FLOAT);
   m_Bias = Variable(m_Scope.WithOpName(m_BiasName), m_BiasShape.asTensorShape(), tensorflow::DataType::DT_FLOAT);
   auto tempResult = MatMul(m_Scope, m_Input, m_Weights, MatMul::TransposeB(true));
-  m_Output = BiasAdd(m_Scope.WithOpName(name + "_out"), tempResult, m_Bias);
+  m_Output = BiasAdd(m_Scope.WithOpName(m_LayerName + "_out"), tempResult, m_Bias);
 
 }
 

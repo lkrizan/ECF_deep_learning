@@ -40,6 +40,8 @@ struct LayerShapeL2Params : public LayerShapeL1Params
 class Layer
 { 
 protected:
+  // layer name
+  std::string m_LayerName;
   // scope for placeholder variables
   tensorflow::Scope &m_Scope;
   // placeholder for output out of the layer
@@ -54,6 +56,7 @@ public:
   virtual const tensorflow::Output& forward() const { return m_Output; }
   virtual Shape outputShape() const { return m_OutputShape; }
   virtual bool hasParams() const = 0;
+  std::string layerName() const { return m_LayerName; }
   virtual ~Layer() = default;
   // returns gradient over inputs
   virtual tensorflow::Output backwardInputs(const tensorflow::Input & previousInputsGradient) = 0;
