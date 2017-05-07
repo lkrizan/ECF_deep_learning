@@ -18,6 +18,8 @@ class PaddedConv2D : public ParameterizedLayer
   // parameters shape
   Shape m_WeightsShape;
   Shape m_BiasShape;
+  // layer arguments
+  int m_Stride;
 
 public:
   PaddedConv2D(tensorflow::Scope &scope, const tensorflow::Input &previousLayerOutput, const Shape& previousLayerOutputShape, const std::vector<int> &paramShapeArgs, const std::vector<int> & strideShapeArgs);

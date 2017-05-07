@@ -14,7 +14,6 @@
     <ClInclude Include="Layer.h" />
     <ClInclude Include="LossFunction.h" />
     <ClInclude Include="MeanSquaredLossFunction.h" />
-    <ClInclude Include="PaddedAvgPool.h" />
     <ClInclude Include="PaddedConv2D.h" />
     <ClInclude Include="PaddedMaxPool.h" />
     <ClInclude Include="ReLUActivation.h" />
@@ -28,7 +27,6 @@
     <ClCompile Include="Flatten.cpp" />
     <ClCompile Include="FullyConnectedLayer.cpp" />
     <ClCompile Include="MeanSquaredLossFunction.cpp" />
-    <ClCompile Include="PaddedAvgPool.cpp" />
     <ClCompile Include="PaddedConv2D.cpp" />
     <ClCompile Include="PaddedMaxPool.cpp" />
     <ClCompile Include="ReLUActivation.cpp" />

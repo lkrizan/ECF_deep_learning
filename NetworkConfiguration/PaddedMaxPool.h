@@ -11,6 +11,9 @@ class PaddedMaxPool : public NonParameterizedLayer
   int m_Index;
   static int s_TotalNumber;
   static const std::string s_LayerName;
+  // layer arguments
+  int m_Stride;
+  int m_PoolSize;
 
 public:
   // windowShape - poolSize (1D), strideShape (1D)

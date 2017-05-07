@@ -36,9 +36,6 @@
     <ClInclude Include="ReLUActivation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="PaddedAvgPool.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="PaddedConv2D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -72,9 +69,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ReLUActivation.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="PaddedAvgPool.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="PaddedConv2D.cpp">

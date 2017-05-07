@@ -3,7 +3,7 @@
 namespace NetworkConfiguration {
 
 Flatten::Flatten(tensorflow::Scope & scope, const tensorflow::Input & previousLayerOutput, const Shape & previousLayerOutputShape) :
-  NonParameterizedLayer(scope)
+  NonParameterizedLayer(scope, previousLayerOutput)
 {
   // check if flattening is possible (input rank 4)
   if (previousLayerOutputShape.size() != 4)
@@ -22,7 +22,7 @@ Flatten::Flatten(tensorflow::Scope & scope, const tensorflow::Input & previousLa
   const unsigned int numFiltersInput = previousLayerShapeValues[3];
   const int numElements = height * width * numFiltersInput;
   m_OutputShape = Shape({ numExamples, numElements });
-  m_Output = tensorflow::ops::Reshape(m_Scope.WithOpName(outputName), previousLayerOutput,
+  m_Output = tensorflow::ops::Reshape(m_Scope.WithOpName(outputName), m_Input,
     tensorflow::Input(tensorflow::Input::Initializer({ -1, numElements })));
 }
 

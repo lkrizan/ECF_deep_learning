@@ -44,9 +44,11 @@ protected:
   tensorflow::Scope &m_Scope;
   // placeholder for output out of the layer
   tensorflow::Output m_Output;
+  // placeholder for input in to the layer
+  const tensorflow::Input & m_Input;
   Shape m_OutputShape;
-  Layer(tensorflow::Scope & scope) : m_Scope(scope) {};
-  Layer(LayerBaseParams & params) : m_Scope(params.scope_) {};
+  Layer(tensorflow::Scope & scope, const tensorflow::Input & previousLayerOutput) : m_Scope(scope), m_Input(previousLayerOutput) {};
+  Layer(LayerBaseParams & params) : m_Scope(params.scope_), m_Input(params.previousLayerOutput_) {};
 
 public:
   virtual const tensorflow::Output& forward() const { return m_Output; }
@@ -62,7 +64,7 @@ typedef std::shared_ptr<Layer> LayerP;
 class NonParameterizedLayer : public Layer
 {
 protected:
-  NonParameterizedLayer(tensorflow::Scope & scope) : Layer(scope) {};
+  NonParameterizedLayer(tensorflow::Scope & scope, const tensorflow::Input & previousLayerOutput) : Layer(scope, previousLayerOutput) {};
   NonParameterizedLayer(LayerBaseParams & params) : Layer(params) {};
 public:
   virtual ~NonParameterizedLayer() = default;
@@ -75,8 +77,12 @@ typedef std::shared_ptr<NonParameterizedLayer> NonParameterizedLayerP;
 class ParameterizedLayer : public Layer
 {
 protected:
+  // actual parameter references
+  tensorflow::Output m_Weights;
+  tensorflow::Output m_Bias;
+
   ParameterizedLayer(LayerShapeL1Params & params) : Layer(params) {};
-  ParameterizedLayer(tensorflow::Scope & scope) : Layer(scope) {};
+  ParameterizedLayer(tensorflow::Scope & scope, const tensorflow::Input & previousLayerOutput) : Layer(scope, previousLayerOutput) {};
 public:
   virtual ~ParameterizedLayer() = default;
   bool hasParams() const override { return true; };
