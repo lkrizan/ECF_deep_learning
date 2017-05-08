@@ -37,8 +37,8 @@ FullyConnectedLayer::FullyConnectedLayer(tensorflow::Scope &scope, const tensorf
   m_OutputShape = Shape({ previousLayerOutputShape.front(), m_WeightsShape.front() });
 
   // create placeholders and graph nodes for layer 
-  m_Weights = Variable(m_Scope.WithOpName(m_WeightsName), m_WeightsShape.asTensorShape(), tensorflow::DataType::DT_FLOAT);
-  m_Bias = Variable(m_Scope.WithOpName(m_BiasName), m_BiasShape.asTensorShape(), tensorflow::DataType::DT_FLOAT);
+  m_Weights = Placeholder(m_Scope.WithOpName(m_WeightsName), tensorflow::DataType::DT_FLOAT);
+  m_Bias = Placeholder(m_Scope.WithOpName(m_BiasName), tensorflow::DataType::DT_FLOAT);
   auto tempResult = MatMul(m_Scope, m_Input, m_Weights, MatMul::TransposeB(true));
   m_Output = BiasAdd(m_Scope.WithOpName(m_LayerName + "_out"), tempResult, m_Bias);
 

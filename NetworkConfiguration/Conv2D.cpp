@@ -46,8 +46,8 @@ namespace NetworkConfiguration {
     m_WeightsShape = Shape({ kernelSize, kernelSize, numFiltersInput, numFilters });
     m_BiasShape = Shape({ numFilters });
     // create placeholders and graph nodes for layer 
-    m_Weights = Variable(m_Scope.WithOpName(m_WeightsName), m_WeightsShape.asTensorShape(), tensorflow::DataType::DT_FLOAT);
-    m_Bias = Variable(m_Scope.WithOpName(m_BiasName), m_BiasShape.asTensorShape(), tensorflow::DataType::DT_FLOAT);
+    m_Weights = Placeholder(m_Scope.WithOpName(m_WeightsName), tensorflow::DataType::DT_FLOAT);
+    m_Bias = Placeholder(m_Scope.WithOpName(m_BiasName), tensorflow::DataType::DT_FLOAT);
     // for some reason, build with optimization (max speed) throws exception unless array slice which describes stride is passed directly through function (?)
     auto tempResult = tensorflow::ops::Conv2D(m_Scope, m_Input, m_Weights, tensorflow::gtl::ArraySlice<int>({1, m_Stride, m_Stride, 1}), tensorflow::StringPiece("VALID"));
     m_Output = BiasAdd(m_Scope.WithOpName(m_LayerName + "_out"), tempResult, m_Bias);
