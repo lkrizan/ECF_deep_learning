@@ -60,8 +60,8 @@ std::vector<std::string> GradientDescentOptimizer::propagate(const std::vector<L
       applyGradient(bName, layerPtr->getBias(), gradBias);
       gradient = newGradient;
       // append variable names
-      variables.push_back(wName);
       variables.push_back(bName);
+      variables.push_back(wName);
     }
   }
   // reverse the vector because layers were iterated backwards
