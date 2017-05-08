@@ -12,14 +12,15 @@ Backpropagation::~Backpropagation()
 
 void Backpropagation::registerParameters(StateP state)
 {
-  // for now, this method does nothing
-  // will be registering learning rate and weight decay as params
+  registerParameter(state, "learningRate", (voidP) new float(1e-5), ECF::FLOAT);
+  registerParameter(state, "weightDecay", (voidP) new float(1e-4), ECF::FLOAT);
 }
 
 bool Backpropagation::initialize(StateP state)
 {
-  // also, does nothing for now, because algorithms are initialized before evaluation operator
-  // TODO: ensure that size of population is 1
+  m_LearningRate = *static_cast<float *>(getParameterValue(state, "learningRate").get());
+  m_WeightDecay = *static_cast<float *>(getParameterValue(state, "weightDecay").get());
+  // TODO: ensure that size of population is 1 and check if parameters are valid
   return true;
 }
 
@@ -35,14 +36,14 @@ bool Backpropagation::advanceGeneration(StateP state, DemeP deme)
     }
     catch(std::exception & e)
     {
-      ECF_LOG_ERROR(state, e.what());
+      ECF_LOG_ERROR(state, "Backpropagation algorithm can only be used with ModelEvalOp evaluation operator.");
       return false;
     }
     ECF_LOG(state, 4, "Creating graph definition...");
     // create graph definition for backpropagation
     Scope & scope = m_pEvalOp->getScope();
     // hardcoded learning rate for now
-    m_pOptimizer = NetworkConfiguration::OptimizerP(new NetworkConfiguration::GradientDescentOptimizer(scope, m_LearningRate));
+    m_pOptimizer = NetworkConfiguration::OptimizerP(new NetworkConfiguration::GradientDescentOptimizer(scope, m_LearningRate, m_WeightDecay));
     m_Variables = m_pOptimizer->propagate(m_pEvalOp->getNetwork(), m_pEvalOp->getLossFunction());
     ECF_LOG(state, 4, "Creating session...");
     GraphDef gdef;

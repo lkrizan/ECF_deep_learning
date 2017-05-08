@@ -4,7 +4,7 @@ loader NumericDatasetLoader
 InputShape 2
 OutputShape 1
 inputFiles ./dataset/dataset.txt
-batchSize 250
+batchSize 2500
 
 [Layers]
 FullyConnectedLayer 10

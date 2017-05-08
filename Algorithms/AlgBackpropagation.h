@@ -17,7 +17,7 @@ class Backpropagation : public Algorithm
 {
   // new session which will be used for backpropagation only
   std::unique_ptr<Session> m_pSession;
-  float m_LearningRate = 1e-4;
+  float m_LearningRate;
   float m_WeightDecay;
   NetworkConfiguration::OptimizerP m_pOptimizer;
   bool m_Initialized = false;
