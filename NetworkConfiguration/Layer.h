@@ -47,7 +47,7 @@ protected:
   // placeholder for output out of the layer
   tensorflow::Output m_Output;
   // placeholder for input in to the layer
-  const tensorflow::Input & m_Input;
+  const tensorflow::Input m_Input;
   Shape m_OutputShape;
   Layer(tensorflow::Scope & scope, const tensorflow::Input & previousLayerOutput) : m_Scope(scope), m_Input(previousLayerOutput) {};
   Layer(LayerBaseParams & params) : m_Scope(params.scope_), m_Input(params.previousLayerOutput_) {};

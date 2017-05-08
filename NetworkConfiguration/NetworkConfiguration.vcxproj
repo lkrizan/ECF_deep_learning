@@ -62,7 +62,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <Optimization>MaxSpeed</Optimization>
+      <Optimization>Disabled</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(BOOST_ROOT);..\;$(TENSORFLOW_ROOT);$(TENSORFLOW_ROOT)\tensorflow\contrib\cmake\build;$(TENSORFLOW_ROOT)\tensorflow\contrib\cmake\build\external\zlib_archive;$(TENSORFLOW_ROOT)\tensorflow\contrib\cmake\build\external\gif_archive\giflib-5.1.4;$(TENSORFLOW_ROOT)\tensorflow\contrib\cmake\build\external\png_archive;$(TENSORFLOW_ROOT)\tensorflow\contrib\cmake\build\external\jpeg_archive;$(TENSORFLOW_ROOT)\tensorflow\contrib\cmake\build\external\eigen_archive;$(TENSORFLOW_ROOT)\third_party\eigen3;$(TENSORFLOW_ROOT)\tensorflow\contrib\cmake\build\gemmlowp\src\gemmlowp;$(TENSORFLOW_ROOT)\tensorflow\contrib\cmake\build\jsoncpp\src\jsoncpp;$(TENSORFLOW_ROOT)\tensorflow\contrib\cmake\build\external\farmhash_archive;$(TENSORFLOW_ROOT)\tensorflow\contrib\cmake\build\external\farmhash_archive\util;$(TENSORFLOW_ROOT)\tensorflow\contrib\cmake\build\external\highwayhash;$(TENSORFLOW_ROOT)\tensorflow\contrib\cmake\build\protobuf\src\protobuf\src;$(TENSORFLOW_ROOT)\tensorflow\contrib\cmake\build\grpc\src\grpc\include;$(CUDA_PATH);$(CUDA_PATH)\extras\CUPTI\include;C:\local\cuda;$(TENSORFLOW_ROOT)\third_party\gpus;$(CUDA_PATH)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>

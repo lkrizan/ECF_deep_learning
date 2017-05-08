@@ -2,11 +2,6 @@
 #include "ConfigParser.h"
 
 
-#define INPUTS_PLACEHOLDER_NAME "inputs"
-#define OUTPUTS_PLACEHOLDER_NAME "outputs"
-#define LOSS_OUTPUT_NAME "loss"
-
-
 void ModelEvalOp::registerParameters(StateP state)
 {
   state->getRegistry()->registerEntry("configFilePath", (voidP)(new std::string), ECF::STRING);
@@ -53,12 +48,12 @@ void ModelEvalOp::setTensor(Tensor &tensor, InputIterator first, InputIterator l
 }
 
 
-std::vector<NetworkConfiguration::LayerP> ModelEvalOp::createLayers(Scope &root, const std::vector<std::pair<std::string, std::vector<std::vector<int>>>>& networkConfiguration, const std::string lossFunctionName, const NetworkConfiguration::Shape & inputShape, const NetworkConfiguration::Shape & outputShape) const
+std::vector<NetworkConfiguration::LayerP> ModelEvalOp::createLayers(Scope &root, const std::vector<std::pair<std::string, std::vector<std::vector<int>>>>& networkConfiguration, const std::string lossFunctionName, const NetworkConfiguration::Shape & inputShape, const NetworkConfiguration::Shape & outputShape)
 {
   using NetworkConfiguration::Shape;
   // create placeholders for inputs and for expected outputs so network can be defined
-  auto inputPlaceholder = ops::Placeholder(root.WithOpName(INPUTS_PLACEHOLDER_NAME), DT_FLOAT);
-  auto outputPlaceholder = ops::Placeholder(root.WithOpName(OUTPUTS_PLACEHOLDER_NAME), DT_FLOAT);
+  m_InputsPlaceholder = ops::Placeholder(root.WithOpName(INPUTS_PLACEHOLDER_NAME), DT_FLOAT);
+  m_OutputsPlaceholder = ops::Placeholder(root.WithOpName(OUTPUTS_PLACEHOLDER_NAME), DT_FLOAT);
   // create layers from value pairs - layer type name and shape in form of vector of ints
   std::vector<NetworkConfiguration::LayerP> layers;
   for (auto iter = networkConfiguration.begin(); iter != networkConfiguration.end(); iter++)
@@ -67,13 +62,13 @@ std::vector<NetworkConfiguration::LayerP> ModelEvalOp::createLayers(Scope &root,
     std::vector<int> strideShapeArgs = (iter->second.size() >= 2) ? iter->second.at(1) : std::vector<int>();
     NetworkConfiguration::LayerP layer;
     if (iter == networkConfiguration.begin())
-      layer = NetworkConfiguration::LayerFactory::instance().createObject(iter->first, NetworkConfiguration::LayerShapeL2Params(root, inputPlaceholder, inputShape, paramShapeArgs, strideShapeArgs));
+      layer = NetworkConfiguration::LayerFactory::instance().createObject(iter->first, NetworkConfiguration::LayerShapeL2Params(root, m_InputsPlaceholder, inputShape, paramShapeArgs, strideShapeArgs));
     else
       layer = NetworkConfiguration::LayerFactory::instance().createObject(iter->first, NetworkConfiguration::LayerShapeL2Params(root, layers.back()->forward(), layers.back()->outputShape(), paramShapeArgs, strideShapeArgs));
     layers.push_back(layer);
   }
   // add loss function to graph
-  auto lossFunction = NetworkConfiguration::LossFactory::instance().createObject(lossFunctionName, NetworkConfiguration::LossBaseParams(root, layers.back()->forward(), layers.back()->outputShape(), outputPlaceholder, outputShape, LOSS_OUTPUT_NAME));
+  m_LossFunction = NetworkConfiguration::LossFactory::instance().createObject(lossFunctionName, NetworkConfiguration::LossBaseParams(root, layers.back()->forward(), layers.back()->outputShape(), m_OutputsPlaceholder, outputShape, LOSS_OUTPUT_NAME));
   return layers;
 }
 
@@ -176,17 +171,7 @@ std::vector<std::pair<string, tensorflow::Tensor>> ModelEvalOp::createTensorsFro
 FitnessP ModelEvalOp::evaluate(IndividualP individual)
 {
   // set new inputs and outputs if generation has changed
-  int currGeneration = m_ECFState->getGenerationNo();
-  if (currGeneration != m_CurrentGeneration)
-  {
-    m_CurrentGeneration = currGeneration;
-    // if whole dataset has been used, restart batching
-    if (!m_DatasetHandler->nextBatch(m_CurrentInputs, m_CurrentOutputs))
-    {
-      m_DatasetHandler->resetBatchIterator();
-      m_DatasetHandler->nextBatch(m_CurrentInputs, m_CurrentOutputs);
-    }
-  }
+  setBatch(m_ECFState->getGenerationNo());
   // set placeholders
   FitnessP fitness (new FitnessMin);
   std::vector<std::pair<string, tensorflow::Tensor>> inputs = createTensorsFromGenotype(individual);

@@ -26,8 +26,8 @@ class LossFunction
 protected:
   tensorflow::Output m_Loss;
   tensorflow::Scope & m_Scope;
-  const tensorflow::Input & m_NetworkOutput;
-  const tensorflow::Input & m_ExpectedOutputs;
+  tensorflow::Input m_NetworkOutput;
+  tensorflow::Input m_ExpectedOutputs;
   LossFunction(tensorflow::Scope &scope, const tensorflow::Input & networkOutput, const tensorflow::Input & expectedOutputsPlaceholder) : 
     m_Scope(scope), m_NetworkOutput(networkOutput), m_ExpectedOutputs(expectedOutputsPlaceholder) {};
   LossFunction(LossBaseParams params) : m_Scope(params.scope_), m_NetworkOutput(params.networkOutput_), m_ExpectedOutputs(params.expectedOutputsPlaceholder_) {};

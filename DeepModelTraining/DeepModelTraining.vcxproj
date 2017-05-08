@@ -69,11 +69,13 @@
     </ProjectReference>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\Algorithms\AlgBackpropagation.cpp" />
     <ClCompile Include="ConfigParser.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ModelEvalOp.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Algorithms\AlgBackpropagation.h" />
     <ClInclude Include="ConfigParser.h" />
     <ClInclude Include="ModelEvalOp.h" />
     <ClInclude Include="ModelExporter.h" />

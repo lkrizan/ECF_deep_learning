@@ -16,7 +16,7 @@ class GradientDescentOptimizer
 public:
   GradientDescentOptimizer(tensorflow::Scope & scope, float learningRate);
   // propagates error through whole network and updates parameters, returns collection of names through which to fetch new values
-  std::vector<std::string> propagate(std::vector<LayerP> & network, LossFunctionP lossFunctionPtr);
+  std::vector<std::string> propagate(const std::vector<LayerP> & network, LossFunctionP lossFunctionPtr);
 };
 
 typedef std::shared_ptr<GradientDescentOptimizer> OptimizerP;

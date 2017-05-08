@@ -17,7 +17,7 @@ void GradientDescentOptimizer::applyGradient(const std::string & name, const ten
   auto result = Subtract(m_Scope.WithOpName(name), variable, temp);
 }
 
-std::vector<std::string> GradientDescentOptimizer::propagate(std::vector<LayerP> & network, LossFunctionP lossFunctionPtr)
+std::vector<std::string> GradientDescentOptimizer::propagate(const std::vector<LayerP> & network, LossFunctionP lossFunctionPtr)
 {
   // container for return value
   std::vector<std::string> variables;
