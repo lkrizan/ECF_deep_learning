@@ -1,4 +1,7 @@
 #include "GradientDescentOptimizer.h"
+#include <algorithm>
+
+#define POSTFIX "final"
 
 namespace NetworkConfiguration {
   
@@ -19,8 +22,8 @@ std::vector<std::string> GradientDescentOptimizer::propagate(std::vector<LayerP>
   // container for return value
   std::vector<std::string> variables;
   // final vector 100% sure will not be larger than this
-  variables.reserve(network.size());
-  const std::string postfix = "final";
+  variables.reserve(2 * network.size());
+  const std::string postfix = POSTFIX;
   // calculate gradient through loss function
   auto gradient = lossFunctionPtr->backward();
   
@@ -52,6 +55,9 @@ std::vector<std::string> GradientDescentOptimizer::propagate(std::vector<LayerP>
       variables.push_back(bName);
     }
   }
+  // reverse the vector because layers were iterated backwards
+  std::reverse(variables.begin(), variables.end());
+  return variables;
 }
 
 }   // namespace NetworkConfiguration
