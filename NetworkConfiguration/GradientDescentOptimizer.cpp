@@ -14,8 +14,7 @@ GradientDescentOptimizer::GradientDescentOptimizer(tensorflow::Scope & scope, fl
 void GradientDescentOptimizer::applyGradient(const std::string & name, const tensorflow::Input & variable, const tensorflow::Input & gradient)
 {
   using namespace tensorflow::ops;
-  auto totalGradient = Add(m_Scope, gradient, regularizationGradient(variable));
-  auto temp = Multiply(m_Scope, totalGradient, m_LearningRate);
+  auto temp = Multiply(m_Scope, gradient, m_LearningRate);
   auto result = Subtract(m_Scope.WithOpName(name), variable, temp);
 }
 
@@ -54,7 +53,9 @@ std::vector<std::string> GradientDescentOptimizer::propagate(const std::vector<L
       auto newGradient = layerPtr->backwardInputs(gradient);
       // apply gradient over parameters
       auto gradWeights = layerPtr->backwardWeights(gradient);
-      applyGradient(wName, layerPtr->getWeights(), gradWeights);
+      // add regularization (weights only)
+      auto gradTotal = tensorflow::ops::Add(m_Scope, gradWeights, regularizationGradient(layerPtr->getWeights()));
+      applyGradient(wName, layerPtr->getWeights(), gradTotal);
       auto gradBias = layerPtr->backwardBias(gradient);
       applyGradient(bName, layerPtr->getBias(), gradBias);
       gradient = newGradient;
