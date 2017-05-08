@@ -62,6 +62,9 @@ bool Backpropagation::advanceGeneration(StateP state, DemeP deme)
   m_pEvalOp->setBatch(state->getGenerationNo());
   inputs.push_back(std::make_pair(INPUTS_PLACEHOLDER_NAME, m_pEvalOp->getCurrentInputs()));
   inputs.push_back(std::make_pair(OUTPUTS_PLACEHOLDER_NAME, m_pEvalOp->getCurrentOutputs()));
+  // workaround for passing gradient momentum
+  std::vector<std::pair<std::string, Tensor>> momentumFeedValues = m_pOptimizer->getFeedList();
+  inputs.insert(inputs.end(), momentumFeedValues.begin(), momentumFeedValues.end());
   std::vector<Tensor> outputs;
   // run session and get new parameter values
   Status status = m_pSession->Run(inputs, m_Variables, {}, &outputs);
@@ -70,11 +73,13 @@ bool Backpropagation::advanceGeneration(StateP state, DemeP deme)
   std::vector<double> & data = gen->realValue;
   data.clear();
   // copy new parameter values to the genotype
-  for_each(outputs.begin(), outputs.end(), [&data](const Tensor & tensor)
+  for_each(outputs.begin(), outputs.begin() + m_Variables.size(), [&data](const Tensor & tensor)
     {
       auto size = tensor.flat<float>().size();
       std::copy(tensor.flat<float>().data(), tensor.flat<float>().data() + size, std::back_inserter(data));
     });
+  // workaround for setting variables' gradient momentum (if used)
+  m_pOptimizer->setFeedList(std::vector<tensorflow::Tensor>(outputs.begin() + m_Variables.size(), outputs.end()));
   // evaluate new individual
   evaluate(individual);
   return true;

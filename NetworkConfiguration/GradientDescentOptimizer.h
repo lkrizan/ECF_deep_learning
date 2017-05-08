@@ -28,6 +28,13 @@ public:
   GradientDescentOptimizer(const OptimizerParams & params) : GradientDescentOptimizer(params.scope_, params.learningRate_, params.weightDecay_) {};
   // propagates error through whole network and updates parameters, returns collection of names through which to fetch new values
   std::vector<std::string> propagate(const std::vector<LayerP> & network, LossFunctionP lossFunctionPtr);
+  /*
+  At the time of writing this, tensorflow's documentation about using Variable does not exist,
+  so this is a workaround for applying momentum for e.g., Adam, Adagrad, or similar optimizers.
+  For basic gradient descent optimizers, these functions do absolutely nothing.
+  */
+  virtual std::vector<std::pair<std::string, tensorflow::Tensor>> getFeedList() { return std::vector<std::pair<std::string, tensorflow::Tensor>>(); }
+  virtual void setFeedList(std::vector<tensorflow::Tensor> & tensors) {};
 };
 
 typedef std::shared_ptr<GradientDescentOptimizer> OptimizerP;
