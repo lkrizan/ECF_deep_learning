@@ -1,8 +1,8 @@
 <ECF>
 	<Algorithm>
 		<Backpropagation>
-			<Entry key="learningRate">1e-7</Entry>
-			<Entry key="weightDecay">1e-4</Entry>
+			<Entry key="learningRate">1e-5</Entry>
+			<Entry key="weightDecay">0</Entry>
 		</Backpropagation>
 	</Algorithm>
 	<Genotype>
