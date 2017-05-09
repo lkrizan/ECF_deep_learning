@@ -15,6 +15,7 @@
 
 class Backpropagation : public Algorithm
 {
+  std::string m_OptimizerName;
   // new session which will be used for backpropagation only
   std::unique_ptr<Session> m_pSession;
   float m_LearningRate;
@@ -23,6 +24,8 @@ class Backpropagation : public Algorithm
   bool m_Initialized = false;
   // name of variables that need to be fetched from tensorflow session
   std::vector<std::string> m_Variables;
+  // all values to fetch
+  std::vector<std::string> m_AllFetchValues;
   // pointer to evaluation operator
   ModelEvalOpP m_pEvalOp;
 

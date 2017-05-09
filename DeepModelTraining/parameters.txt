@@ -1,8 +1,9 @@
 <ECF>
 	<Algorithm>
 		<Backpropagation>
-			<Entry key="learningRate">1e-5</Entry>
+			<Entry key="learningRate">1e-2</Entry>
 			<Entry key="weightDecay">0</Entry>
+			<Entry key="optimizer">AdamOptimizer</Entry>
 		</Backpropagation>
 	</Algorithm>
 	<Genotype>

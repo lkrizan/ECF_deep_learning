@@ -9,6 +9,7 @@
 
 #include "ModelExporter.h"
 #include <DatasetLoader/NumericDatasetLoader.h>
+#include <common/Common.h>
 
 #define INPUTS_PLACEHOLDER_NAME "inputs"
 #define OUTPUTS_PLACEHOLDER_NAME "outputs"
@@ -24,8 +25,6 @@ public:
   FitnessP evaluate(IndividualP individual);
   void registerParameters(StateP);
   bool initialize(StateP);
-  template <class T, class InputIterator>
-  static void setTensor(Tensor &tensor, InputIterator first, InputIterator last);
   Scope & getScope() { return m_Scope; }
   const std::vector<NetworkConfiguration::LayerP> & getNetwork() { return m_Network; }
   NetworkConfiguration::LossFunctionP getLossFunction() { return m_LossFunction; }

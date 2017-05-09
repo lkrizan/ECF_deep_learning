@@ -13,9 +13,6 @@ class Conv2D : public ParameterizedLayer
   // parameters name
   std::string m_WeightsName;
   std::string m_BiasName;
-  // parameters shape
-  Shape m_WeightsShape;
-  Shape m_BiasShape;
   // layer arguments
   int m_Stride;
 

@@ -7,6 +7,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AdamOptimizer.h" />
     <ClInclude Include="Conv2D.h" />
     <ClInclude Include="CrossEntropyLossFunction.h" />
     <ClInclude Include="Flatten.h" />
@@ -23,6 +24,7 @@
     <ClInclude Include="SoftmaxCrossEntropyLossFunction.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AdamOptimizer.cpp" />
     <ClCompile Include="Conv2D.cpp" />
     <ClCompile Include="CrossEntropyLossFunction.cpp" />
     <ClCompile Include="Flatten.cpp" />

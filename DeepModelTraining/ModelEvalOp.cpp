@@ -40,13 +40,6 @@ void ModelEvalOp::saveDefinitionToFile() const
   for_each(m_VariableData.begin(), m_VariableData.end(), [&exporter, &currentIterator](const VariableData & data) {exporter.exportVariableValues(data.m_VariableName, data.m_BasicShape, currentIterator, currentIterator + data.m_NumberOfElements); currentIterator += data.m_NumberOfElements;});
 }
 
-template<class T, class InputIterator>
-void ModelEvalOp::setTensor(Tensor &tensor, InputIterator first, InputIterator last)
-{
-    auto tensorMap = tensor.flat<T>();
-    std::copy(first, last, tensorMap.data());
-}
-
 
 std::vector<NetworkConfiguration::LayerP> ModelEvalOp::createLayers(Scope &root, const std::vector<std::pair<std::string, std::vector<std::vector<int>>>>& networkConfiguration, const std::string lossFunctionName, const NetworkConfiguration::Shape & inputShape, const NetworkConfiguration::Shape & outputShape)
 {
@@ -161,7 +154,7 @@ std::vector<std::pair<string, tensorflow::Tensor>> ModelEvalOp::createTensorsFro
   for (auto it = m_VariableData.begin(); it != m_VariableData.end(); it++)
   {
     Tensor tensor(DT_FLOAT, (*it).m_Shape);
-    setTensor<float>(tensor, currentIterator, currentIterator + (*it).m_NumberOfElements);
+    Common::setTensor<float>(tensor, currentIterator, currentIterator + (*it).m_NumberOfElements);
     currentIterator += (*it).m_NumberOfElements;
     inputs.push_back(std::make_pair((*it).m_VariableName, tensor));
   }

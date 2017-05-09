@@ -1,8 +1,6 @@
 #include "GradientDescentOptimizer.h"
 #include <algorithm>
 
-#define POSTFIX "final"
-
 namespace NetworkConfiguration {
   
 GradientDescentOptimizer::GradientDescentOptimizer(tensorflow::Scope & scope, float learningRate, float weightDecay) : m_Scope(scope)
@@ -11,7 +9,7 @@ GradientDescentOptimizer::GradientDescentOptimizer(tensorflow::Scope & scope, fl
   m_WeightDecay = tensorflow::ops::Const(m_Scope, weightDecay);
 }
 
-void GradientDescentOptimizer::applyGradient(const std::string & name, const tensorflow::Input & variable, const tensorflow::Input & gradient)
+void GradientDescentOptimizer::applyGradient(const std::string & name, const tensorflow::Input & variable, const tensorflow::Input & gradient, const Shape & variableShape, const std::string & variableName)
 {
   using namespace tensorflow::ops;
   auto temp = Multiply(m_Scope, gradient, m_LearningRate);
@@ -55,9 +53,9 @@ std::vector<std::string> GradientDescentOptimizer::propagate(const std::vector<L
       auto gradWeights = layerPtr->backwardWeights(gradient);
       // add regularization (weights only)
       auto gradTotal = tensorflow::ops::Add(m_Scope, gradWeights, regularizationGradient(layerPtr->getWeights()));
-      applyGradient(wName, layerPtr->getWeights(), gradTotal);
+      applyGradient(wName, layerPtr->getWeights(), gradTotal, layerPtr->getWeightsShape(), layerName + "_w");
       auto gradBias = layerPtr->backwardBias(gradient);
-      applyGradient(bName, layerPtr->getBias(), gradBias);
+      applyGradient(bName, layerPtr->getBias(), gradBias, layerPtr->getBiasShape(), layerName + "_b");
       gradient = newGradient;
       // append variable names
       variables.push_back(bName);

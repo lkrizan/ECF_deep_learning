@@ -14,9 +14,6 @@ private:
   // parameters name
   std::string m_WeightsName;
   std::string m_BiasName;
-  // parameters shape
-  Shape m_WeightsShape;
-  Shape m_BiasShape;
 
 public:
   // paramShape - number of neurons

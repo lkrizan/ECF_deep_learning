@@ -86,6 +86,10 @@ protected:
   tensorflow::Output m_Weights;
   tensorflow::Output m_Bias;
 
+  // parameter shapes
+  Shape m_WeightsShape;
+  Shape m_BiasShape;
+
   ParameterizedLayer(LayerShapeL1Params & params) : Layer(params) {};
   ParameterizedLayer(tensorflow::Scope & scope, const tensorflow::Input & previousLayerOutput) : Layer(scope, previousLayerOutput) {};
 
@@ -96,6 +100,8 @@ public:
   virtual std::vector<std::pair<std::string, Shape>> getParamShapes() const = 0;
   const tensorflow::Output & getWeights() const { return m_Weights; }
   const tensorflow::Output & getBias() const { return m_Bias; }
+  const Shape & getWeightsShape() const { return m_WeightsShape; }
+  const Shape & getBiasShape() const { return m_BiasShape; }
   // returns gradient over weights
   virtual tensorflow::Output backwardWeights(const tensorflow::Input & previousInputsGradient) = 0;
   // returns gradient over bias

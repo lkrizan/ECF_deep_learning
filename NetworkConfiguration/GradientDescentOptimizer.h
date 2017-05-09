@@ -4,6 +4,8 @@
 #include "Layer.h"
 #include "LossFunction.h"
 
+#define POSTFIX "final"
+
 namespace NetworkConfiguration {
 
 struct OptimizerParams
@@ -16,11 +18,12 @@ struct OptimizerParams
 
 class GradientDescentOptimizer 
 {
+protected:
   tensorflow::Scope & m_Scope;
   tensorflow::Output m_LearningRate;
   tensorflow::Output m_WeightDecay;
 
-  virtual void applyGradient(const std::string & name, const tensorflow::Input & variable, const tensorflow::Input & gradient);
+  virtual void applyGradient(const std::string & name, const tensorflow::Input & variable, const tensorflow::Input & gradient, const Shape & variableShape, const std::string & variableName);
   tensorflow::Output regularizationGradient(const tensorflow::Input & variable);
 
 public:
@@ -35,6 +38,7 @@ public:
   */
   virtual std::vector<std::pair<std::string, tensorflow::Tensor>> getFeedList() { return std::vector<std::pair<std::string, tensorflow::Tensor>>(); }
   virtual void setFeedList(std::vector<tensorflow::Tensor> & tensors) {};
+  virtual std::vector<std::string> getFetchList() const { return std::vector<std::string>(); }
 };
 
 typedef std::shared_ptr<GradientDescentOptimizer> OptimizerP;
