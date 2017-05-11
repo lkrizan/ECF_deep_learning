@@ -11,6 +11,7 @@ Flatten::Flatten(tensorflow::Scope & scope, const tensorflow::Input & previousLa
     throw std::logic_error("Flattening can only be performed on rank 4 tensor inputs.");
   }
 
+  m_InputShape = previousLayerOutputShape;
   // set name
   m_LayerName = s_LayerName + std::to_string(++s_TotalNumber);
   std::string outputName = m_LayerName + "_out";
@@ -26,13 +27,22 @@ Flatten::Flatten(tensorflow::Scope & scope, const tensorflow::Input & previousLa
     tensorflow::Input(tensorflow::Input::Initializer({ -1, numElements })));
 }
 
+tensorflow::Output Flatten::backwardInputs(const tensorflow::Input & previousInputsGradient)
+{
+  // reshape back to original shape
+  using namespace tensorflow::ops;
+  std::vector<int> inputShapeValues;
+  inputShapeValues.reserve(4);
+  std::copy(m_InputShape.begin(), m_InputShape.end(), std::back_inserter(inputShapeValues));
+  return Reshape(m_Scope, previousInputsGradient, { inputShapeValues[0], inputShapeValues[1], inputShapeValues[2], inputShapeValues[3] });
+}
+
 }   // namespace NetworkConfiguration
 
-/*
+
 // register class in factory
 namespace {
   using namespace NetworkConfiguration;
   LayerCreator ctor = [](LayerBaseParams & params) {return new Flatten(params);};
   bool dummy = LayerFactory::instance().registerClass("Flatten", ctor);
 }
-*/

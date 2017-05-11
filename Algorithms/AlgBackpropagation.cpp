@@ -33,11 +33,8 @@ bool Backpropagation::advanceGeneration(StateP state, DemeP deme)
   if (!m_Initialized)
   {
     m_Initialized = true;
-    try
-    {
-      m_pEvalOp = dynamic_pointer_cast<ModelEvalOp>(state->getEvalOp());
-    }
-    catch(std::exception & e)
+    m_pEvalOp = dynamic_pointer_cast<ModelEvalOp>(state->getEvalOp());
+    if (m_pEvalOp == nullptr)
     {
       ECF_LOG_ERROR(state, "Backpropagation algorithm can only be used with ModelEvalOp evaluation operator.");
       return false;
@@ -57,10 +54,10 @@ bool Backpropagation::advanceGeneration(StateP state, DemeP deme)
       GraphDef gdef;
       TF_CHECK_OK(scope.ToGraphDef(&gdef));
       Status status = m_pSession->Create(gdef);
-      ECF_LOG(state, 5, "Session creation status:");
-      ECF_LOG(state, 5, status.ToString());
-      ECF_LOG(state, 5, "Graph definition data:");
-      ECF_LOG(state, 5, gdef.DebugString());
+      ECF_LOG(state, 4, "Session creation status:");
+      ECF_LOG(state, 4, status.ToString());
+      ECF_LOG(state, 4, "Graph definition data:");
+      ECF_LOG(state, 4, gdef.DebugString());
     }
     catch (std::exception & e)
     {

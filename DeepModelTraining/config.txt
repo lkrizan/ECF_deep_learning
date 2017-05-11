@@ -1,6 +1,10 @@
 [Dataset]
 loader NumericDatasetLoader
 # loader MNISTDatasetLoader
+# InputShape 28 28 1
+# OutputShape 10
+# inputFiles ../MNIST/train-images.idx3-ubyte
+# labelFiles ../MNIST/train-labels.idx1-ubyte
 InputShape 2
 OutputShape 1
 inputFiles ./dataset/dataset.txt
@@ -8,7 +12,7 @@ batchSize 2500
 
 [Layers]
 FullyConnectedLayer 10
-SigmoidActivation
+ReLUActivation
 FullyConnectedLayer 1
 
 [Loss]

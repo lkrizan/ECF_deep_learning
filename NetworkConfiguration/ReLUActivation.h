@@ -14,6 +14,7 @@ private:
 public:
   ReLUActivation(tensorflow::Scope &scope, const tensorflow::Input &previousLayerOutput, const Shape& previousLayerOutputShape);
   ReLUActivation(LayerBaseParams & params) : ReLUActivation(params.scope_, params.previousLayerOutput_, params.previousLayerOutputShape_) {};
+  tensorflow::Output backwardInputs(const tensorflow::Input & previousInputsGradient) override;
 };
 
 int ReLUActivation::s_TotalNumber = 0;
