@@ -54,8 +54,11 @@ bool Backpropagation::advanceGeneration(StateP state, DemeP deme)
       GraphDef gdef;
       TF_CHECK_OK(scope.ToGraphDef(&gdef));
       Status status = m_pSession->Create(gdef);
-      ECF_LOG(state, 4, "Session creation status:");
-      ECF_LOG(state, 4, status.ToString());
+      if (!status.ok())
+      {
+        ECF_LOG_ERROR(state, "Session creation failed:\n");
+        ECF_LOG_ERROR(state, status.ToString());
+      }
       ECF_LOG(state, 4, "Graph definition data:");
       ECF_LOG(state, 4, gdef.DebugString());
     }

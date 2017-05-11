@@ -123,8 +123,13 @@ bool ModelEvalOp::initialize(StateP state)
     Status status;
     TF_CHECK_OK(m_Scope.ToGraphDef(&m_GraphDef));
     status = m_pSession->Create(m_GraphDef);
-    ECF_LOG(state, 5, "Graph definition data:");
-    ECF_LOG(state, 5, m_GraphDef.DebugString());
+    if (!status.ok())
+    {
+      ECF_LOG_ERROR(state, "Session creation failed:\n");
+      ECF_LOG_ERROR(state, status.ToString());
+    }
+    ECF_LOG(state, 4, "Graph definition data:");
+    ECF_LOG(state, 4, m_GraphDef.DebugString());
     // override size for FloatingPoint genotype
     size_t numParameters = totalNumberOfParameters();
     state->getRegistry()->modifyEntry("FloatingPoint.dimension", (voidP) new uint(numParameters));
