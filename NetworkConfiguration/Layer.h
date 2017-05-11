@@ -5,6 +5,7 @@
 #include "tensorflow/core/framework/tensor.h"
 #include <common/Shape.h>
 #include <common/Factory.h>
+#include <common/Common.h>
 
 namespace NetworkConfiguration {
 

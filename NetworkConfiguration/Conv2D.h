@@ -15,11 +15,17 @@ class Conv2D : public ParameterizedLayer
   std::string m_BiasName;
   // layer arguments
   int m_Stride;
+  // input shape, needed for gradient calculation
+  Shape m_InputShape;
 
 public:
   Conv2D(tensorflow::Scope &scope, const tensorflow::Input &previousLayerOutput, const Shape& previousLayerOutputShape, const std::vector<int> &paramShapeArgs, const std::vector<int> & strideShapeArgs);
   Conv2D(LayerShapeL2Params & params) : Conv2D(params.scope_, params.previousLayerOutput_, params.previousLayerOutputShape_, params.paramShapeArgs_, params.strideShapeArgs_) {};
   std::vector<std::pair<std::string, Shape>> getParamShapes() const override;
+  tensorflow::Output backwardInputs(const tensorflow::Input & previousInputsGradient) override;
+  tensorflow::Output backwardWeights(const tensorflow::Input & previousInputsGradient) override;
+  tensorflow::Output backwardBias(const tensorflow::Input & previousInputsGradient) override;
+
 };
 
 int Conv2D::s_TotalNumber = 0;
