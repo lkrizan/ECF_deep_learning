@@ -117,10 +117,19 @@ public:
     if (!readyForUse())
       return false;
 
-    auto nextInputBatchIterator = (std::distance(m_InputBatchIterator, m_Inputs.end()) > m_BatchSize) ? m_InputBatchIterator + m_BatchSize : m_Inputs.end();
-    auto nextOutputBatchIterator = (std::distance(m_OutputBatchIterator, m_Outputs.end()) > m_BatchSize) ? m_OutputBatchIterator + m_BatchSize : m_Outputs.end();
+    // batch size should be constant because of gradient calculation (see tensorflow::ops::Conv2DBackprop* documentation, there so no convenient way to calculate current batch size)
+    if (std::distance(m_InputBatchIterator, m_Inputs.end()) < m_BatchSize || std::distance(m_OutputBatchIterator, m_Outputs.end()) < m_BatchSize)
+    {
+      m_InputBatchIterator = m_Inputs.end();
+      m_OutputBatchIterator = m_Outputs.end();
+      return false;
+    }
 
-    const unsigned int numExamples = std::distance(m_InputBatchIterator, nextInputBatchIterator);
+    auto nextInputBatchIterator = m_InputBatchIterator + m_BatchSize;
+    auto nextOutputBatchIterator = m_OutputBatchIterator + m_BatchSize;
+
+
+    const unsigned int numExamples = m_BatchSize;
 
     // create new tensors
     NetworkConfiguration::Shape inputBatchShape { numExamples };

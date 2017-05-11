@@ -103,10 +103,10 @@ bool ModelEvalOp::initialize(StateP state)
     std::string datasetLoaderType = configParser.DatasetLoaderType();
     std::string lossFunctionName = configParser.LossFunctionName();
     unsigned int batchSize = configParser.BatchSize();
-    // set input and output shapes (zero prefix means that number of examples is not defined, which is legal)
-    NetworkConfiguration::Shape inputShape({0});
+    // set input and output shapes
+    NetworkConfiguration::Shape inputShape({batchSize});
     inputShape.insert(inputShape.end(), configParser.InputShape().begin(), configParser.InputShape().end());
-    NetworkConfiguration::Shape outputShape({ 0 });
+    NetworkConfiguration::Shape outputShape({ batchSize });
     outputShape.insert(outputShape.end(), configParser.OutputShape().begin(), configParser.OutputShape().end());
 
     // load dataset

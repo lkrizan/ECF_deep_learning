@@ -27,6 +27,7 @@ protected:
   tensorflow::Output regularizationGradient(const tensorflow::Input & variable);
 
 public:
+  virtual ~GradientDescentOptimizer() = default;
   GradientDescentOptimizer(tensorflow::Scope & scope, float learningRate, float weightDecay);
   GradientDescentOptimizer(const OptimizerParams & params) : GradientDescentOptimizer(params.scope_, params.learningRate_, params.weightDecay_) {};
   // propagates error through whole network and updates parameters, returns collection of names through which to fetch new values
