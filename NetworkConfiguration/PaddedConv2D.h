@@ -15,8 +15,6 @@ class PaddedConv2D : public ParameterizedLayer
   std::string m_BiasName;
   // layer arguments
   int m_Stride;
-  // input shape, needed for gradient calculation
-  Shape m_InputShape;
 
 public:
   PaddedConv2D(tensorflow::Scope &scope, const tensorflow::Input &previousLayerOutput, const Shape& previousLayerOutputShape, const std::vector<int> &paramShapeArgs, const std::vector<int> & strideShapeArgs);

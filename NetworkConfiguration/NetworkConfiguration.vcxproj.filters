@@ -30,9 +30,6 @@
     <ClInclude Include="MeanSquaredLossFunction.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SoftmaxActivation.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ReLUActivation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -46,9 +43,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Flatten.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CrossEntropyLossFunction.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SoftmaxCrossEntropyLossFunction.h">
@@ -71,9 +65,6 @@
     <ClCompile Include="MeanSquaredLossFunction.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SoftmaxActivation.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ReLUActivation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -87,9 +78,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Flatten.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CrossEntropyLossFunction.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SoftmaxCrossEntropyLossFunction.cpp">

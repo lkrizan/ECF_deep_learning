@@ -9,7 +9,6 @@
   <ItemGroup>
     <ClInclude Include="AdamOptimizer.h" />
     <ClInclude Include="Conv2D.h" />
-    <ClInclude Include="CrossEntropyLossFunction.h" />
     <ClInclude Include="Flatten.h" />
     <ClInclude Include="FullyConnectedLayer.h" />
     <ClInclude Include="GradientDescentOptimizer.h" />
@@ -20,13 +19,11 @@
     <ClInclude Include="PaddedMaxPool.h" />
     <ClInclude Include="ReLUActivation.h" />
     <ClInclude Include="SigmoidActivation.h" />
-    <ClInclude Include="SoftmaxActivation.h" />
     <ClInclude Include="SoftmaxCrossEntropyLossFunction.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AdamOptimizer.cpp" />
     <ClCompile Include="Conv2D.cpp" />
-    <ClCompile Include="CrossEntropyLossFunction.cpp" />
     <ClCompile Include="Flatten.cpp" />
     <ClCompile Include="FullyConnectedLayer.cpp" />
     <ClCompile Include="GradientDescentOptimizer.cpp" />
@@ -35,7 +32,6 @@
     <ClCompile Include="PaddedMaxPool.cpp" />
     <ClCompile Include="ReLUActivation.cpp" />
     <ClCompile Include="SigmoidActivation.cpp" />
-    <ClCompile Include="SoftmaxActivation.cpp" />
     <ClCompile Include="SoftmaxCrossEntropyLossFunction.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

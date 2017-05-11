@@ -33,7 +33,6 @@ namespace NetworkConfiguration {
   m_LayerName = s_LayerName + std::to_string(++s_TotalNumber);
   m_WeightsName = m_LayerName + "_w";
   m_BiasName = m_LayerName + "_b";
-  m_InputShape = previousLayerOutputShape;
   // get data from shapes to create variables
   const unsigned int kernelSize = paramShapeArgs.front();
   const unsigned int numFilters = paramShapeArgs.back();
@@ -62,17 +61,15 @@ std::vector<std::pair<std::string, Shape>> Conv2D::getParamShapes() const
 tensorflow::Output Conv2D::backwardInputs(const tensorflow::Input & previousInputsGradient)
 {
   using namespace tensorflow::ops;
-  tensorflow::Tensor inputShape(tensorflow::DT_INT32, tensorflow::TensorShape({ 4 }));
-  Common::setTensor<int>(inputShape, m_InputShape.begin(), m_InputShape.end());
-  return Conv2DBackpropInput(m_Scope, inputShape, m_Weights, previousInputsGradient, tensorflow::gtl::ArraySlice<int>({ 1, m_Stride, m_Stride, 1 }), tensorflow::StringPiece("VALID"));
+  using tensorflow::ops::Shape;
+  return Conv2DBackpropInput(m_Scope, Shape(m_Scope, m_Input), m_Weights, previousInputsGradient, tensorflow::gtl::ArraySlice<int>({ 1, m_Stride, m_Stride, 1 }), tensorflow::StringPiece("VALID"));
 }
 
 tensorflow::Output Conv2D::backwardWeights(const tensorflow::Input & previousInputsGradient)
 {
   using namespace tensorflow::ops;
-  tensorflow::Tensor filterShape(tensorflow::DT_INT32, tensorflow::TensorShape({ 4 }));
-  Common::setTensor<int>(filterShape, m_WeightsShape.begin(), m_WeightsShape.end());
-  return Conv2DBackpropFilter(m_Scope, m_Input, filterShape, previousInputsGradient, tensorflow::gtl::ArraySlice<int>({ 1, m_Stride, m_Stride, 1 }), tensorflow::StringPiece("VALID"));
+  using tensorflow::ops::Shape;
+  return Conv2DBackpropFilter(m_Scope, m_Input, Shape(m_Scope, m_Weights), previousInputsGradient, tensorflow::gtl::ArraySlice<int>({ 1, m_Stride, m_Stride, 1 }), tensorflow::StringPiece("VALID"));
 }
 
 tensorflow::Output Conv2D::backwardBias(const tensorflow::Input & previousInputsGradient)
