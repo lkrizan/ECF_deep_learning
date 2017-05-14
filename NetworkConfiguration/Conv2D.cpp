@@ -75,7 +75,7 @@ tensorflow::Output Conv2D::backwardWeights(const tensorflow::Input & previousInp
 tensorflow::Output Conv2D::backwardBias(const tensorflow::Input & previousInputsGradient)
 {
   using namespace tensorflow::ops;
-  return Sum(m_Scope, previousInputsGradient, { 0, 1, 2 });
+  return BiasAddGrad(m_Scope, previousInputsGradient);
 }
 
 }   // namespace NetworkConfiguration

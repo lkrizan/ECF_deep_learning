@@ -15,10 +15,6 @@ if __name__ == "__main__":
     test_x = dataset.test.images
     test_x = test_x.reshape([-1, 28, 28, 1])
     test_y = dataset.test.labels
-    # divide with 255 to get the same normalization effect used in training
-    train_x /= 255.0
-    valid_x /= 255.0
-    test_x /= 255.0
     # load model
     loader = ModelLoader("./MNIST/")
     feed_dict = loader.feed_dict

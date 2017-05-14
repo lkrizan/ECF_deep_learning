@@ -67,7 +67,7 @@ tensorflow::Output FullyConnectedLayer::backwardWeights(const tensorflow::Input 
 tensorflow::Output FullyConnectedLayer::backwardBias(const tensorflow::Input & previousInputsGradient)
 {
   using namespace tensorflow::ops;
-  return Sum(m_Scope, previousInputsGradient, 0);
+  return BiasAddGrad(m_Scope, previousInputsGradient);
 }
 
 } // namespace NetworkConfiguration
