@@ -35,11 +35,13 @@ bool MNISTDatasetLoader::readImageFile(std::string imageFilePath)
   unsigned char * memblock = new unsigned char[blockSize];
   for (unsigned int i = 0; i < numImages; ++i)
   {
-    std::vector<unsigned char> values;
+    std::vector<float> values;
     values.reserve(blockSize);
     file.read((char*) memblock, blockSize);
     // set read values
-    addLearningExample(memblock, memblock + blockSize);
+    // normalize values to [0, 1] interval
+    std::transform(memblock, memblock + blockSize, std::back_inserter(values), [](const unsigned char & value) {return static_cast<float>(value) / 255;});
+    addLearningExample(values.begin(), values.end());
   }
   // all done
   delete[] memblock;

@@ -7,7 +7,7 @@
 namespace DatasetLoader {
 
 // loader for MNIST dataset (http://yann.lecun.com/exdb/mnist/) - loads images as tensors [height, width, channels]
-class MNISTDatasetLoader : public DatasetLoader<unsigned char, unsigned char>
+class MNISTDatasetLoader : public DatasetLoader<float, unsigned char>
 {
   bool readImageFile(std::string imageFilePath);
   bool readLabelFile(std::string labelFilePath);
