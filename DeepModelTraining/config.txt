@@ -23,6 +23,10 @@ ReLUActivation
 FullyConnectedLayer 128
 ReLUActivation
 FullyConnectedLayer 10
+# FullyConnectedLayer 10
+# SigmoidActivation
+# FullyConnectedLayer 1
 
 [Loss]
 SoftmaxCrossEntropyLossFunction
+# MeanSquaredLossFunction

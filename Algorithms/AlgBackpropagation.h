@@ -18,7 +18,9 @@ class Backpropagation : public Algorithm
   std::string m_OptimizerName;
   // new session which will be used for backpropagation only
   std::unique_ptr<Session> m_pSession;
-  float m_LearningRate;
+  float m_InitialLearningRate;
+  float m_FinalLearningRate;
+  unsigned int m_NumSteps;
   float m_WeightDecay;
   NetworkConfiguration::OptimizerP m_pOptimizer;
   bool m_Initialized = false;
@@ -28,6 +30,9 @@ class Backpropagation : public Algorithm
   std::vector<std::string> m_AllFetchValues;
   // pointer to evaluation operator
   ModelEvalOpP m_pEvalOp;
+
+  // helper function which is used to fetch new batch and assign optimizer's iteration counter
+  void nextIteration(const int & currGeneration);
 
 public:
   Backpropagation();

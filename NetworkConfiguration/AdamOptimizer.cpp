@@ -43,13 +43,13 @@ void AdamOptimizer::applyGradient(const std::string & name, const tensorflow::In
   // corrected gradient value
   auto gradientNew = Div(m_Scope, sFinal, Add(m_Scope, Sqrt(m_Scope, rNew), m_Delta));
   // finally, apply the gradient
-  auto temp = Multiply(m_Scope, gradientNew, m_LearningRate);
+  auto temp = Multiply(m_Scope, gradientNew, m_LearningRatePlaceholder);
   auto result = Subtract(m_Scope.WithOpName(name), variable, temp);
 }
 
 
-AdamOptimizer::AdamOptimizer(tensorflow::Scope & scope, float learningRate, float weightDecay, float rho1, float rho2) :
-  GradientDescentOptimizer(scope, learningRate, weightDecay)
+AdamOptimizer::AdamOptimizer(tensorflow::Scope & scope, float initialLearningRate, float finalLearningRate, unsigned int numSteps, float weightDecay, float rho1, float rho2) :
+  GradientDescentOptimizer(scope, initialLearningRate, finalLearningRate, numSteps, weightDecay)
 {
   m_Rho1 = tensorflow::ops::Const(m_Scope, rho1);
   m_Rho1Inv = tensorflow::ops::Const(m_Scope, 1 - rho1);
@@ -59,7 +59,7 @@ AdamOptimizer::AdamOptimizer(tensorflow::Scope & scope, float learningRate, floa
   m_Delta = tensorflow::ops::Const(m_Scope, (float)1e-8);
 }
 
-std::vector<std::pair<std::string, tensorflow::Tensor>> AdamOptimizer::getFeedList()
+std::vector<std::pair<std::string, tensorflow::Tensor>> AdamOptimizer::doGetFeedList()
 {
   std::vector<std::pair<std::string, tensorflow::Tensor>> feedList = m_GradientMomentum;
   // set current iteration
@@ -75,12 +75,9 @@ void AdamOptimizer::setFeedList(std::vector<tensorflow::Tensor>& tensors)
   {
     m_GradientMomentum[i].second = tensors[i];
   }
-  // this also means that iteration is completed
-  // advance iteration counter
-  ++m_CurrentIteration;
 }
 
-std::vector<std::string> AdamOptimizer::getFetchList() const
+std::vector<std::string> AdamOptimizer::getFetchList()
 {
   return m_FetchList;
 }

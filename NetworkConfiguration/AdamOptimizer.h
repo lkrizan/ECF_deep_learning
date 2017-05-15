@@ -14,7 +14,6 @@ class AdamOptimizer : public GradientDescentOptimizer
 {
   std::vector<std::pair<std::string, tensorflow::Tensor>> m_GradientMomentum;
   std::vector<std::string> m_FetchList;
-  unsigned int m_CurrentIteration = 1;
   // exponential decay rates for moment estimates (and their 1 - rho variant)
   tensorflow::Output m_Rho1;
   tensorflow::Output m_Rho1Inv;
@@ -25,15 +24,16 @@ class AdamOptimizer : public GradientDescentOptimizer
   // small constant used for numerical stabilization
   tensorflow::Output m_Delta;
 
-protected:
   void applyGradient(const std::string & name, const tensorflow::Input & variable, const tensorflow::Input & gradient, const Shape & variableShape, const std::string & layerName) override;
 
+protected:
+  std::vector<std::pair<std::string, tensorflow::Tensor>> doGetFeedList() override;
+
 public:
-  AdamOptimizer(tensorflow::Scope & scope, float learningRate, float weightDecay, float rho1 = 0.9, float rho2 = 0.999);
-  AdamOptimizer(const OptimizerParams & params) : AdamOptimizer(params.scope_, params.learningRate_, params.weightDecay_) {};
-  std::vector<std::pair<std::string, tensorflow::Tensor>> getFeedList() override;
+  AdamOptimizer(tensorflow::Scope & scope, float startLearningRate, float endLearningRate, unsigned int numSteps, float weightDecay, float rho1 = 0.9, float rho2 = 0.999);
+  AdamOptimizer(const OptimizerParams & params) : AdamOptimizer(params.scope_, params.initialLearningRate_, params.finalLearningRate_, params.numSteps_, params.weightDecay_) {};
   void setFeedList(std::vector<tensorflow::Tensor> & tensors) override;
-  std::vector<std::string> getFetchList() const override;
+  std::vector<std::string> getFetchList() override;
 };
 
 }

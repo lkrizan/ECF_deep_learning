@@ -3,16 +3,19 @@
 
 namespace NetworkConfiguration {
   
-GradientDescentOptimizer::GradientDescentOptimizer(tensorflow::Scope & scope, float learningRate, float weightDecay) : m_Scope(scope)
+GradientDescentOptimizer::GradientDescentOptimizer(tensorflow::Scope & scope, float initialLearningRate, float finalLearningRate, unsigned int numSteps, float weightDecay) 
+  : m_Scope(scope), m_LearningRatePlaceholder(m_Scope.WithOpName(LEARNING_RATE_STR), tensorflow::DT_FLOAT)
 {
-  m_LearningRate = tensorflow::ops::Const(m_Scope, learningRate);
+  m_InitialLearningRate = initialLearningRate;
+  m_FinalLearningRate = finalLearningRate;
+  m_NumSteps = numSteps;
   m_WeightDecay = tensorflow::ops::Const(m_Scope, weightDecay);
 }
 
 void GradientDescentOptimizer::applyGradient(const std::string & name, const tensorflow::Input & variable, const tensorflow::Input & gradient, const Shape & variableShape, const std::string & variableName)
 {
   using namespace tensorflow::ops;
-  auto temp = Multiply(m_Scope, gradient, m_LearningRate);
+  auto temp = Multiply(m_Scope, gradient, m_LearningRatePlaceholder);
   auto result = Subtract(m_Scope.WithOpName(name), variable, temp);
 }
 
@@ -20,6 +23,19 @@ tensorflow::Output GradientDescentOptimizer::regularizationGradient(const tensor
 {
   using namespace tensorflow::ops;
   return Multiply(m_Scope, m_WeightDecay, variable);
+}
+
+void GradientDescentOptimizer::adjustLearningRate()
+{
+  if (m_CurrentIteration < m_NumSteps)
+  {
+    const float alpha = m_CurrentIteration / m_NumSteps;
+    m_CurrentLearningRate = (1.f - alpha) * m_InitialLearningRate + alpha * m_FinalLearningRate;
+  }
+  else
+  {
+    m_CurrentLearningRate = m_FinalLearningRate;
+  }
 }
 
 std::vector<std::string> GradientDescentOptimizer::propagate(const std::vector<LayerP> & network, LossFunctionP lossFunctionPtr)
@@ -65,6 +81,21 @@ std::vector<std::string> GradientDescentOptimizer::propagate(const std::vector<L
   // reverse the vector because layers were iterated backwards
   std::reverse(variables.begin(), variables.end());
   return variables;
+}
+
+std::vector<std::pair<std::string, tensorflow::Tensor>> GradientDescentOptimizer::getFeedList()
+{
+  {
+    std::vector<std::pair<std::string, tensorflow::Tensor>> result;
+    // add current learning rate to the feed list
+    tensorflow::Tensor learningRateTensor(tensorflow::DT_FLOAT, tensorflow::TensorShape({ 1 }));
+    learningRateTensor.flat<float>()(0) = m_CurrentLearningRate;
+    result.push_back(std::make_pair(LEARNING_RATE_STR, learningRateTensor));
+    // append the remaining feed values to the vector (if there are any)
+    std::vector<std::pair<std::string, tensorflow::Tensor>> additionalValues = this->doGetFeedList();
+    result.insert(result.end(), additionalValues.begin(), additionalValues.end());
+    return result;
+  }
 }
 
 }   // namespace NetworkConfiguration

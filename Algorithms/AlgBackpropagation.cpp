@@ -1,6 +1,12 @@
 #include "AlgBackpropagation.h"
 #include "NetworkConfiguration/AdamOptimizer.h"
 
+void Backpropagation::nextIteration(const int & currGeneration)
+{
+  m_pEvalOp->setBatch(currGeneration);
+  m_pOptimizer->advanceIteration();
+}
+
 Backpropagation::Backpropagation() : m_pSession(NewSession({}))
 {
   name_ = "Backpropagation";
@@ -13,17 +19,20 @@ Backpropagation::~Backpropagation()
 
 void Backpropagation::registerParameters(StateP state)
 {
-  registerParameter(state, "learningRate", (voidP) new float(1e-5), ECF::FLOAT);
+  registerParameter(state, "initialLearningRate", (voidP) new float(1e-5), ECF::FLOAT);
+  registerParameter(state, "finalLearningRate", (voidP) new float(1e-5), ECF::FLOAT);
+  registerParameter(state, "numSteps", (voidP) new unsigned int(1), ECF::UINT);
   registerParameter(state, "weightDecay", (voidP) new float(1e-4), ECF::FLOAT);
   registerParameter(state, "optimizer", (voidP) new std::string("GradientDescentOptimizer"), ECF::STRING);
 }
 
 bool Backpropagation::initialize(StateP state)
 {
-  m_LearningRate = *static_cast<float *>(getParameterValue(state, "learningRate").get());
+  m_InitialLearningRate = *static_cast<float *>(getParameterValue(state, "initialLearningRate").get());
+  m_FinalLearningRate = *static_cast<float *>(getParameterValue(state, "finalLearningRate").get());
+  m_NumSteps = *static_cast<unsigned int *>(getParameterValue(state, "numSteps").get());
   m_WeightDecay = *static_cast<float *>(getParameterValue(state, "weightDecay").get());
   m_OptimizerName = *static_cast<std::string*>(getParameterValue(state, "optimizer").get());
-  // TODO: ensure that size of population is 1 and check if parameters are valid
   return true;
 }
 
@@ -44,7 +53,7 @@ bool Backpropagation::advanceGeneration(StateP state, DemeP deme)
     try
     {
       Scope & scope = m_pEvalOp->getScope();
-      m_pOptimizer = NetworkConfiguration::OptimizerFactory::instance().createObject(m_OptimizerName, NetworkConfiguration::OptimizerParams(scope, m_LearningRate, m_WeightDecay));
+      m_pOptimizer = NetworkConfiguration::OptimizerFactory::instance().createObject(m_OptimizerName, NetworkConfiguration::OptimizerParams(scope, m_InitialLearningRate, m_FinalLearningRate, m_NumSteps, m_WeightDecay));
       m_Variables = m_pOptimizer->propagate(m_pEvalOp->getNetwork(), m_pEvalOp->getLossFunction());
       std::vector<std::string> fetchVals = m_pOptimizer->getFetchList();
       m_AllFetchValues.reserve(m_Variables.size() + fetchVals.size());
@@ -69,32 +78,35 @@ bool Backpropagation::advanceGeneration(StateP state, DemeP deme)
     }
     // all done, ready to go
   }
-  IndividualP individual = static_cast<IndividualP>(deme->at(0));
-  // create input tensors from individual
-  std::vector<std::pair<std::string, Tensor>> inputs = m_pEvalOp->createTensorsFromGenotype(individual);
-  // set batch so the same batch is used in training and evaluation 
-  m_pEvalOp->setBatch(state->getGenerationNo());
-  inputs.push_back(std::make_pair(INPUTS_PLACEHOLDER_NAME, m_pEvalOp->getCurrentInputs()));
-  inputs.push_back(std::make_pair(OUTPUTS_PLACEHOLDER_NAME, m_pEvalOp->getCurrentOutputs()));
-  // workaround for passing gradient momentum
-  std::vector<std::pair<std::string, Tensor>> momentumFeedValues = m_pOptimizer->getFeedList();
-  inputs.insert(inputs.end(), momentumFeedValues.begin(), momentumFeedValues.end());
-  // run session and get new parameter values
-  std::vector<Tensor> outputs;
-  Status status = m_pSession->Run(inputs, m_AllFetchValues, {}, &outputs);
-  // clear old genotype values
-  FloatingPoint::FloatingPoint* gen = static_cast<FloatingPoint::FloatingPoint*>(individual->getGenotype().get());
-  std::vector<double> & data = gen->realValue;
-  data.clear();
-  // copy new parameter values to the genotype
-  for_each(outputs.begin(), outputs.begin() + m_Variables.size(), [&data](const Tensor & tensor)
+  for (auto it = deme->begin(); it != deme->end(); ++it)
+  {
+    IndividualP individual = static_cast<IndividualP>(*it);
+    // create input tensors from individual
+    std::vector<std::pair<std::string, Tensor>> inputs = m_pEvalOp->createTensorsFromGenotype(individual);
+    // set batch so the same batch is used in training and evaluation 
+    nextIteration(state->getGenerationNo());
+    inputs.push_back(std::make_pair(INPUTS_PLACEHOLDER_NAME, m_pEvalOp->getCurrentInputs()));
+    inputs.push_back(std::make_pair(OUTPUTS_PLACEHOLDER_NAME, m_pEvalOp->getCurrentOutputs()));
+    // workaround for passing gradient momentum
+    std::vector<std::pair<std::string, Tensor>> momentumFeedValues = m_pOptimizer->getFeedList();
+    inputs.insert(inputs.end(), momentumFeedValues.begin(), momentumFeedValues.end());
+    // run session and get new parameter values
+    std::vector<Tensor> outputs;
+    Status status = m_pSession->Run(inputs, m_AllFetchValues, {}, &outputs);
+    // clear old genotype values
+    FloatingPoint::FloatingPoint* gen = static_cast<FloatingPoint::FloatingPoint*>(individual->getGenotype().get());
+    std::vector<double> & data = gen->realValue;
+    data.clear();
+    // copy new parameter values to the genotype
+    for_each(outputs.begin(), outputs.begin() + m_Variables.size(), [&data](const Tensor & tensor)
     {
       auto size = tensor.flat<float>().size();
       std::copy(tensor.flat<float>().data(), tensor.flat<float>().data() + size, std::back_inserter(data));
     });
-  // workaround for setting variables' gradient momentum (if used)
-  m_pOptimizer->setFeedList(std::vector<tensorflow::Tensor>(outputs.begin() + m_Variables.size(), outputs.end()));
-  // evaluate new individual
-  evaluate(individual);
+    // workaround for setting variables' gradient momentum (if used)
+    m_pOptimizer->setFeedList(std::vector<tensorflow::Tensor>(outputs.begin() + m_Variables.size(), outputs.end()));
+    // evaluate new individual
+    evaluate(individual);
+  }
   return true;
 }
