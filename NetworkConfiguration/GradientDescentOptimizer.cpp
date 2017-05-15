@@ -29,7 +29,7 @@ void GradientDescentOptimizer::adjustLearningRate()
 {
   if (m_CurrentIteration < m_NumSteps)
   {
-    const float alpha = m_CurrentIteration / m_NumSteps;
+    const float alpha = static_cast<float>(m_CurrentIteration) / m_NumSteps;
     m_CurrentLearningRate = (1.f - alpha) * m_InitialLearningRate + alpha * m_FinalLearningRate;
   }
   else

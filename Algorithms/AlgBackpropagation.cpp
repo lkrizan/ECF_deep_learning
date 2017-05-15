@@ -78,13 +78,13 @@ bool Backpropagation::advanceGeneration(StateP state, DemeP deme)
     }
     // all done, ready to go
   }
+  nextIteration(state->getGenerationNo());
   for (auto it = deme->begin(); it != deme->end(); ++it)
   {
     IndividualP individual = static_cast<IndividualP>(*it);
     // create input tensors from individual
     std::vector<std::pair<std::string, Tensor>> inputs = m_pEvalOp->createTensorsFromGenotype(individual);
     // set batch so the same batch is used in training and evaluation 
-    nextIteration(state->getGenerationNo());
     inputs.push_back(std::make_pair(INPUTS_PLACEHOLDER_NAME, m_pEvalOp->getCurrentInputs()));
     inputs.push_back(std::make_pair(OUTPUTS_PLACEHOLDER_NAME, m_pEvalOp->getCurrentOutputs()));
     // workaround for passing gradient momentum

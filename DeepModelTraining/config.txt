@@ -11,12 +11,12 @@ labelFiles ../MNIST/train-labels.idx1-ubyte
 batchSize 50
 
 [Layers]
-PaddedConv2D 16,5 1
+PaddedConv2D 5,16 1
 ReLUActivation
-PaddedMaxPool 2 3
-PaddedConv2D 32,5 1
+PaddedMaxPool 3 2
+PaddedConv2D 5,32 1
 ReLUActivation
-PaddedMaxPool 2 3
+PaddedMaxPool 3 2
 Flatten
 FullyConnectedLayer 256
 ReLUActivation
