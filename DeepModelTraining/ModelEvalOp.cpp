@@ -1,5 +1,6 @@
 #include "ModelEvalOp.h"
 #include "ConfigParser.h"
+#include "IRNGenerator.h"
 
 
 void ModelEvalOp::registerParameters(StateP state)
@@ -103,6 +104,8 @@ bool ModelEvalOp::initialize(StateP state)
     std::string datasetLoaderType = configParser.DatasetLoaderType();
     std::string lossFunctionName = configParser.LossFunctionName();
     unsigned int batchSize = configParser.BatchSize();
+    std::vector<double> initializerParams = configParser.InitializerParams();
+    const std::string & initializerName = configParser.InitializerName();
     // set input and output shapes
     NetworkConfiguration::Shape inputShape({batchSize});
     inputShape.insert(inputShape.end(), configParser.InputShape().begin(), configParser.InputShape().end());
@@ -133,9 +136,22 @@ bool ModelEvalOp::initialize(StateP state)
     // override size for FloatingPoint genotype
     size_t numParameters = totalNumberOfParameters();
     state->getRegistry()->modifyEntry("FloatingPoint.dimension", (voidP) new uint(numParameters));
-    // reinitialize population with updated size
     state->getPopulation()->initialize(state);
-
+    // iterate through population and reinitialize individuals
+    RNGeneratorP<double> rng = RNGFactory<double>::instance().createObject(initializerName, RNGBaseParams<double>(initializerParams.front(), initializerParams.back()));
+    auto population = state->getPopulation();
+    for (auto itDeme = population->begin(); itDeme != population->end(); ++itDeme)
+    {
+      auto deme = *itDeme;
+      for_each(deme->begin(), deme->end(), [&rng, &numParameters](IndividualP & individual)
+      {
+        FloatingPoint::FloatingPoint* gen = (FloatingPoint::FloatingPoint*) individual->getGenotype().get();
+        std::vector<double> & data = gen->realValue;
+        data.clear();
+        data.reserve(numParameters);
+        std::generate_n(std::back_inserter(data), numParameters, [&rng]() { return rng->operator()();});
+      });
+    }
     // shuffle the dataset
     m_DatasetHandler->shuffleDataset();
     return status.ok();

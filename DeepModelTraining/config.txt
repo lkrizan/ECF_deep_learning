@@ -30,3 +30,6 @@ FullyConnectedLayer 10
 [Loss]
 SoftmaxCrossEntropyLossFunction
 # MeanSquaredLossFunction
+
+[Initializer]
+TruncatedNormalDistributionRNG 0 0.1

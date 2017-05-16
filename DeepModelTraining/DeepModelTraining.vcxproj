@@ -35,7 +35,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <Optimization>MaxSpeed</Optimization>
+      <Optimization>Disabled</Optimization>
       <FunctionLevelLinking>false</FunctionLevelLinking>
       <IntrinsicFunctions>false</IntrinsicFunctions>
       <SDLCheck>
@@ -73,12 +73,17 @@
     <ClCompile Include="ConfigParser.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ModelEvalOp.cpp" />
+    <ClCompile Include="NormalDistributionGenerators.cpp" />
+    <ClCompile Include="UniformDistributionRNG.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Algorithms\AlgBackpropagation.h" />
     <ClInclude Include="ConfigParser.h" />
+    <ClInclude Include="IRNGenerator.h" />
     <ClInclude Include="ModelEvalOp.h" />
     <ClInclude Include="ModelExporter.h" />
+    <ClInclude Include="NormalDistributionGenerators.h" />
+    <ClInclude Include="UniformDistributionRNG.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="config.txt" />
