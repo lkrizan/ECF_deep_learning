@@ -9,14 +9,15 @@ namespace NetworkConfiguration {
 class Flatten : public NonParameterizedLayer
 {
 private:
-  // used for placeholder symbolic names
-  int m_Index;
   static int s_TotalNumber;
   static const std::string s_LayerName;
+  // needed for gradient calculation
+  Shape m_InputShape;
 
 public:
   Flatten(tensorflow::Scope &scope, const tensorflow::Input &previousLayerOutput, const Shape& previousLayerOutputShape);
   Flatten(LayerBaseParams & params) : Flatten(params.scope_, params.previousLayerOutput_, params.previousLayerOutputShape_) {};
+  tensorflow::Output backwardInputs(const tensorflow::Input & previousInputsGradient) override;
 };
 
 int Flatten::s_TotalNumber = 0;

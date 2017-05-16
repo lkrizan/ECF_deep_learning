@@ -22,6 +22,8 @@ void ConfigParser::parseLine(const std::string line)
         m_State = eLayers;
       else if (header == "Loss")
         m_State = eLoss;
+      else if (header == "Initializer")
+        m_State = eInitializer;
       else
         throw std::logic_error(*currIterator + " is not registered block in configuration file.\n");
       return;
@@ -125,6 +127,16 @@ void ConfigParser::parseLine(const std::string line)
       case eLossFinished:
         throw std::logic_error("Only one loss function is allowed.\n");
         break;
+
+      case eInitializer:
+      {
+        m_InitializerName = *currIterator;
+        size_t numElements = std::distance(++currIterator, tokens.end());
+        if (numElements != 2)
+          throw std::logic_error("Initializer takes 2 real value parameters.\n");
+        m_InitializerParams.reserve(std::distance(currIterator, tokens.end()));
+        std::transform(currIterator, tokens.end(), std::back_inserter(m_InitializerParams), [](const std::string& val) {return std::stod(val);});
+      }
     }
   }
 }

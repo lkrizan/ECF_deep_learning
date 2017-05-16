@@ -1,15 +1,35 @@
 [Dataset]
-loader NumericDatasetLoader
-# loader MNISTDatasetLoader
-InputShape 2
-OutputShape 1
-inputFiles ./dataset/dataset.txt
-batchSize 2500
+loader MNISTDatasetLoader
+InputShape 28 28 1
+OutputShape 10
+inputFiles ../MNIST/train-images.idx3-ubyte
+labelFiles ../MNIST/train-labels.idx1-ubyte
+# loader NumericDatasetLoader
+# InputShape 2
+# OutputShape 1
+# inputFiles ./dataset/dataset.txt
+batchSize 50
 
 [Layers]
+PaddedConv2D 5,16 1
+ReLUActivation
+PaddedMaxPool 3 2
+PaddedConv2D 5,32 1
+ReLUActivation
+PaddedMaxPool 3 2
+Flatten
+FullyConnectedLayer 256
+ReLUActivation
+FullyConnectedLayer 128
+ReLUActivation
 FullyConnectedLayer 10
-SigmoidActivation
-FullyConnectedLayer 1
+# FullyConnectedLayer 10
+# SigmoidActivation
+# FullyConnectedLayer 1
 
 [Loss]
-MeanSquaredLossFunction
+SoftmaxCrossEntropyLossFunction
+# MeanSquaredLossFunction
+
+[Initializer]
+TruncatedNormalDistributionRNG 0 0.1

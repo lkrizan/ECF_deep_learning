@@ -2,7 +2,8 @@
 
 namespace NetworkConfiguration {
 
-FullyConnectedLayer::FullyConnectedLayer(tensorflow::Scope &scope, const tensorflow::Input &previousLayerOutput, const Shape& previousLayerOutputShape, const std::vector<int> &paramShapeArgs) : ParameterizedLayer(scope)
+FullyConnectedLayer::FullyConnectedLayer(tensorflow::Scope &scope, const tensorflow::Input &previousLayerOutput, const Shape& previousLayerOutputShape, const std::vector<int> &paramShapeArgs) : 
+  ParameterizedLayer(scope, previousLayerOutput)
 {
   using namespace tensorflow::ops;
   
@@ -24,23 +25,23 @@ FullyConnectedLayer::FullyConnectedLayer(tensorflow::Scope &scope, const tensorf
     throw std::logic_error(errorMessageStream.str());
   }
   // set names for variables
-  m_Index = ++s_TotalNumber;
-  std::string name = s_LayerName + std::to_string(m_Index);
-  m_WeightsName = name + "_w";
-  m_BiasName = name + "_b";
+  m_LayerName = s_LayerName + std::to_string(++s_TotalNumber);
+  m_WeightsName = m_LayerName + "_w";
+  m_BiasName = m_LayerName + "_b";
   
-  // create placeholders and graph nodes for layer 
-  auto weights = Placeholder(m_Scope.WithOpName(m_WeightsName), tensorflow::DataType::DT_FLOAT);
-  auto bias = Placeholder(m_Scope.WithOpName(m_BiasName), tensorflow::DataType::DT_FLOAT);
-  auto tempResult = MatMul(m_Scope, previousLayerOutput, weights, MatMul::TransposeB(true));
-  m_Output = BiasAdd(m_Scope.WithOpName(name + "_out"), tempResult, bias);
-
   // set shapes
   unsigned int numDimension = previousLayerOutputShape.back();
   unsigned int numNeurons = paramShapeArgs.front();
   m_WeightsShape = Shape({ numNeurons, numDimension });
   m_BiasShape = Shape({ numNeurons });
   m_OutputShape = Shape({ previousLayerOutputShape.front(), m_WeightsShape.front() });
+
+  // create placeholders and graph nodes for layer 
+  m_Weights = Placeholder(m_Scope.WithOpName(m_WeightsName), tensorflow::DataType::DT_FLOAT);
+  m_Bias = Placeholder(m_Scope.WithOpName(m_BiasName), tensorflow::DataType::DT_FLOAT);
+  auto tempResult = MatMul(m_Scope, m_Input, m_Weights, MatMul::TransposeB(true));
+  m_Output = BiasAdd(m_Scope.WithOpName(m_LayerName + "_out"), tempResult, m_Bias);
+
 }
 
 FullyConnectedLayer::FullyConnectedLayer(LayerShapeL1Params & params) :
@@ -49,6 +50,24 @@ FullyConnectedLayer::FullyConnectedLayer(LayerShapeL1Params & params) :
 std::vector<std::pair<std::string, Shape>> FullyConnectedLayer::getParamShapes() const
 {
   return std::vector<std::pair<std::string, Shape>>({ {m_WeightsName, m_WeightsShape}, {m_BiasName, m_BiasShape} });
+}
+
+tensorflow::Output FullyConnectedLayer::backwardInputs(const tensorflow::Input & previousInputsGradient)
+{
+  using namespace tensorflow::ops;
+  return MatMul(m_Scope, previousInputsGradient, m_Weights);
+}
+
+tensorflow::Output FullyConnectedLayer::backwardWeights(const tensorflow::Input & previousInputsGradient)
+{
+  using namespace tensorflow::ops;
+  return MatMul(m_Scope, previousInputsGradient, m_Input, MatMul::TransposeA(true));
+}
+
+tensorflow::Output FullyConnectedLayer::backwardBias(const tensorflow::Input & previousInputsGradient)
+{
+  using namespace tensorflow::ops;
+  return BiasAddGrad(m_Scope, previousInputsGradient);
 }
 
 } // namespace NetworkConfiguration

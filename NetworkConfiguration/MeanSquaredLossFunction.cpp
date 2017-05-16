@@ -2,7 +2,8 @@
 
 namespace NetworkConfiguration {
 
-MeanSquaredLossFunction::MeanSquaredLossFunction(tensorflow::Scope & scope, const tensorflow::Input & networkOutput, const Shape & networkOutputShape, const tensorflow::Input & expectedOutputsPlaceholder, const Shape & expectedOutputShape, std::string placeholderName) : LossFunction(scope)
+MeanSquaredLossFunction::MeanSquaredLossFunction(tensorflow::Scope & scope, const tensorflow::Input & networkOutput, const Shape & networkOutputShape, const tensorflow::Input & expectedOutputsPlaceholder, const Shape & expectedOutputShape, std::string placeholderName) : 
+  LossFunction(scope, networkOutput, expectedOutputsPlaceholder)
 {
   if (!shapesFormEqual(networkOutputShape, expectedOutputShape))
   {
@@ -11,11 +12,17 @@ MeanSquaredLossFunction::MeanSquaredLossFunction(tensorflow::Scope & scope, cons
 
   // create graph nodes
   using namespace tensorflow::ops;
-  auto diff = Subtract(scope, networkOutput, expectedOutputsPlaceholder);
-  auto squaredDiff = Square(scope, diff);
-  auto exampleMean = Mean(scope, squaredDiff, 1);
-  m_Loss = Mean(scope.WithOpName(placeholderName), exampleMean, 0);
+  auto diff = Subtract(m_Scope, m_NetworkOutput, m_ExpectedOutputs);
+  auto squaredDiff = Square(m_Scope, diff);
+  auto exampleMean = Mean(m_Scope, squaredDiff, 1);
+  m_Loss = Mean(m_Scope.WithOpName(placeholderName), exampleMean, 0);
 
+}
+
+tensorflow::Output MeanSquaredLossFunction::backward()
+{
+  using namespace tensorflow::ops;
+  return Subtract(m_Scope, m_NetworkOutput, m_ExpectedOutputs);
 }
 
 }	// namespace NetworkConfiguration

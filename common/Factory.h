@@ -56,7 +56,10 @@ public:
       return std::shared_ptr<AbstractProduct>((it->second) (args));
     }
     // error handling (unregistered factory)
-    throw std::exception("Unknown object type passed to factory.");
+    std::ostringstream errorMessageStream;
+    errorMessageStream << id;
+    errorMessageStream << " is not a registered class in factory.";
+    throw std::invalid_argument(errorMessageStream.str());
   }
 
   std::shared_ptr<AbstractProduct> createObject(const IdentifierType& id)
@@ -67,9 +70,11 @@ public:
       return std::shared_ptr<AbstractProduct>((it->second) ());
     }
     // error handling (unregistered factory)
-    throw std::exception("Unknown object type passed to factory.");
+    std::ostringstream errorMessageStream;
+    errorMessageStream << id;
+    errorMessageStream << " is not a registered class in factory.";
+    throw std::invalid_argument(errorMessageStream.str());
   }
-
 };
 
 
