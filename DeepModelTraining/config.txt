@@ -1,9 +1,13 @@
 [Dataset]
-loader MNISTDatasetLoader
-InputShape 28 28 1
+# loader MNISTDatasetLoader
+# InputShape 28 28 1
+# OutputShape 10
+# inputFiles ../MNIST/train-images.idx3-ubyte
+# labelFiles ../MNIST/train-labels.idx1-ubyte
+loader CIFAR10DatasetLoader
+InputShape 32 32 3
 OutputShape 10
-inputFiles ../MNIST/train-images.idx3-ubyte
-labelFiles ../MNIST/train-labels.idx1-ubyte
+inputFiles ../CIFAR10/data_batch_1.bin ../CIFAR10/data_batch_2.bin ../CIFAR10/data_batch_3.bin ../CIFAR10/data_batch_4.bin ../CIFAR10/data_batch_5.bin
 # loader NumericDatasetLoader
 # InputShape 2
 # OutputShape 1
