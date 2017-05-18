@@ -15,6 +15,11 @@ if __name__ == "__main__":
     test_x = dataset.test.images
     test_x = test_x.reshape([-1, 28, 28, 1])
     test_y = dataset.test.labels
+    train_mean = train_x.mean()
+    train_std = train_x.std()
+    train_x = (train_x - train_mean) / train_std
+    valid_x = (valid_x - train_mean) / train_std
+    test_x = (test_x - train_mean) / train_std
     # load model
     loader = ModelLoader("./MNIST/")
     feed_dict = loader.feed_dict

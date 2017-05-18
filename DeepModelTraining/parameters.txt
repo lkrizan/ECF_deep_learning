@@ -2,9 +2,9 @@
 	<Algorithm>
         <Backpropagation>
 			<Entry key="initialLearningRate">1e-4</Entry>
-			<Entry key="finalLearningRate">5e-5</Entry>
-			<Entry key="numSteps">1</Entry>
-			<Entry key="weightDecay">1e-5</Entry>
+			<Entry key="finalLearningRate">1e-6</Entry>
+			<Entry key="numSteps">8400</Entry>
+			<Entry key="weightDecay">1e-3</Entry>
 			<Entry key="optimizer">AdamOptimizer</Entry>
 		</Backpropagation>
 	</Algorithm>
@@ -17,7 +17,7 @@
 	</Genotype>
 	<Registry>
 		<Entry key="configFilePath">./config.txt</Entry>
-		<Entry key="saveModel">0</Entry>
+		<Entry key="saveModel">1</Entry>
 		<Entry key="modelSavePath">./model/</Entry>
 		<Entry key="population.size">1</Entry>
 		<Entry key="mutation.indprob">0.3</Entry>
