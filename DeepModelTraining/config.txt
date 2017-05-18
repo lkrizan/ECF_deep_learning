@@ -17,16 +17,19 @@ batchSize 50
 [Layers]
 PaddedConv2D 5,16 1
 ReLUActivation
-PaddedMaxPool 3 2
+PaddedMaxPool 2 2
 PaddedConv2D 5,32 1
 ReLUActivation
-PaddedMaxPool 3 2
+PaddedMaxPool 2 2
 Flatten
-FullyConnectedLayer 256
-ReLUActivation
-FullyConnectedLayer 128
+FullyConnectedLayer 512
 ReLUActivation
 FullyConnectedLayer 10
+# FullyConnectedLayer 256
+# ReLUActivation
+# FullyConnectedLayer 128
+# ReLUActivation
+# FullyConnectedLayer 10
 # FullyConnectedLayer 10
 # SigmoidActivation
 # FullyConnectedLayer 1

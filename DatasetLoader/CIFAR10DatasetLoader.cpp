@@ -6,6 +6,12 @@
 #define CHANNELS 3
 #define NUM_LABELS 10
 
+// for convinience, training set mean and std per channel was calculated outside, via python script
+#define C_MEAN 93.206756
+#define RC_STD 66.060188
+#define GC_STD 64.216217
+#define BC_STD 65.036056
+
 namespace DatasetLoader {
   
 bool CIFAR10DatasetLoader::readImageFile(std::string imageFilePath)
@@ -17,6 +23,7 @@ bool CIFAR10DatasetLoader::readImageFile(std::string imageFilePath)
   m_LearningExampleShape = NetworkConfiguration::Shape({ HEIGHT, WIDTH, CHANNELS });
   m_LabelShape = NetworkConfiguration::Shape({ NUM_LABELS });
   const unsigned int exampleSize = HEIGHT * WIDTH * CHANNELS;
+  const unsigned int channelSize = HEIGHT * WIDTH;
   unsigned char label;
   // allocate memory for the image file block
   unsigned char * memblock = nullptr;
@@ -39,8 +46,10 @@ bool CIFAR10DatasetLoader::readImageFile(std::string imageFilePath)
     // read image data
     values.clear();
     file.read((char*)memblock, exampleSize);
-    // normalize the values into [0, 1] interval
-    std::transform(memblock, memblock + exampleSize, std::back_inserter(values), [](unsigned char & val) {return static_cast<float>(val) / 255;});
+    // normalize the values 
+    std::transform(memblock, memblock + channelSize, std::back_inserter(values), [](unsigned char & val) {return (static_cast<float>(val) - C_MEAN) / RC_STD;});
+    std::transform(memblock + channelSize, memblock + 2 * channelSize, std::back_inserter(values), [](unsigned char & val) {return (static_cast<float>(val) - C_MEAN) / GC_STD;});
+    std::transform(memblock + 2 * channelSize, memblock + 3 * channelSize, std::back_inserter(values), [](unsigned char & val) {return (static_cast<float>(val) - C_MEAN) / BC_STD;});
     addLearningExample(values.begin(), values.end());
   }
   // all done
