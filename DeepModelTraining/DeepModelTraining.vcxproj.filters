@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Algorithms">
+      <UniqueIdentifier>{30754b35-0634-4ff2-b936-cf9c20678166}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Genotype">
+      <UniqueIdentifier>{90641978-2278-4eb3-a059-eb28bf08bb00}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ModelEvalOp.cpp">
@@ -24,14 +30,17 @@
     <ClCompile Include="ConfigParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Algorithms\AlgBackpropagation.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="NormalDistributionGenerators.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="UniformDistributionRNG.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Algorithms\AlgBackpropagation.cpp">
+      <Filter>Algorithms</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Genotype\DLFloatingPointMutUnbound.cpp">
+      <Filter>Genotype</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -44,9 +53,6 @@
     <ClInclude Include="ModelExporter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Algorithms\AlgBackpropagation.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="IRNGenerator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -55,6 +61,15 @@
     </ClInclude>
     <ClInclude Include="UniformDistributionRNG.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Algorithms\AlgBackpropagation.h">
+      <Filter>Algorithms</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Genotype\DLFloatingPoint.h">
+      <Filter>Genotype</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Genotype\DLFloatingPointMutUnbound.h">
+      <Filter>Genotype</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
