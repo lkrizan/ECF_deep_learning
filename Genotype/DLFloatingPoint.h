@@ -26,7 +26,7 @@ public:
 
   std::vector<MutationOpP> getMutationOp() override
   {
-    std::vector<MutationOpP> mut;
+    std::vector<MutationOpP> mut = FloatingPoint::FloatingPoint::getMutationOp();
     mut.push_back(static_cast<MutationOpP>(new DLFloatingPointMutUnbound));
     return mut;
   }
