@@ -20,6 +20,7 @@
     <ClInclude Include="ReLUActivation.h" />
     <ClInclude Include="SigmoidActivation.h" />
     <ClInclude Include="SoftmaxCrossEntropyLossFunction.h" />
+    <ClInclude Include="TanhActivation.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AdamOptimizer.cpp" />
@@ -33,6 +34,7 @@
     <ClCompile Include="ReLUActivation.cpp" />
     <ClCompile Include="SigmoidActivation.cpp" />
     <ClCompile Include="SoftmaxCrossEntropyLossFunction.cpp" />
+    <ClCompile Include="TanhActivation.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{4E3DD63B-B30F-421C-98C0-53F88873BA7C}</ProjectGuid>

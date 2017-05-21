@@ -54,6 +54,9 @@
     <ClInclude Include="AdamOptimizer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="TanhActivation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FullyConnectedLayer.cpp">
@@ -87,6 +90,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="AdamOptimizer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TanhActivation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

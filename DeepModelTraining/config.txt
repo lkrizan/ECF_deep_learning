@@ -12,14 +12,14 @@ labelFiles ../MNIST/train-labels.idx1-ubyte
 # InputShape 2
 # OutputShape 1
 # inputFiles ./dataset/dataset.txt
-batchSize 50
+batchSize 100
 
 [Layers]
 PaddedConv2D 5,6 1
-ReLUActivation
+TanhActivation
 PaddedMaxPool 2 2
 PaddedConv2D 5,12 1
-ReLUActivation
+TanhActivation
 PaddedMaxPool 2 2
 Flatten
 # FullyConnectedLayer 120
