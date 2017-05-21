@@ -19,6 +19,7 @@
     <ClInclude Include="PaddedMaxPool.h" />
     <ClInclude Include="ReLUActivation.h" />
     <ClInclude Include="SigmoidActivation.h" />
+    <ClInclude Include="SoftmaxActivation.h" />
     <ClInclude Include="SoftmaxCrossEntropyLossFunction.h" />
     <ClInclude Include="TanhActivation.h" />
   </ItemGroup>
@@ -33,6 +34,7 @@
     <ClCompile Include="PaddedMaxPool.cpp" />
     <ClCompile Include="ReLUActivation.cpp" />
     <ClCompile Include="SigmoidActivation.cpp" />
+    <ClCompile Include="SoftmaxActivation.cpp" />
     <ClCompile Include="SoftmaxCrossEntropyLossFunction.cpp" />
     <ClCompile Include="TanhActivation.cpp" />
   </ItemGroup>

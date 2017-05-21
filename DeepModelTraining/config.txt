@@ -22,18 +22,19 @@ PaddedConv2D 5,12 1
 TanhActivation
 PaddedMaxPool 2 2
 Flatten
+FullyConnectedLayer 10
+SoftmaxActivation
 # FullyConnectedLayer 120
 # ReLUActivation
 # FullyConnectedLayer 64
 # ReLUActivation
-FullyConnectedLayer 10
 # FullyConnectedLayer 10
 # SigmoidActivation
 # FullyConnectedLayer 1
 
 [Loss]
-SoftmaxCrossEntropyLossFunction
-# MeanSquaredLossFunction
+# SoftmaxCrossEntropyLossFunction
+MeanSquaredLossFunction
 
 [Initializer]
 TruncatedNormalDistributionRNG 0 0.1
