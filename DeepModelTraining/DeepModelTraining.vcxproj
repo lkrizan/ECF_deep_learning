@@ -70,6 +70,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\Algorithms\AlgBackpropagation.cpp" />
+    <ClCompile Include="..\Algorithms\AlgMicrocanonicalAnnealing.cpp" />
     <ClCompile Include="..\Genotype\DLFloatingPointMutUnbound.cpp" />
     <ClCompile Include="ConfigParser.cpp" />
     <ClCompile Include="main.cpp" />
@@ -79,6 +80,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Algorithms\AlgBackpropagation.h" />
+    <ClInclude Include="..\Algorithms\AlgMicrocanonicalAnnealing.h" />
     <ClInclude Include="..\Genotype\DLFloatingPoint.h" />
     <ClInclude Include="..\Genotype\DLFloatingPointMutUnbound.h" />
     <ClInclude Include="ConfigParser.h" />

@@ -1,26 +1,27 @@
 <ECF>
 	<Algorithm>
-		<SteadyStateTournament>
-		</SteadyStateTournament>
+		<MicrocanonicalAnnealing>
+			<Entry key="demon">0.01</Entry>
+		</MicrocanonicalAnnealing>
 	</Algorithm>
 	<Genotype>
 		<DLFloatingPoint>
 			<Entry key="dimension">5</Entry>
 			<Entry key="lbound">-2</Entry>
 			<Entry key="ubound">2</Entry>
-			<Entry key="mut.simple">0.1</Entry>
-			<Entry key="mut.unbound">0.9</Entry>
-			<Entry key="numberGenerator">NormalDistributionRNG</Entry>
+			<Entry key="mut.simple">0</Entry>
+			<Entry key="mut.unbound">1</Entry>
+			<Entry key="numberGenerator">TruncatedNormalDistributionRNG</Entry>
 			<Entry key="distributionArg1">0</Entry>
-			<Entry key="distributionArg2">0.5</Entry>
+			<Entry key="distributionArg2">0.01</Entry>
 		</DLFloatingPoint>
 	</Genotype>
 	<Registry>
 		<Entry key="configFilePath">./config.txt</Entry>
 		<Entry key="saveModel">1</Entry>
 		<Entry key="modelSavePath">./model/</Entry>
-		<Entry key="population.size">30</Entry>
-		<Entry key="mutation.indprob">0.5</Entry>
+		<Entry key="population.size">1</Entry>
+		<Entry key="mutation.indprob">1</Entry>
 		<Entry key="term.maxgen">12000</Entry>
 		<Entry key="term.fitnessval">1e-12</Entry>
 		<Entry key="log.frequency">15</Entry>
