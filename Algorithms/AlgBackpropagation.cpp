@@ -74,7 +74,7 @@ bool Backpropagation::advanceGeneration(StateP state, DemeP deme)
     catch (std::exception & e)
     {
       ECF_LOG_ERROR(state, e.what());
-      return false;
+      throw e;
     }
     // all done, ready to go
   }

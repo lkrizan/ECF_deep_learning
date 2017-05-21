@@ -15,10 +15,10 @@ labelFiles ../MNIST/train-labels.idx1-ubyte
 batchSize 100
 
 [Layers]
-PaddedConv2D 5,6 1
+PaddedConv2D 5,8 1
 TanhActivation
 PaddedMaxPool 2 2
-PaddedConv2D 5,12 1
+PaddedConv2D 5,16 1
 TanhActivation
 PaddedMaxPool 2 2
 Flatten
@@ -37,4 +37,4 @@ SoftmaxActivation
 MeanSquaredLossFunction
 
 [Initializer]
-TruncatedNormalDistributionRNG 0 0.1
+UniformDistributionRNG -0.5 0.5
