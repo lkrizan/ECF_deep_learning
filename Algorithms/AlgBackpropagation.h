@@ -10,7 +10,7 @@
 #include <common/Factory.h>
 
 /*
-  Backpropagation algorithm for FloatingPoint genotype, works only with ModelEvalOp evaluation operator
+  Backpropagation algorithm for DLFloatingPoint genotype, works only with ModelEvalOp evaluation operator
   (deep learning evaluation operator).
 */
 
@@ -40,10 +40,14 @@ class Backpropagation : public Algorithm
   std::string m_NestedAlgorithmName;
   int m_NestedAlgorithmGenerations;
   bool m_UseNestedAlgorithm = false;
+  // used if nested algorithm is population-based
+  SelBestOpP m_SelBestOp;
 
   // helper function which is used to fetch new batch and assign optimizer's iteration counter
   void nextIteration(const int & currGeneration);
 
+  // helper function for initializing population out of only one individual (first one in the deme), uses mutation several times
+  void reinitializePopulation(DemeP deme, uint numberOfMutations=2);
 
 public:
   Backpropagation();

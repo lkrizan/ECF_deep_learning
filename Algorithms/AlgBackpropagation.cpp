@@ -8,7 +8,19 @@ void Backpropagation::nextIteration(const int & currGeneration)
   m_pOptimizer->advanceIteration();
 }
 
-Backpropagation::Backpropagation() : m_pSession(NewSession({}))
+void Backpropagation::reinitializePopulation(DemeP deme, uint numberOfMutations)
+{
+  IndividualP source = deme->at(0);
+  for (uint idx = 1; idx < deme->size(); ++idx)
+  {
+    replaceWith(idx, IndividualP(source->copy()));
+    // perform mutation several times to achive greater difference between individuals
+    for (int i = 0; i < numberOfMutations; ++i)
+      mutate(deme->at(idx));
+  }
+}
+
+Backpropagation::Backpropagation() : m_pSession(NewSession({})), m_SelBestOp(new SelBestOp)
 {
   name_ = "Backpropagation";
 }
@@ -30,6 +42,7 @@ void Backpropagation::registerParameters(StateP state)
 
   // TODO: register all ECF algorithms in AlgorithmFactory
   AlgorithmFactory::instance().registerClass("GeneticAnnealing", []() {return new GeneticAnnealing;});
+  AlgorithmFactory::instance().registerClass("SteadyStateTournament", []() {return new SteadyStateTournament;});
 }
 
 bool Backpropagation::initialize(StateP state)
@@ -40,6 +53,7 @@ bool Backpropagation::initialize(StateP state)
   m_WeightDecay = *static_cast<float *>(getParameterValue(state, "weightDecay").get());
   m_OptimizerName = *static_cast<std::string*>(getParameterValue(state, "optimizer").get());
 
+  m_SelBestOp->initialize(state);
   m_NestedAlgorithmName = *static_cast<std::string*>(getParameterValue(state, "nestedAlgorithm").get());
   m_NestedAlgorithmGenerations = *static_cast<int*>(getParameterValue(state, "nestedAlgorithmGenerations").get());
 
@@ -131,8 +145,15 @@ bool Backpropagation::advanceGeneration(StateP state, DemeP deme)
   if (m_UseNestedAlgorithm)
   {
     ECF_LOG(state, 4, "Running nested algorithm...");
+    reinitializePopulation(deme);
     for (uint i = 0; i < m_NestedAlgorithmGenerations; ++i)
       m_pNestedAlgorithm->advanceGeneration(state, deme);
+    // if population algorithm was used, select best individual for use with backpropagation (backprop uses individual at index 0)
+    if (deme->size() > 1)
+    {
+      IndividualP best(m_SelBestOp->select(*deme)->copy());
+      replaceWith(0, best);
+    }
   }
   return true;
 }

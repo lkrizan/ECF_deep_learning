@@ -2,11 +2,12 @@
 	<Algorithm>
 		<Backpropagation>
 			<Entry key="initialLearningRate">1e-4</Entry>
-			<Entry key="finalLearningRate">1e-6</Entry>
-			<Entry key="numSteps">8400</Entry>
+			<Entry key="finalLearningRate">5e-5</Entry>
+			<Entry key="numSteps">1</Entry>
 			<Entry key="weightDecay">1e-3</Entry>
 			<Entry key="optimizer">AdamOptimizer</Entry>
-			<Entry key="nestedAlgorithm">MicrocanonicalAnnealing</Entry>
+			<Entry key="nestedAlgorithm">SteadyStateTournament</Entry>
+			<Entry key="nestedAlgorithmGenerations">1</Entry>
 		</Backpropagation>
 		<MicrocanonicalAnnealing>
 			<Entry key="demon">0.1</Entry>
@@ -28,9 +29,9 @@
 		<Entry key="configFilePath">./config.txt</Entry>
 		<Entry key="saveModel">1</Entry>
 		<Entry key="modelSavePath">./model/</Entry>
-		<Entry key="population.size">1</Entry>
+		<Entry key="population.size">30</Entry>
 		<Entry key="mutation.indprob">0.5</Entry>
-		<Entry key="term.maxgen">6000</Entry>
+		<Entry key="term.maxgen">600</Entry>
 		<Entry key="term.fitnessval">1e-12</Entry>
 		<Entry key="log.frequency">15</Entry>
 		<Entry key="log.level">2</Entry>
