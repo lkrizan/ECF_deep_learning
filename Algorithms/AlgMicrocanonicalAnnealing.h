@@ -3,6 +3,7 @@
 
 #include <ECF/ECF.h>
 #include <ECF/Algorithm.h>
+#include <Common/Factory.h>
 
 class MicrocanonicalAnnealing : public Algorithm
 {

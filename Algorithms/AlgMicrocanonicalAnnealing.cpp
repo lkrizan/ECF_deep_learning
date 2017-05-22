@@ -27,3 +27,8 @@ bool MicrocanonicalAnnealing::advanceGeneration(StateP state, DemeP deme)
   }
   return true;
 }
+
+// register algorithm in AlgorithmFactory
+namespace {
+  bool dummy = Common::Factory<Algorithm, std::string, std::function<Algorithm*()>>::instance().registerClass("MicrocanonicalAnnealing", []() {return new MicrocanonicalAnnealing;});
+}

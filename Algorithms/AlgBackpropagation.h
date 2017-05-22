@@ -7,6 +7,7 @@
 #include <NetworkConfiguration/Layer.h>
 #include <NetworkConfiguration/LossFunction.h>
 #include <NetworkConfiguration/GradientDescentOptimizer.h>
+#include <common/Factory.h>
 
 /*
   Backpropagation algorithm for FloatingPoint genotype, works only with ModelEvalOp evaluation operator
@@ -30,11 +31,19 @@ class Backpropagation : public Algorithm
   std::vector<std::string> m_AllFetchValues;
   // pointer to evaluation operator
   ModelEvalOpP m_pEvalOp;
+
+  // Factory class uses std::shared_ptr, so AlgorithmPtr will be used instead of ECF typedef AlgorithmP
+  typedef std::shared_ptr<Algorithm> AlgorithmPtr;
+  typedef Common::Factory<Algorithm, std::string, std::function<Algorithm*()>> AlgorithmFactory;
   // pointer to the nested algorithm (for hybrid algorithms)
-  AlgorithmP m_pAlgorithm;
+  AlgorithmPtr m_pNestedAlgorithm;
+  std::string m_NestedAlgorithmName;
+  int m_NestedAlgorithmGenerations;
+  bool m_UseNestedAlgorithm = false;
 
   // helper function which is used to fetch new batch and assign optimizer's iteration counter
   void nextIteration(const int & currGeneration);
+
 
 public:
   Backpropagation();

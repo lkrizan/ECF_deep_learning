@@ -25,6 +25,11 @@ void Backpropagation::registerParameters(StateP state)
   registerParameter(state, "numSteps", (voidP) new unsigned int(1), ECF::UINT);
   registerParameter(state, "weightDecay", (voidP) new float(1e-4), ECF::FLOAT);
   registerParameter(state, "optimizer", (voidP) new std::string("GradientDescentOptimizer"), ECF::STRING);
+  registerParameter(state, "nestedAlgorithm", (voidP) new std::string(""), ECF::STRING);
+  registerParameter(state, "nestedAlgorithmGenerations", (voidP) new int(10), ECF::INT);
+
+  // TODO: register all ECF algorithms in AlgorithmFactory
+  AlgorithmFactory::instance().registerClass("GeneticAnnealing", []() {return new GeneticAnnealing;});
 }
 
 bool Backpropagation::initialize(StateP state)
@@ -34,6 +39,12 @@ bool Backpropagation::initialize(StateP state)
   m_NumSteps = *static_cast<unsigned int *>(getParameterValue(state, "numSteps").get());
   m_WeightDecay = *static_cast<float *>(getParameterValue(state, "weightDecay").get());
   m_OptimizerName = *static_cast<std::string*>(getParameterValue(state, "optimizer").get());
+
+  m_NestedAlgorithmName = *static_cast<std::string*>(getParameterValue(state, "nestedAlgorithm").get());
+  m_NestedAlgorithmGenerations = *static_cast<int*>(getParameterValue(state, "nestedAlgorithmGenerations").get());
+
+  if (m_NestedAlgorithmName.length() != 0)
+    m_UseNestedAlgorithm = true;
   return true;
 }
 
@@ -71,15 +82,23 @@ bool Backpropagation::advanceGeneration(StateP state, DemeP deme)
       }
       ECF_LOG(state, 4, "Graph definition data:");
       ECF_LOG(state, 4, gdef.DebugString());
+
+      if (m_UseNestedAlgorithm)
+      {
+        m_pNestedAlgorithm = AlgorithmFactory::instance().createObject(m_NestedAlgorithmName);
+        // set genetic operators and initialize algorithm
+        m_pNestedAlgorithm->mutation_ = mutation_;
+        m_pNestedAlgorithm->crossover_ = crossover_;
+        m_pNestedAlgorithm->evalOp_ = evalOp_;
+        m_pNestedAlgorithm->state_ = state_;
+        m_pNestedAlgorithm->initialize(state);
+      }
     }
     catch (std::exception & e)
     {
       ECF_LOG_ERROR(state, e.what());
       throw e;
     }
-    m_pAlgorithm = static_cast<AlgorithmP>(new MicrocanonicalAnnealing());
-    m_pAlgorithm->initialize(state);
-    // all done, ready to go
   }
   nextIteration(state->getGenerationNo());
   IndividualP individual = static_cast<IndividualP>(deme->at(0));
@@ -108,6 +127,12 @@ bool Backpropagation::advanceGeneration(StateP state, DemeP deme)
   m_pOptimizer->setFeedList(std::vector<tensorflow::Tensor>(outputs.begin() + m_Variables.size(), outputs.end()));
   // evaluate new individual
   evaluate(individual);
-  // TODO: perform a number of iterations with nested algorithm (if one is used)
+  // run nested algorithm (for hybrid algorithms)
+  if (m_UseNestedAlgorithm)
+  {
+    ECF_LOG(state, 4, "Running nested algorithm...");
+    for (uint i = 0; i < m_NestedAlgorithmGenerations; ++i)
+      m_pNestedAlgorithm->advanceGeneration(state, deme);
+  }
   return true;
 }
