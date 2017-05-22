@@ -16,14 +16,13 @@ batchSize 100
 
 [Layers]
 PaddedConv2D 5,8 1
-TanhActivation
+ReLUActivation
 PaddedMaxPool 2 2
 PaddedConv2D 5,16 1
-TanhActivation
+ReLUActivation
 PaddedMaxPool 2 2
 Flatten
 FullyConnectedLayer 10
-SoftmaxActivation
 # FullyConnectedLayer 120
 # ReLUActivation
 # FullyConnectedLayer 64
@@ -33,8 +32,8 @@ SoftmaxActivation
 # FullyConnectedLayer 1
 
 [Loss]
-# SoftmaxCrossEntropyLossFunction
-MeanSquaredLossFunction
+SoftmaxCrossEntropyLossFunction
+# MeanSquaredLossFunction
 
 [Initializer]
-UniformDistributionRNG -0.5 0.5
+TruncatedNormalDistributionRNG 0 0.1

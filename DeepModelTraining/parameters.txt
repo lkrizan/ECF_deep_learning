@@ -1,5 +1,12 @@
 <ECF>
 	<Algorithm>
+		<Backpropagation>
+			<Entry key="initialLearningRate">1e-4</Entry>
+			<Entry key="finalLearningRate">1e-6</Entry>
+			<Entry key="numSteps">8400</Entry>
+			<Entry key="weightDecay">1e-3</Entry>
+			<Entry key="optimizer">AdamOptimizer</Entry>
+		</Backpropagation>
 		<MicrocanonicalAnnealing>
 			<Entry key="demon">0.1</Entry>
 		</MicrocanonicalAnnealing>

@@ -1,5 +1,6 @@
 #include "AlgBackpropagation.h"
 #include "NetworkConfiguration/AdamOptimizer.h"
+#include "AlgMicrocanonicalAnnealing.h"
 
 void Backpropagation::nextIteration(const int & currGeneration)
 {
@@ -76,37 +77,37 @@ bool Backpropagation::advanceGeneration(StateP state, DemeP deme)
       ECF_LOG_ERROR(state, e.what());
       throw e;
     }
+    m_pAlgorithm = static_cast<AlgorithmP>(new MicrocanonicalAnnealing());
+    m_pAlgorithm->initialize(state);
     // all done, ready to go
   }
   nextIteration(state->getGenerationNo());
-  for (auto it = deme->begin(); it != deme->end(); ++it)
+  IndividualP individual = static_cast<IndividualP>(deme->at(0));
+  // create input tensors from individual
+  std::vector<std::pair<std::string, Tensor>> inputs = m_pEvalOp->createTensorsFromGenotype(individual);
+  // set batch so the same batch is used in training and evaluation 
+  inputs.push_back(std::make_pair(INPUTS_PLACEHOLDER_NAME, m_pEvalOp->getCurrentInputs()));
+  inputs.push_back(std::make_pair(OUTPUTS_PLACEHOLDER_NAME, m_pEvalOp->getCurrentOutputs()));
+  // workaround for passing gradient momentum
+  std::vector<std::pair<std::string, Tensor>> momentumFeedValues = m_pOptimizer->getFeedList();
+  inputs.insert(inputs.end(), momentumFeedValues.begin(), momentumFeedValues.end());
+  // run session and get new parameter values
+  std::vector<Tensor> outputs;
+  Status status = m_pSession->Run(inputs, m_AllFetchValues, {}, &outputs);
+  // clear old genotype values
+  FloatingPoint::FloatingPoint* gen = static_cast<FloatingPoint::FloatingPoint*>(individual->getGenotype().get());
+  std::vector<double> & data = gen->realValue;
+  data.clear();
+  // copy new parameter values to the genotype
+  for_each(outputs.begin(), outputs.begin() + m_Variables.size(), [&data](const Tensor & tensor)
   {
-    IndividualP individual = static_cast<IndividualP>(*it);
-    // create input tensors from individual
-    std::vector<std::pair<std::string, Tensor>> inputs = m_pEvalOp->createTensorsFromGenotype(individual);
-    // set batch so the same batch is used in training and evaluation 
-    inputs.push_back(std::make_pair(INPUTS_PLACEHOLDER_NAME, m_pEvalOp->getCurrentInputs()));
-    inputs.push_back(std::make_pair(OUTPUTS_PLACEHOLDER_NAME, m_pEvalOp->getCurrentOutputs()));
-    // workaround for passing gradient momentum
-    std::vector<std::pair<std::string, Tensor>> momentumFeedValues = m_pOptimizer->getFeedList();
-    inputs.insert(inputs.end(), momentumFeedValues.begin(), momentumFeedValues.end());
-    // run session and get new parameter values
-    std::vector<Tensor> outputs;
-    Status status = m_pSession->Run(inputs, m_AllFetchValues, {}, &outputs);
-    // clear old genotype values
-    FloatingPoint::FloatingPoint* gen = static_cast<FloatingPoint::FloatingPoint*>(individual->getGenotype().get());
-    std::vector<double> & data = gen->realValue;
-    data.clear();
-    // copy new parameter values to the genotype
-    for_each(outputs.begin(), outputs.begin() + m_Variables.size(), [&data](const Tensor & tensor)
-    {
-      auto size = tensor.flat<float>().size();
-      std::copy(tensor.flat<float>().data(), tensor.flat<float>().data() + size, std::back_inserter(data));
-    });
-    // workaround for setting variables' gradient momentum (if used)
-    m_pOptimizer->setFeedList(std::vector<tensorflow::Tensor>(outputs.begin() + m_Variables.size(), outputs.end()));
-    // evaluate new individual
-    evaluate(individual);
-  }
+    auto size = tensor.flat<float>().size();
+    std::copy(tensor.flat<float>().data(), tensor.flat<float>().data() + size, std::back_inserter(data));
+  });
+  // workaround for setting variables' gradient momentum (if used)
+  m_pOptimizer->setFeedList(std::vector<tensorflow::Tensor>(outputs.begin() + m_Variables.size(), outputs.end()));
+  // evaluate new individual
+  evaluate(individual);
+  // TODO: perform a number of iterations with nested algorithm (if one is used)
   return true;
 }

@@ -30,6 +30,8 @@ class Backpropagation : public Algorithm
   std::vector<std::string> m_AllFetchValues;
   // pointer to evaluation operator
   ModelEvalOpP m_pEvalOp;
+  // pointer to the nested algorithm (for hybrid algorithms)
+  AlgorithmP m_pAlgorithm;
 
   // helper function which is used to fetch new batch and assign optimizer's iteration counter
   void nextIteration(const int & currGeneration);
