@@ -14,16 +14,19 @@ bool MicrocanonicalAnnealing::initialize(StateP state)
 
 bool MicrocanonicalAnnealing::advanceGeneration(StateP state, DemeP deme)
 {
-  IndividualP ind = deme->at(0);
-  IndividualP mutant = static_cast<IndividualP>(ind->copy());
-  mutate(mutant);
-  evaluate(mutant);
-  double energyDiff = mutant->fitness->getValue() - ind->fitness->getValue();
-  if (energyDiff <= demon_ )
+  for (auto it = deme->begin(); it != deme->end(); ++it)
   {
-    deme->at(0) = mutant;
-    demon_ -= energyDiff;
-    if(demon_ > upperBound_) demon_ = upperBound_;
+    IndividualP ind = *it;
+    IndividualP mutant = static_cast<IndividualP>(ind->copy());
+    mutate(mutant);
+    evaluate(mutant);
+    double energyDiff = mutant->fitness->getValue() - ind->fitness->getValue();
+    if (energyDiff <= demon_)
+    {
+      replaceWith(ind, mutant);
+      demon_ -= energyDiff;
+      if (demon_ > upperBound_) demon_ = upperBound_;
+    }
   }
   return true;
 }
@@ -32,3 +35,4 @@ bool MicrocanonicalAnnealing::advanceGeneration(StateP state, DemeP deme)
 namespace {
   bool dummy = Common::Factory<Algorithm, std::string, std::function<Algorithm*()>>::instance().registerClass("MicrocanonicalAnnealing", []() {return new MicrocanonicalAnnealing;});
 }
+
