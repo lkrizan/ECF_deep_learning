@@ -8,6 +8,7 @@ void Backpropagation::nextIteration(const int & currGeneration)
   m_pOptimizer->advanceIteration();
 }
 
+// TODO: rethink this method (not used anywhere for now)
 void Backpropagation::reinitializePopulation(DemeP deme, uint numberOfMutations)
 {
   IndividualP source = deme->at(0);
@@ -145,14 +146,18 @@ bool Backpropagation::advanceGeneration(StateP state, DemeP deme)
   if (m_UseNestedAlgorithm)
   {
     ECF_LOG(state, 4, "Running nested algorithm...");
-    reinitializePopulation(deme);
+    // reinitializePopulation(deme);
     for (uint i = 0; i < m_NestedAlgorithmGenerations; ++i)
-      m_pNestedAlgorithm->advanceGeneration(state, deme);
+      m_pNestedAlgorithm->advanceGeneration(state);
     // if population algorithm was used, select best individual for use with backpropagation (backprop uses individual at index 0)
     if (deme->size() > 1)
     {
-      IndividualP best(m_SelBestOp->select(*deme)->copy());
-      replaceWith(0, best);
+      IndividualP best = m_SelBestOp->select(*deme);
+      if (best != deme->at(0))
+      {
+        std::swap(deme->at(0)->index, best->index);
+        std::swap(deme->at(0), best);
+      }
     }
   }
   return true;
