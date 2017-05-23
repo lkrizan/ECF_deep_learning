@@ -13,11 +13,12 @@
 
 class ModelExporter
 {
-  std::string m_FolderPath;
   std::ofstream m_OutputStream;
 
 
 public:
+
+  std::string m_FolderPath;
 
   ModelExporter(StateP ECFState, std::string folderPath) : m_FolderPath(folderPath)
   { 

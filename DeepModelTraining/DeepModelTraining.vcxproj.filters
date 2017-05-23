@@ -45,6 +45,9 @@
     <ClCompile Include="..\Algorithms\AlgMicrocanonicalAnnealing.cpp">
       <Filter>Algorithms</Filter>
     </ClCompile>
+    <ClCompile Include="ModelSaveOp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ModelEvalOp.h">
@@ -76,6 +79,9 @@
     </ClInclude>
     <ClInclude Include="..\Algorithms\AlgMicrocanonicalAnnealing.h">
       <Filter>Algorithms</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelSaveOp.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

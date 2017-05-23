@@ -6,29 +6,15 @@
 void ModelEvalOp::registerParameters(StateP state)
 {
   state->getRegistry()->registerEntry("configFilePath", (voidP)(new std::string), ECF::STRING);
-  state->getRegistry()->registerEntry("saveModel", (voidP)(new int(0)), ECF::INT);
-  state->getRegistry()->registerEntry("modelSavePath", (voidP)(new std::string), ECF::STRING);
-
 }
 
 ModelEvalOp::~ModelEvalOp()
 {
-  if (m_SaveModel)
-  {
-    try
-    {
-      saveDefinitionToFile();
-    }
-    catch (std::exception &e)
-    {
-      std::string errMsg = "Failed to save trained model: " + std::string(e.what());
-      ECF_LOG_ERROR(m_ECFState, errMsg);
-    }
-  }
-
-  m_pSession->Close();
+  if (m_pSession)
+    m_pSession->Close();
 }
 
+// TODO: remove this (deprecated - replaced with separate operator)
 void ModelEvalOp::saveDefinitionToFile() const
 {
   ModelExporter exporter(m_ECFState, m_ModelExportPath);

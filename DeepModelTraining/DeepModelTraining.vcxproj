@@ -75,6 +75,7 @@
     <ClCompile Include="ConfigParser.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ModelEvalOp.cpp" />
+    <ClCompile Include="ModelSaveOp.cpp" />
     <ClCompile Include="NormalDistributionGenerators.cpp" />
     <ClCompile Include="UniformDistributionRNG.cpp" />
   </ItemGroup>
@@ -87,6 +88,7 @@
     <ClInclude Include="IRNGenerator.h" />
     <ClInclude Include="ModelEvalOp.h" />
     <ClInclude Include="ModelExporter.h" />
+    <ClInclude Include="ModelSaveOp.h" />
     <ClInclude Include="NormalDistributionGenerators.h" />
     <ClInclude Include="UniformDistributionRNG.h" />
   </ItemGroup>
