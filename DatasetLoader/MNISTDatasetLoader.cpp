@@ -2,6 +2,8 @@
 #include <stdlib.h>
 
 #define NUM_CLASSES 10
+#define MEAN 0.13070042
+#define STD 0.30815959
 
 namespace DatasetLoader {
 
@@ -39,8 +41,8 @@ bool MNISTDatasetLoader::readImageFile(std::string imageFilePath)
     values.reserve(blockSize);
     file.read((char*) memblock, blockSize);
     // set read values
-    // normalize values to [0, 1] interval
-    std::transform(memblock, memblock + blockSize, std::back_inserter(values), [](const unsigned char & value) {return static_cast<float>(value) / 255;});
+    // normalize values
+    std::transform(memblock, memblock + blockSize, std::back_inserter(values), [](const unsigned char & value) {return (static_cast<float>(value) / 255 - MEAN) / STD;});
     addLearningExample(values.begin(), values.end());
   }
   // all done

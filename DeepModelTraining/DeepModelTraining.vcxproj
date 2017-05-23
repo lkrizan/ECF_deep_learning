@@ -70,18 +70,25 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\Algorithms\AlgBackpropagation.cpp" />
+    <ClCompile Include="..\Algorithms\AlgMicrocanonicalAnnealing.cpp" />
+    <ClCompile Include="..\Genotype\DLFloatingPointMutUnbound.cpp" />
     <ClCompile Include="ConfigParser.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ModelEvalOp.cpp" />
+    <ClCompile Include="ModelSaveOp.cpp" />
     <ClCompile Include="NormalDistributionGenerators.cpp" />
     <ClCompile Include="UniformDistributionRNG.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Algorithms\AlgBackpropagation.h" />
+    <ClInclude Include="..\Algorithms\AlgMicrocanonicalAnnealing.h" />
+    <ClInclude Include="..\Genotype\DLFloatingPoint.h" />
+    <ClInclude Include="..\Genotype\DLFloatingPointMutUnbound.h" />
     <ClInclude Include="ConfigParser.h" />
     <ClInclude Include="IRNGenerator.h" />
     <ClInclude Include="ModelEvalOp.h" />
     <ClInclude Include="ModelExporter.h" />
+    <ClInclude Include="ModelSaveOp.h" />
     <ClInclude Include="NormalDistributionGenerators.h" />
     <ClInclude Include="UniformDistributionRNG.h" />
   </ItemGroup>

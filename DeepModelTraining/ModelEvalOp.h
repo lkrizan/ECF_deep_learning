@@ -19,6 +19,7 @@ using namespace tensorflow;
 
 class ModelEvalOp: public EvaluateOp
 {
+  friend class ModelSaveOp;
 public:
   ModelEvalOp() : m_pSession(NewSession({})) {}
   ~ModelEvalOp();

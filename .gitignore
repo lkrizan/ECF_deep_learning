@@ -9,6 +9,7 @@
 
 # dataset files
 MNIST/
+CIFAR10/
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs

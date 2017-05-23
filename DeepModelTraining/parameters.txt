@@ -1,28 +1,37 @@
 <ECF>
 	<Algorithm>
-        <Backpropagation>
-			<Entry key="initialLearningRate">5e-4</Entry>
-			<Entry key="finalLearningRate">1e-3</Entry>
+	<Backpropagation>
+			<Entry key="initialLearningRate">1e-4</Entry>
+			<Entry key="finalLearningRate">5e-4</Entry>
 			<Entry key="numSteps">1</Entry>
 			<Entry key="weightDecay">1e-5</Entry>
 			<Entry key="optimizer">AdamOptimizer</Entry>
+			<Entry key="nestedAlgorithmGenerations">1</Entry>
 		</Backpropagation>
+		<GeneticAnnealing>
+			<Entry key="energybank">5</Entry>
+			<Entry key="coolingfactor">0.5</Entry>
+			<Entry key="elitism">0</Entry>
+		</GeneticAnnealing>
 	</Algorithm>
 	<Genotype>
-		<FloatingPoint>
+		<DLFloatingPoint>
 			<Entry key="dimension">5</Entry>
-			<Entry key="lbound">-15</Entry>
-			<Entry key="ubound">15</Entry>
-		</FloatingPoint>
+			<Entry key="lbound">-2</Entry>
+			<Entry key="ubound">2</Entry>
+			<Entry key="mut.simple">1</Entry>
+			<Entry key="mut.unbound">0</Entry>
+			<Entry key="numberGenerator">NormalDistributionRNG</Entry>
+			<Entry key="distributionArg1">0</Entry>
+			<Entry key="distributionArg2">0.1</Entry>
+		</DLFloatingPoint>
 	</Genotype>
 	<Registry>
 		<Entry key="configFilePath">./config.txt</Entry>
-		<Entry key="saveModel">0</Entry>
-		<Entry key="modelSavePath">./model/</Entry>
-		<Entry key="population.size">1</Entry>
-		<Entry key="mutation.indprob">0.3</Entry>
-		<Entry key="term.maxgen">9600</Entry>
-		<Entry key="term.eval">10000</Entry>
+		<Entry key="saveModel">1</Entry>
+		<Entry key="population.size">15</Entry>
+		<Entry key="mutation.indprob">0.5</Entry>
+		<Entry key="term.maxgen">600</Entry>
 		<Entry key="term.fitnessval">1e-12</Entry>
 		<Entry key="log.frequency">15</Entry>
 		<Entry key="log.level">2</Entry>
