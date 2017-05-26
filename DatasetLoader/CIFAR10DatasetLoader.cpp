@@ -7,10 +7,10 @@
 #define NUM_LABELS 10
 
 // for convinience, training set mean and std per channel was calculated outside, via python script
-#define C_MEAN 93.206756
-#define RC_STD 66.060188
-#define GC_STD 64.216217
-#define BC_STD 65.036056
+#define C_MEAN 83.886077
+#define RC_STD 69.026443
+#define GC_STD 69.024284
+#define BC_STD 69.026657
 
 namespace DatasetLoader {
   
