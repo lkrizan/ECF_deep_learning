@@ -4,36 +4,36 @@
 # OutputShape 10
 # inputFiles ../MNIST/train-images.idx3-ubyte
 # labelFiles ../MNIST/train-labels.idx1-ubyte
-loader CIFAR10DatasetLoader
-InputShape 32 32 3
-OutputShape 10
-inputFiles ../CIFAR10/data_batch_1.bin ../CIFAR10/data_batch_2.bin ../CIFAR10/data_batch_3.bin ../CIFAR10/data_batch_4.bin ../CIFAR10/data_batch_5.bin
-# loader NumericDatasetLoader
-# InputShape 2
-# OutputShape 1
-# inputFiles ./dataset/dataset.txt
+# loader CIFAR10DatasetLoader
+# InputShape 32 32 3
+# OutputShape 10
+# inputFiles ../CIFAR10/data_batch_1.bin ../CIFAR10/data_batch_2.bin ../CIFAR10/data_batch_3.bin ../CIFAR10/data_batch_4.bin ../CIFAR10/data_batch_5.bin
+loader NumericDatasetLoader
+InputShape 2
+OutputShape 1
+inputFiles ./dataset/dataset.txt
 batchSize 50
 
 [Layers]
-PaddedConv2D 5,16 1
-ReLUActivation
-PaddedMaxPool 2 2
-PaddedConv2D 5,32 1
-ReLUActivation
-PaddedMaxPool 2 2
-Flatten
+# PaddedConv2D 5,16 1
+# ReLUActivation
+# PaddedMaxPool 2 2
+# PaddedConv2D 5,32 1
+# ReLUActivation
+# PaddedMaxPool 2 2
+# Flatten
 # FullyConnectedLayer 10
-FullyConnectedLayer 120
-ReLUActivation
-FullyConnectedLayer 64
-ReLUActivation
+# FullyConnectedLayer 120
+# ReLUActivation
+# FullyConnectedLayer 64
+# ReLUActivation
 FullyConnectedLayer 10
-# SigmoidActivation
-# FullyConnectedLayer 1
+SigmoidActivation
+FullyConnectedLayer 1
 
 [Loss]
-SoftmaxCrossEntropyLossFunction
-# MeanSquaredLossFunction
+# SoftmaxCrossEntropyLossFunction
+MeanSquaredLossFunction
 
 [Initializer]
 TruncatedNormalDistributionRNG 0 0.1

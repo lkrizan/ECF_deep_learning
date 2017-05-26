@@ -2,7 +2,6 @@
 #define NumericDatasetLoader_h
 
 #include "DatasetLoader.h"
-#include <boost/tokenizer.hpp>
 #include <fstream> 
 
 namespace DatasetLoader {
@@ -18,7 +17,6 @@ namespace DatasetLoader {
 
 class NumericDatasetLoader : public DatasetLoader<float,float>
 {
-  void parseLine(const std::string& line, std::vector<float> &values) const;
 
 public:
   NumericDatasetLoader(const std::string datasetPath, const unsigned int batchSize = 0);

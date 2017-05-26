@@ -30,6 +30,9 @@
     <ClInclude Include="CIFAR10DatasetLoader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="IONumericDatasetLoader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="NumericDatasetLoader.cpp">
@@ -39,6 +42,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CIFAR10DatasetLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="IONumericDatasetLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

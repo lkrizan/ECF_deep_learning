@@ -85,13 +85,13 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="dataset.txt">
-      <Filter>Resource Files</Filter>
-    </Text>
     <Text Include="parameters.txt">
       <Filter>Resource Files</Filter>
     </Text>
     <Text Include="config.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="dataset\dataset.txt">
       <Filter>Resource Files</Filter>
     </Text>
   </ItemGroup>

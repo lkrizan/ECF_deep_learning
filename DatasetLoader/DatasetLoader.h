@@ -8,6 +8,7 @@
 #include <ctime>
 #include <cstdlib>
 #include <boost/iterator/zip_iterator.hpp>
+#include <boost/tokenizer.hpp>
 
 namespace DatasetLoader {
 
@@ -18,6 +19,16 @@ std::vector<T> oneHotEncode(size_t classIndex, size_t numClasses)
   std::vector<T> values(numClasses);
   values.at(classIndex) = 1;
   return values;
+}
+
+void splitLine(const std::string& line, std::vector<float> &values)
+{
+  values.clear();
+  typedef boost::tokenizer<boost::char_separator<char>> tok_t;
+  boost::char_separator<char> sep(" \t");
+  tok_t tok(line, sep);
+  values.reserve(std::distance(tok.begin(), tok.end()));
+  std::transform(tok.begin(), tok.end(), std::back_inserter(values), [](const std::string val) { return std::stof(val); });
 }
 
 // data structure used to pass parameters to any/all dataset loader classes
