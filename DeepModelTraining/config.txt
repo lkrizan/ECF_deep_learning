@@ -16,13 +16,19 @@
 # OutputShape 1
 # inputFiles ./dataset/dataset.txt
 # !!!autoencoder config!!!
+# loader IONumericDatasetLoader
+# InputShape 15
+# OutputShape 15
+# inputFiles ../example_datasets/one_class/oneclass_realistic_small_train_all_numeric.txt
+# labelFiles ../example_datasets/one_class/oneclass_realistic_small_train_all_numeric.txt
+# !!!PUF config!!!
 loader IONumericDatasetLoader
-InputShape 15
-OutputShape 15
-inputFiles ../example_datasets/one_class/oneclass_realistic_small_train_all_numeric.txt
-labelFiles ../example_datasets/one_class/oneclass_realistic_small_train_all_numeric.txt
+InputShape 64
+OutputShape 1
+inputFiles ../example_datasets/PUF/f_1x64_16384.txt
+labelFiles ../example_datasets/PUF/r_1x64_16384.txt
 # common for all configs - batchsize
-batchSize 100
+batchSize 1024
 
 [Layers]
 # !!!Convolution network config!!!
@@ -41,18 +47,25 @@ batchSize 100
 # FullyConnectedLayer 10
 # SigmoidActivation
 # FullyConnectedLayer 1
-# !!!Auto-encoder config
-FullyConnectedLayer 25
-ReLUActivation
+# !!!Auto-encoder config!!!
+# FullyConnectedLayer 25
+# ReLUActivation
+# FullyConnectedLayer 15
+# ReLUActivation
+# FullyConnectedLayer 10
+# ReLUActivation
+# FullyConnectedLayer 15
+# ReLUActivation
+# FullyConnectedLayer 25
+# ReLUActivation
+# FullyConnectedLayer 15
+# !!!PUF config!!!
 FullyConnectedLayer 15
 ReLUActivation
 FullyConnectedLayer 10
 ReLUActivation
-FullyConnectedLayer 15
-ReLUActivation
-FullyConnectedLayer 25
-ReLUActivation
-FullyConnectedLayer 15
+FullyConnectedLayer 1
+TanhActivation
 
 [Loss]
 # SoftmaxCrossEntropyLossFunction

@@ -2,8 +2,8 @@
 	<Algorithm>
 	<Backpropagation>
 			<Entry key="initialLearningRate">5e-4</Entry>
-			<Entry key="finalLearningRate">5e-5</Entry>
-			<Entry key="numSteps">15000</Entry>
+			<Entry key="finalLearningRate">1e-4</Entry>
+			<Entry key="numSteps">1</Entry>
 			<Entry key="weightDecay">1e-5</Entry>
 			<Entry key="optimizer">AdamOptimizer</Entry>
 			<Entry key="nestedAlgorithmGenerations">1</Entry>
@@ -29,7 +29,7 @@
 	<Registry>
 		<Entry key="configFilePath">./config.txt</Entry>
 		<Entry key="saveModel">1</Entry>
-		<Entry key="modelSavePath">../demo/OneClass/</Entry>
+		<Entry key="modelSavePath">../demo/PUF/</Entry>
 		<Entry key="population.size">1</Entry>
 		<Entry key="mutation.indprob">0.5</Entry>
 		<Entry key="term.maxgen">20000</Entry>
