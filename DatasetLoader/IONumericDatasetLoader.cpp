@@ -10,6 +10,14 @@ IONumericDatasetLoader::IONumericDatasetLoader(const std::string inputsPath, con
   std::ifstream fileP(inputsPath);
   if (!fileP.is_open())
     throw std::logic_error("Failed to open dataset file " + inputsPath);
+  // read first line with input shape
+  if (getline(fileP, line))
+  {
+    splitLine(line, values);
+    if (values.size() != 1)
+      throw std::logic_error("First line of dataset file should contain number of inputs and outputs.");
+    m_LearningExampleShape = NetworkConfiguration::Shape({ static_cast<unsigned int>(values[0]) });
+  }
   while (getline(fileP, line))
   {
     splitLine(line, values);
@@ -20,6 +28,14 @@ IONumericDatasetLoader::IONumericDatasetLoader(const std::string inputsPath, con
   fileP = std::ifstream(labelsPath);
   if (!fileP.is_open())
     throw std::logic_error("Failed to open dataset file " + labelsPath);
+  // read first line with output shape
+  if (getline(fileP, line))
+  {
+    splitLine(line, values);
+    if (values.size() != 1)
+      throw std::logic_error("First line of dataset file should contain number of inputs and outputs.");
+    m_LabelShape = NetworkConfiguration::Shape({ static_cast<unsigned int>(values[0]) });
+  }
   while (getline(fileP, line))
   {
     splitLine(line, values);

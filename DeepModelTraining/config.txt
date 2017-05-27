@@ -1,20 +1,31 @@
 [Dataset]
+# !!!MNIST config!!!
 # loader MNISTDatasetLoader
 # InputShape 28 28 1
 # OutputShape 10
 # inputFiles ../MNIST/train-images.idx3-ubyte
 # labelFiles ../MNIST/train-labels.idx1-ubyte
+# !!!CIFAR10 config!!!
 # loader CIFAR10DatasetLoader
 # InputShape 32 32 3
 # OutputShape 10
 # inputFiles ../CIFAR10/data_batch_1.bin ../CIFAR10/data_batch_2.bin ../CIFAR10/data_batch_3.bin ../CIFAR10/data_batch_4.bin ../CIFAR10/data_batch_5.bin
-loader NumericDatasetLoader
-InputShape 2
-OutputShape 1
-inputFiles ./dataset/dataset.txt
-batchSize 50
+# !!!regression config!!!
+# loader NumericDatasetLoader
+# InputShape 2
+# OutputShape 1
+# inputFiles ./dataset/dataset.txt
+# !!!autoencoder config!!!
+loader IONumericDatasetLoader
+InputShape 15
+OutputShape 15
+inputFiles ../example_datasets/one_class/oneclass_realistic_small_train_all_numeric.txt
+labelFiles ../example_datasets/one_class/oneclass_realistic_small_train_all_numeric.txt
+# common for all configs - batchsize
+batchSize 100
 
 [Layers]
+# !!!Convolution network config!!!
 # PaddedConv2D 5,16 1
 # ReLUActivation
 # PaddedMaxPool 2 2
@@ -22,18 +33,29 @@ batchSize 50
 # ReLUActivation
 # PaddedMaxPool 2 2
 # Flatten
-# FullyConnectedLayer 10
 # FullyConnectedLayer 120
 # ReLUActivation
 # FullyConnectedLayer 64
 # ReLUActivation
+# !!!Fully connected network for regression!!!
+# FullyConnectedLayer 10
+# SigmoidActivation
+# FullyConnectedLayer 1
+# !!!Auto-encoder config
 FullyConnectedLayer 10
-SigmoidActivation
-FullyConnectedLayer 1
+ReLUActivation
+FullyConnectedLayer 5
+ReLUActivation
+FullyConnectedLayer 7
+ReLUActivation
+FullyConnectedLayer 10
+ReLUActivation
+FullyConnectedLayer 15
 
 [Loss]
 # SoftmaxCrossEntropyLossFunction
 MeanSquaredLossFunction
 
 [Initializer]
-TruncatedNormalDistributionRNG 0 0.1
+# TruncatedNormalDistributionRNG 0 0.1
+UniformDistributionRNG -1 1

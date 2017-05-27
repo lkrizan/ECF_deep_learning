@@ -1,9 +1,9 @@
 <ECF>
 	<Algorithm>
 	<Backpropagation>
-			<Entry key="initialLearningRate">5e-6</Entry>
-			<Entry key="finalLearningRate">5e-4</Entry>
-			<Entry key="numSteps">12000</Entry>
+			<Entry key="initialLearningRate">5e-3</Entry>
+			<Entry key="finalLearningRate">5e-5</Entry>
+			<Entry key="numSteps">15000</Entry>
 			<Entry key="weightDecay">1e-5</Entry>
 			<Entry key="optimizer">AdamOptimizer</Entry>
 			<Entry key="nestedAlgorithmGenerations">1</Entry>
@@ -29,9 +29,9 @@
 	<Registry>
 		<Entry key="configFilePath">./config.txt</Entry>
 		<Entry key="saveModel">1</Entry>
-		<Entry key="population.size">15</Entry>
+		<Entry key="population.size">1</Entry>
 		<Entry key="mutation.indprob">0.5</Entry>
-		<Entry key="term.maxgen">12000</Entry>
+		<Entry key="term.maxgen">20000</Entry>
 		<Entry key="term.fitnessval">1e-12</Entry>
 		<Entry key="log.frequency">15</Entry>
 		<Entry key="log.level">2</Entry>
