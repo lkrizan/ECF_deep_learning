@@ -42,13 +42,15 @@ batchSize 100
 # SigmoidActivation
 # FullyConnectedLayer 1
 # !!!Auto-encoder config
-FullyConnectedLayer 10
+FullyConnectedLayer 25
 ReLUActivation
-FullyConnectedLayer 5
-ReLUActivation
-FullyConnectedLayer 7
+FullyConnectedLayer 15
 ReLUActivation
 FullyConnectedLayer 10
+ReLUActivation
+FullyConnectedLayer 15
+ReLUActivation
+FullyConnectedLayer 25
 ReLUActivation
 FullyConnectedLayer 15
 
