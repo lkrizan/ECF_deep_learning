@@ -25,10 +25,10 @@
 loader IONumericDatasetLoader
 InputShape 64
 OutputShape 1
-inputFiles ../example_datasets/PUF/f_1x64_16384.txt
-labelFiles ../example_datasets/PUF/r_1x64_16384.txt
+inputFiles ../example_datasets/PUF/f_1x64_2048.txt
+labelFiles ../example_datasets/PUF/r_1x64_2048.txt
 # common for all configs - batchsize
-batchSize 1024
+batchSize 128
 
 [Layers]
 # !!!Convolution network config!!!
