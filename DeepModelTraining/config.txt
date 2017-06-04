@@ -25,8 +25,8 @@
 loader IONumericDatasetLoader
 InputShape 64
 OutputShape 1
-inputFiles ../example_datasets/PUF/f_1x64_2048.txt
-labelFiles ../example_datasets/PUF/r_1x64_2048.txt
+inputFiles ../example_datasets/PUF/f_1x64_128.txt
+labelFiles ../example_datasets/PUF/r_1x64_128.txt
 # common for all configs - batchsize
 batchSize 128
 

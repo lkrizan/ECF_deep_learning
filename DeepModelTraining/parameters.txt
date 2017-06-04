@@ -29,11 +29,12 @@
 	<Registry>
 		<Entry key="configFilePath">./config.txt</Entry>
 		<Entry key="saveModel">1</Entry>
+		<Entry key="saveModelMilestone">1024</Entry>
 		<Entry key="modelSavePath">../demo/PUF/</Entry>
 		<Entry key="population.size">1</Entry>
 		<Entry key="mutation.indprob">0.5</Entry>
-		<Entry key="term.maxgen">12000</Entry>
-		<Entry key="term.fitnessval">1e-12</Entry>
+		<Entry key="term.maxgen">15000</Entry>
+		<Entry key="term.fitnessval">1e-5</Entry>
 		<Entry key="log.frequency">15</Entry>
 		<Entry key="log.level">2</Entry>
 	</Registry>
