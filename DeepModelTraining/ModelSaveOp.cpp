@@ -74,7 +74,8 @@ bool ModelSaveOp::operate(StateP state)
   {
     uint currGeneration = state->getGenerationNo();
     bool bTerminatingGeneration = m_TerminatingGeneration == currGeneration;
-    bool bMilestoneGeneration = (m_SaveMilestone != 0 && currGeneration != 0 && (currGeneration % m_SaveMilestone == 0));
+    // bool bMilestoneGeneration = (m_SaveMilestone != 0 && currGeneration != 0 && (currGeneration % m_SaveMilestone == 0));
+    bool bMilestoneGeneration = (m_SaveMilestone != 0 && (currGeneration == 0 || (currGeneration % m_SaveMilestone == 0)));
     bool bTerminalFitness = state->getStats()->getFitnessMin() <= m_TerminatingFitness;
     // for some reason, ECF does not terminate on terminal fitness value, so here it is forced
     if(bTerminalFitness)

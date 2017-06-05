@@ -1,39 +1,46 @@
 <ECF>
 	<Algorithm>
-	<Backpropagation>
+		<EvolutionStrategy>
+			<Entry key="lambda">15</Entry>
+			<Entry key="mu">15</Entry>
+			<Entry key="rho">1</Entry>
+		</EvolutionStrategy>
+		<GeneticAnnealing>
+			<Entry key="energybank">50</Entry>
+			<Entry key="coolingfactor">0.8</Entry>
+			<Entry key="elitism">0</Entry>
+		</GeneticAnnealing>
+		<SteadyStateTournament>
+		</SteadyStateTournament>
+		<Backpropagation>
 			<Entry key="initialLearningRate">5e-4</Entry>
-			<Entry key="finalLearningRate">5e-4</Entry>
+			<Entry key="finalLearningRate">1e-2</Entry>
 			<Entry key="numSteps">1</Entry>
 			<Entry key="weightDecay">1e-2</Entry>
 			<Entry key="optimizer">AdamOptimizer</Entry>
 			<Entry key="nestedAlgorithmGenerations">1</Entry>
 		</Backpropagation>
-		<GeneticAnnealing>
-			<Entry key="energybank">5</Entry>
-			<Entry key="coolingfactor">0.5</Entry>
-			<Entry key="elitism">0</Entry>
-		</GeneticAnnealing>
 	</Algorithm>
 	<Genotype>
 		<DLFloatingPoint>
 			<Entry key="dimension">5</Entry>
-			<Entry key="lbound">-2</Entry>
-			<Entry key="ubound">2</Entry>
-			<Entry key="mut.simple">1</Entry>
-			<Entry key="mut.unbound">0</Entry>
+			<Entry key="lbound">-10</Entry>
+			<Entry key="ubound">10</Entry>
+			<Entry key="mut.simple">0.5</Entry>
+			<Entry key="mut.unbound">0.5</Entry>
 			<Entry key="numberGenerator">NormalDistributionRNG</Entry>
 			<Entry key="distributionArg1">0</Entry>
-			<Entry key="distributionArg2">0.1</Entry>
+			<Entry key="distributionArg2">3</Entry>
 		</DLFloatingPoint>
 	</Genotype>
 	<Registry>
 		<Entry key="configFilePath">./config.txt</Entry>
 		<Entry key="saveModel">1</Entry>
-		<Entry key="saveModelMilestone">1024</Entry>
-		<Entry key="modelSavePath">../demo/PUF/</Entry>
-		<Entry key="population.size">1</Entry>
+		<Entry key="saveModelMilestone">1000</Entry>
+		<Entry key="modelSavePath">../demo/regression/</Entry>
+		<Entry key="population.size">30</Entry>
 		<Entry key="mutation.indprob">0.5</Entry>
-		<Entry key="term.maxgen">15000</Entry>
+		<Entry key="term.maxgen">5000</Entry>
 		<Entry key="term.fitnessval">1e-5</Entry>
 		<Entry key="log.frequency">15</Entry>
 		<Entry key="log.level">2</Entry>
