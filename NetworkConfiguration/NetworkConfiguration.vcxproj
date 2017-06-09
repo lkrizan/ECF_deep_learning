@@ -12,6 +12,7 @@
     <ClInclude Include="Flatten.h" />
     <ClInclude Include="FullyConnectedLayer.h" />
     <ClInclude Include="GradientDescentOptimizer.h" />
+    <ClInclude Include="L2Regularizer.h" />
     <ClInclude Include="Layer.h" />
     <ClInclude Include="LossFunction.h" />
     <ClInclude Include="MeanSquaredLossFunction.h" />

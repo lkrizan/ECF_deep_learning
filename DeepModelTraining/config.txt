@@ -11,10 +11,10 @@
 # OutputShape 10
 # inputFiles ../CIFAR10/data_batch_1.bin ../CIFAR10/data_batch_2.bin ../CIFAR10/data_batch_3.bin ../CIFAR10/data_batch_4.bin ../CIFAR10/data_batch_5.bin
 # !!!regression config!!!
-loader NumericDatasetLoader
-InputShape 2
-OutputShape 1
-inputFiles ../example_datasets/regression/train_dataset.txt
+# loader NumericDatasetLoader
+# InputShape 2
+# OutputShape 1
+# inputFiles ../example_datasets/rastrigin/rastrigin_train.txt
 # !!!autoencoder config!!!
 # loader IONumericDatasetLoader
 # InputShape 15
@@ -22,13 +22,14 @@ inputFiles ../example_datasets/regression/train_dataset.txt
 # inputFiles ../example_datasets/one_class/oneclass_realistic_small_train_all_numeric.txt
 # labelFiles ../example_datasets/one_class/oneclass_realistic_small_train_all_numeric.txt
 # !!!PUF config!!!
-# loader IONumericDatasetLoader
-# InputShape 64
-# OutputShape 1
-# inputFiles ../example_datasets/PUF/f_1x64_128.txt
-# labelFiles ../example_datasets/PUF/r_1x64_128.txt
+loader IONumericDatasetLoader
+InputShape 64
+OutputShape 1
+inputFiles ../example_datasets/PUF/f_1x64_512.txt
+labelFiles ../example_datasets/PUF/r_1x64_512.txt
 # common for all configs - batchsize
-batchSize 1000
+batchSize 128
+weightDecay 0
 
 [Layers]
 # !!!Convolution network config!!!
@@ -44,9 +45,11 @@ batchSize 1000
 # FullyConnectedLayer 64
 # ReLUActivation
 # !!!Fully connected network for regression!!!
-FullyConnectedLayer 10
-SigmoidActivation
-FullyConnectedLayer 1
+# FullyConnectedLayer 10
+# SigmoidActivation
+# FullyConnectedLayer 5
+# SigmoidActivation
+# FullyConnectedLayer 1
 # !!!Auto-encoder config!!!
 # FullyConnectedLayer 25
 # ReLUActivation
@@ -60,12 +63,12 @@ FullyConnectedLayer 1
 # ReLUActivation
 # FullyConnectedLayer 15
 # !!!PUF config!!!
-# FullyConnectedLayer 15
-# ReLUActivation
-# FullyConnectedLayer 10
-# ReLUActivation
-# FullyConnectedLayer 1
-# TanhActivation
+FullyConnectedLayer 15
+ReLUActivation
+FullyConnectedLayer 10
+ReLUActivation
+FullyConnectedLayer 1
+TanhActivation
 
 [Loss]
 # SoftmaxCrossEntropyLossFunction
@@ -73,4 +76,4 @@ MeanSquaredLossFunction
 
 [Initializer]
 # TruncatedNormalDistributionRNG 0 0.1
-UniformDistributionRNG -2 2
+UniformDistributionRNG -0.5 0.5

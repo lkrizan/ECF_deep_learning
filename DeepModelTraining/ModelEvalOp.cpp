@@ -1,6 +1,7 @@
 #include "ModelEvalOp.h"
 #include "ConfigParser.h"
 #include "IRNGenerator.h"
+#include "NetworkConfiguration/L2Regularizer.h"
 
 
 void ModelEvalOp::registerParameters(StateP state)
@@ -12,19 +13,6 @@ ModelEvalOp::~ModelEvalOp()
 {
   if (m_pSession)
     m_pSession->Close();
-}
-
-// TODO: remove this (deprecated - replaced with separate operator)
-void ModelEvalOp::saveDefinitionToFile() const
-{
-  ModelExporter exporter(m_ECFState, m_ModelExportPath);
-  exporter.exportGraph(m_GraphDef);
-  // get best individual from Hall of Fame
-  IndividualP bestIndividual = m_ECFState->getHoF()->getBest().at(0);
-  FloatingPoint::FloatingPoint* gen = (FloatingPoint::FloatingPoint*) bestIndividual->getGenotype().get();
-  auto currentIterator = gen->realValue.begin();
-  auto endIterator = gen->realValue.end();
-  for_each(m_VariableData.begin(), m_VariableData.end(), [&exporter, &currentIterator](const VariableData & data) {exporter.exportVariableValues(data.m_VariableName, data.m_BasicShape, currentIterator, currentIterator + data.m_NumberOfElements); currentIterator += data.m_NumberOfElements;});
 }
 
 
@@ -81,8 +69,6 @@ bool ModelEvalOp::initialize(StateP state)
     // load parameterization and configuration data
     ECF_LOG(state, 3, "Loading network configuration...");
     std::string configFilePath = *(static_cast<std::string*> (state->getRegistry()->getEntry("configFilePath").get()));
-    m_SaveModel = *(static_cast<int*> (state->getRegistry()->getEntry("saveModel").get()));
-    m_ModelExportPath = *(static_cast<std::string*> (state->getRegistry()->getEntry("modelSavePath").get()));
     ConfigParser configParser(configFilePath);
     std::vector<std::pair<std::string, std::vector<std::vector<int>>>> layerConfiguration = configParser.LayerConfiguration();
     const std::vector<std::string> & datasetInputFiles = configParser.InputFiles();
@@ -92,6 +78,7 @@ bool ModelEvalOp::initialize(StateP state)
     unsigned int batchSize = configParser.BatchSize();
     std::vector<double> initializerParams = configParser.InitializerParams();
     const std::string & initializerName = configParser.InitializerName();
+    m_WeightDecay = configParser.WeightDecay();
     // set input and output shapes
     NetworkConfiguration::Shape inputShape({batchSize});
     inputShape.insert(inputShape.end(), configParser.InputShape().begin(), configParser.InputShape().end());
@@ -107,15 +94,25 @@ bool ModelEvalOp::initialize(StateP state)
     // TODO: refactor this, can be much better
     m_Network = createLayers(m_Scope, layerConfiguration, lossFunctionName, inputShape, outputShape);
     m_VariableData = createVariableData(m_Network);
+    // add regularizer
+    auto regularizer = NetworkConfiguration::L2Regularizer(m_Scope, m_Network, REGULARIZED_LOSS_OUTPUT_NAME);
+
 
     // create session
     Status status;
-    TF_CHECK_OK(m_Scope.ToGraphDef(&m_GraphDef));
+    status = m_Scope.ToGraphDef(&m_GraphDef);
+    if (!status.ok())
+    {
+      ECF_LOG_ERROR(state, "Graph creation failed:\n");
+      ECF_LOG_ERROR(state, status.ToString());
+      return false;
+    }
     status = m_pSession->Create(m_GraphDef);
     if (!status.ok())
     {
       ECF_LOG_ERROR(state, "Session creation failed:\n");
       ECF_LOG_ERROR(state, status.ToString());
+      return false;
     }
     ECF_LOG(state, 4, "Graph definition data:");
     ECF_LOG(state, 4, m_GraphDef.DebugString());
@@ -140,7 +137,7 @@ bool ModelEvalOp::initialize(StateP state)
     }
     // shuffle the dataset
     m_DatasetHandler->shuffleDataset();
-    return status.ok();
+    return true;
   }
   catch (std::exception& e)
   {
@@ -179,9 +176,10 @@ FitnessP ModelEvalOp::evaluate(IndividualP individual)
   inputs.push_back(std::make_pair(OUTPUTS_PLACEHOLDER_NAME, m_CurrentOutputs));
   // run session and fetch loss
   std::vector<tensorflow::Tensor> outputs;
-  Status status = m_pSession->Run(inputs, { LOSS_OUTPUT_NAME }, {}, &outputs);
-  auto loss = outputs[0].scalar<float>();
-  fitness->setValue(loss());
+  Status status = m_pSession->Run(inputs, { LOSS_OUTPUT_NAME, REGULARIZED_LOSS_OUTPUT_NAME }, {}, &outputs);
+  auto loss = outputs[0].scalar<float>()();
+  auto regularizedLoss = outputs[1].scalar<float>()();
+  fitness->setValue(loss + m_WeightDecay * regularizedLoss);
   return fitness;
 
 }
