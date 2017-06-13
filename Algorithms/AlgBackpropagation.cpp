@@ -44,6 +44,7 @@ void Backpropagation::registerParameters(StateP state)
   // TODO: register all ECF algorithms in AlgorithmFactory
   AlgorithmFactory::instance().registerClass("GeneticAnnealing", []() {return new GeneticAnnealing;});
   AlgorithmFactory::instance().registerClass("SteadyStateTournament", []() {return new SteadyStateTournament;});
+  AlgorithmFactory::instance().registerClass("EvolutionStrategy", []() {return new EvolutionStrategy;});
 }
 
 bool Backpropagation::initialize(StateP state)

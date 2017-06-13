@@ -18,6 +18,7 @@ private:
   std::string m_DatasetLoaderType;
   std::string m_LossFunctionName;
   std::string m_InitializerName = "TruncatedNormalDistributionRNG";
+  float m_WeightDecay = 0;
 
   // used for checking if all required parameters are configured
   bool inputsConfigured = false;
@@ -45,4 +46,5 @@ public:
   std::string LossFunctionName() { return m_LossFunctionName; }
   std::string DatasetLoaderType() { return m_DatasetLoaderType; }
   unsigned int BatchSize() { return m_BatchSize; }
+  float WeightDecay() { return m_WeightDecay; }
 };

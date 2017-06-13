@@ -1,35 +1,71 @@
 [Dataset]
-loader MNISTDatasetLoader
-InputShape 28 28 1
-OutputShape 10
-inputFiles ../MNIST/train-images.idx3-ubyte
-labelFiles ../MNIST/train-labels.idx1-ubyte
-# loader CIFAR10DatasetLoader
-# InputShape 32 32 3
+# !!!MNIST config!!!
+# loader MNISTDatasetLoader
+# InputShape 28 28 1
 # OutputShape 10
-# inputFiles ../CIFAR10/data_batch_1.bin ../CIFAR10/data_batch_2.bin ../CIFAR10/data_batch_3.bin ../CIFAR10/data_batch_4.bin ../CIFAR10/data_batch_5.bin
+# inputFiles ../MNIST/train-images.idx3-ubyte
+# labelFiles ../MNIST/train-labels.idx1-ubyte
+# !!!CIFAR10 config!!!
+loader CIFAR10DatasetLoader
+InputShape 32 32 3
+OutputShape 10
+inputFiles ../CIFAR10/data_batch_1.bin ../CIFAR10/data_batch_2.bin ../CIFAR10/data_batch_3.bin ../CIFAR10/data_batch_4.bin ../CIFAR10/data_batch_5.bin
+# !!!regression config!!!
 # loader NumericDatasetLoader
 # InputShape 2
 # OutputShape 1
-# inputFiles ./dataset/dataset.txt
-batchSize 100
+# inputFiles ../example_datasets/regression/train_dataset.txt
+# !!!autoencoder config!!!
+# loader IONumericDatasetLoader
+# InputShape 15
+# OutputShape 15
+# inputFiles ../example_datasets/one_class/oneclass_realistic_small_train_all_numeric.txt
+# labelFiles ../example_datasets/one_class/oneclass_realistic_small_train_all_numeric.txt
+# !!!PUF config!!!
+# loader IONumericDatasetLoader
+# InputShape 64
+# OutputShape 1
+# inputFiles ../example_datasets/PUF/f_1x64_8192.txt
+# labelFiles ../example_datasets/PUF/r_1x64_8192.txt
+# common for all configs - batchsize
+batchSize 50
+weightDecay 0
 
 [Layers]
-PaddedConv2D 5,8 1
-ReLUActivation
+# !!!Convolution network config!!!
+PaddedConv2D 5,32 1
 PaddedMaxPool 2 2
-PaddedConv2D 5,16 1
 ReLUActivation
+PaddedConv2D 5,64 1
 PaddedMaxPool 2 2
+ReLUActivation
 Flatten
+FullyConnectedLayer 1024
+ReLUActivation
 FullyConnectedLayer 10
-# FullyConnectedLayer 120
-# ReLUActivation
-# FullyConnectedLayer 64
-# ReLUActivation
+# !!!Fully connected network for regression!!!
 # FullyConnectedLayer 10
 # SigmoidActivation
 # FullyConnectedLayer 1
+# !!!Auto-encoder config!!!
+# FullyConnectedLayer 25
+# ReLUActivation
+# FullyConnectedLayer 15
+# ReLUActivation
+# FullyConnectedLayer 10
+# ReLUActivation
+# FullyConnectedLayer 15
+# ReLUActivation
+# FullyConnectedLayer 25
+# ReLUActivation
+# FullyConnectedLayer 15
+# !!!PUF config!!!
+# FullyConnectedLayer 15
+# ReLUActivation
+# FullyConnectedLayer 10
+# ReLUActivation
+# FullyConnectedLayer 1
+# TanhActivation
 
 [Loss]
 SoftmaxCrossEntropyLossFunction
@@ -37,3 +73,4 @@ SoftmaxCrossEntropyLossFunction
 
 [Initializer]
 TruncatedNormalDistributionRNG 0 0.1
+# UniformDistributionRNG -0.5 0.5

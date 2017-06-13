@@ -60,6 +60,9 @@
     <ClInclude Include="SoftmaxActivation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="L2Regularizer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FullyConnectedLayer.cpp">

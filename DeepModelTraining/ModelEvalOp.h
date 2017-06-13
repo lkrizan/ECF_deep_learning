@@ -14,6 +14,7 @@
 #define INPUTS_PLACEHOLDER_NAME "inputs"
 #define OUTPUTS_PLACEHOLDER_NAME "outputs"
 #define LOSS_OUTPUT_NAME "loss"
+#define REGULARIZED_LOSS_OUTPUT_NAME "regularized_loss"
 
 using namespace tensorflow;
 
@@ -67,11 +68,9 @@ private:
   Scope m_Scope = Scope::NewRootScope();
   std::vector<VariableData> m_VariableData;
 
-  bool m_SaveModel = false;
-  std::string m_ModelExportPath;
-
   std::vector<NetworkConfiguration::LayerP> m_Network;
   NetworkConfiguration::LossFunctionP m_LossFunction;
+  float m_WeightDecay;
 
   DatasetLoader::IDatasetLoaderP m_DatasetHandler;
 

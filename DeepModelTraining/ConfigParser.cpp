@@ -97,6 +97,13 @@ void ConfigParser::parseLine(const std::string line)
           if (++currIterator != tokens.end())
             m_BatchSize = std::stoi(*currIterator);
         }
+
+        else if (*currIterator == "weightDecay")
+        {
+          if (++currIterator != tokens.end())
+            m_WeightDecay = std::stof(*currIterator);
+        }
+
         else
           throw std::logic_error(*currIterator + " is not a valid parameter in General block in configuration file.\n");
         break;

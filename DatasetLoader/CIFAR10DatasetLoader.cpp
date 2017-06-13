@@ -7,10 +7,12 @@
 #define NUM_LABELS 10
 
 // for convinience, training set mean and std per channel was calculated outside, via python script
-#define C_MEAN 93.206756
-#define RC_STD 66.060188
-#define GC_STD 64.216217
-#define BC_STD 65.036056
+#define RC_MEAN 125.3069
+#define GC_MEAN 122.950149
+#define BC_MEAN 113.865997
+#define RC_STD 62.993251
+#define GC_STD 62.088603
+#define BC_STD 66.705009
 
 namespace DatasetLoader {
   
@@ -37,6 +39,12 @@ bool CIFAR10DatasetLoader::readImageFile(std::string imageFilePath)
   }
   std::vector<float> values;
   values.reserve(exampleSize);
+  std::vector<float> rChannel;
+  std::vector<float> gChannel;
+  std::vector<float> bChannel;
+  rChannel.reserve(channelSize);
+  gChannel.reserve(channelSize);
+  bChannel.reserve(channelSize);
   for (unsigned int i = 0; i < NUM_EXAMPLES; ++i)
   {
     // read label
@@ -45,11 +53,20 @@ bool CIFAR10DatasetLoader::readImageFile(std::string imageFilePath)
     addLabel(labelVector.begin(), labelVector.end());
     // read image data
     values.clear();
+    rChannel.clear();
+    gChannel.clear();
+    bChannel.clear();
     file.read((char*)memblock, exampleSize);
-    // normalize the values 
-    std::transform(memblock, memblock + channelSize, std::back_inserter(values), [](unsigned char & val) {return (static_cast<float>(val) - C_MEAN) / RC_STD;});
-    std::transform(memblock + channelSize, memblock + 2 * channelSize, std::back_inserter(values), [](unsigned char & val) {return (static_cast<float>(val) - C_MEAN) / GC_STD;});
-    std::transform(memblock + 2 * channelSize, memblock + 3 * channelSize, std::back_inserter(values), [](unsigned char & val) {return (static_cast<float>(val) - C_MEAN) / BC_STD;});
+    // normalize the values
+    std::transform(memblock, memblock + channelSize, std::back_inserter(rChannel), [](unsigned char & val) {return (static_cast<float>(val) - RC_MEAN) / RC_STD;});
+    std::transform(memblock + channelSize, memblock + 2 * channelSize, std::back_inserter(gChannel), [](unsigned char & val) {return (static_cast<float>(val) - GC_MEAN) / GC_STD;});
+    std::transform(memblock + 2 * channelSize, memblock + 3 * channelSize, std::back_inserter(bChannel), [](unsigned char & val) {return (static_cast<float>(val) - BC_MEAN) / BC_STD;});
+    for (unsigned int i = 0; i < channelSize; ++i)
+    {
+      values.push_back(rChannel[i]);
+      values.push_back(gChannel[i]);
+      values.push_back(bChannel[i]);
+    }
     addLearningExample(values.begin(), values.end());
   }
   // all done

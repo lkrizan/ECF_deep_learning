@@ -115,11 +115,13 @@
     <ClInclude Include="CIFAR10DatasetLoader.h" />
     <ClInclude Include="DatasetLoader.h" />
     <ClInclude Include="IDatasetLoader.h" />
+    <ClInclude Include="IONumericDatasetLoader.h" />
     <ClInclude Include="MNISTDatasetLoader.h" />
     <ClInclude Include="NumericDatasetLoader.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CIFAR10DatasetLoader.cpp" />
+    <ClCompile Include="IONumericDatasetLoader.cpp" />
     <ClCompile Include="MNISTDatasetLoader.cpp" />
     <ClCompile Include="NumericDatasetLoader.cpp" />
   </ItemGroup>
