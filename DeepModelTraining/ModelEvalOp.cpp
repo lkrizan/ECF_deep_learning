@@ -118,7 +118,7 @@ bool ModelEvalOp::initialize(StateP state)
     ECF_LOG(state, 4, m_GraphDef.DebugString());
     // override size for FloatingPoint genotype
     size_t numParameters = totalNumberOfParameters();
-    state->getRegistry()->modifyEntry("FloatingPoint.dimension", (voidP) new uint(numParameters));
+    state->getRegistry()->modifyEntry("DLFloatingPoint.dimension", (voidP) new uint(numParameters));
     state->getPopulation()->initialize(state);
     // iterate through population and reinitialize individuals
     RNGeneratorP<double> rng = RNGFactory<double>::instance().createObject(initializerName, RNGBaseParams<double>(initializerParams.front(), initializerParams.back()));
@@ -135,6 +135,8 @@ bool ModelEvalOp::initialize(StateP state)
         std::generate_n(std::back_inserter(data), numParameters, [&rng]() { return rng->operator()();});
       });
     }
+    // reinitialize the algorithm
+    state->getAlgorithm()->initialize(state);
     // shuffle the dataset
     m_DatasetHandler->shuffleDataset();
     return true;

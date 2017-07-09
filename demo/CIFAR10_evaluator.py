@@ -31,10 +31,10 @@ if __name__ == "__main__":
         subset = unpickle(os.path.join(DATA_DIR, 'data_batch_%d' % i))
         train_x = np.vstack((train_x, subset['data']))
         train_y += subset['labels']
-    train_x = train_x.reshape((-1, img_height, img_width, num_channels))
+    train_x = train_x.reshape((-1, num_channels, img_height, img_width)).transpose(0,2,3,1)
     train_y = np.array(train_y, dtype=np.int32)
     subset = unpickle(os.path.join(DATA_DIR, 'test_batch'))
-    test_x = subset['data'].reshape((-1, img_height, img_width, num_channels)).astype(np.float32)
+    test_x = subset['data'].reshape((-1, num_channels, img_height, img_width)).astype(np.float32).transpose(0,2,3,1)
     test_y = np.array(subset['labels'], dtype=np.int32)
     data_mean = train_x.mean((0,1,2))
     data_std = train_x.std((0,1,2))
@@ -43,12 +43,13 @@ if __name__ == "__main__":
     train_y_ = one_hot_encode(train_y)
     test_y_ = one_hot_encode(test_y)
     # load trained model
-    loader = ModelLoader("./CIFAR10/")
+    pdb.set_trace()
+    loader = ModelLoader("./CIFAR10/18-06-2017-21-01-18/generation_12000/")
     feed_dict = loader.feed_dict
     tf.import_graph_def(loader.graph_def, name="")
     with tf.Session() as sess:
-        feed_dict["inputs:0"] = test_x
-        output = sess.run(["FC3_out:0"], feed_dict=feed_dict)
+        feed_dict["inputs:0"] = test_x[:5000]
+        output = sess.run(["FC2_out:0"], feed_dict=feed_dict)
         class_output = np.argmax(output[0], 1)
-        result = class_output == np.argmax(test_y_, 1)
+        result = class_output == np.argmax(test_y_[:5000], 1)
         print("Test accuracy: ", np.mean(result))

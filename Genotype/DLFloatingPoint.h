@@ -10,7 +10,7 @@ namespace DLFloatingPoint {
 class DLFloatingPoint : public FloatingPoint::FloatingPoint
 {
 public:
-  DLFloatingPoint() { name_ = "DLFloatingPoint"; }
+  DLFloatingPoint() { name_ = "FloatingPoint"; }
   /*
   TODO: in some future update override these methods to be used as a replacement for clunky 
   reinitialization of individuals in ModelEvalOp initialization.

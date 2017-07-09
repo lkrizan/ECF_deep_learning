@@ -4,8 +4,8 @@ import tensorflow as tf
 import os
 
 if __name__ == "__main__":
-    DATA_DIR = "../example_datasets/regression/"
-    FILE_NAME = "test_dataset.txt"
+    DATA_DIR = "../example_datasets/regression_f5/"
+    FILE_NAME = "test_dataset_f5.txt"
     # read inputs and outputs
     test_x = []
     test_y = []
@@ -18,7 +18,7 @@ if __name__ == "__main__":
     test_x = np.array(test_x)
     test_y = np.array(test_y)
     # load trained model
-    loader = ModelLoader("./regression/05-06-2017-18-42-43/generation_5000/")
+    loader = ModelLoader("./regression/22-06-2017-12-28-48/generation_1000/")
     feed_dict = loader.feed_dict
     tf.import_graph_def(loader.graph_def, name="")
     with tf.Session() as sess:
