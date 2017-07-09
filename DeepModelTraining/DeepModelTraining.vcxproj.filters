@@ -48,12 +48,6 @@
     <ClCompile Include="ModelSaveOp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Algorithms\AlgCMAES.cpp">
-      <Filter>Algorithms</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Algorithms\jacobi.cpp">
-      <Filter>Algorithms</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ModelEvalOp.h">
@@ -88,12 +82,6 @@
     </ClInclude>
     <ClInclude Include="ModelSaveOp.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Algorithms\AlgCMAES.h">
-      <Filter>Algorithms</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Algorithms\jacobi.h">
-      <Filter>Algorithms</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

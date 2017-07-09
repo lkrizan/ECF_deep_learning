@@ -23,11 +23,6 @@
 	</Backpropagation>
 	<SteadyStateTournament>
 	</SteadyStateTournament>
-	<CMAES>
-		<Entry key="weightType">NONE</Entry>
-		<Entry key="type">NORMAL</Entry>
-		<Entry key="mu">5</Entry>
-	</CMAES>
 	<GenHookeJeeves>
 	</GenHookeJeeves>
 	<GeneticAnnealing>
