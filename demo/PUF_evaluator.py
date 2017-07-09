@@ -6,9 +6,15 @@ import pdb
 from sklearn.metrics import f1_score
 
 if __name__ == "__main__":
-    DATA_DIR = "../example_datasets/PUF/"
-    INPUTS_FILE = "f_1x64_100000.txt"
-    LABELS_FILE = "r_1x64_100000.txt"
+    DATA_DIR = "../example_datasets/PUF_4x64/"
+    INPUTS_FILE = "f_4x64_100000.txt"
+    LABELS_FILE = "r_4x64_100000.txt"
+    # DATA_DIR = "../example_datasets/bkp/"
+    # INPUTS_FILE = "f_4x64_16384.txt"
+    # LABELS_FILE = "r_4x64_16384.txt"
+    # DATA_DIR = "../example_datasets/PUF_4x64/alt/"
+    # INPUTS_FILE = "f_4x64_50000_test.txt"
+    # LABELS_FILE = "r_4x64_50000_test.txt"
     # read inputs
     test_x = []
     fp = open(os.path.join(DATA_DIR, INPUTS_FILE), "r")
@@ -27,7 +33,7 @@ if __name__ == "__main__":
     fp.close()
     test_y = np.array(test_y)
     # load trained model
-    loader = ModelLoader("./PUF/")
+    loader = ModelLoader("./PUF/24-06-2017-20-11-21/generation_5000/")
     feed_dict = loader.feed_dict
     tf.import_graph_def(loader.graph_def, name="")
     with tf.Session() as sess:

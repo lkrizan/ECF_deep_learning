@@ -1,28 +1,43 @@
 <ECF>
 	<Algorithm>
+	<Clonalg>
+		<Entry key="beta">1</Entry>                         <!-- number of clones (percentage) for every antibody (default: 1.0) -->
+		<Entry key="c">0.5</Entry>                          <!-- mutation rate (default: 0.2) -->
+		<Entry key="cloningVersion">proportional</Entry>    <!-- cloning version, static or proportional (default: proportional) -->
+		<Entry key="d">0</Entry>                            <!-- fraction of population regenerated every generation (default: 0) -->
+		<Entry key="n">20</Entry>                           <!-- number of antibodies cloned every generation (default: 100) -->
+		<Entry key="selectionScheme">CLONALG1</Entry>       <!-- which selection scheme to use, CLONALG1 or CLONALG2 (default: CLONALG1) -->
+	</Clonalg>
+	<EvolutionStrategy>
+			<Entry key="lambda">15</Entry>
+			<Entry key="mu">15</Entry>
+			<Entry key="rho">1</Entry>
+	</EvolutionStrategy>
 	<Backpropagation>
 			<Entry key="initialLearningRate">1e-4</Entry>
-			<Entry key="finalLearningRate">1e-4</Entry>
+			<Entry key="finalLearningRate">1e-3</Entry>
 			<Entry key="numSteps">1</Entry>
 			<Entry key="weightDecay">1e-3</Entry>
 			<Entry key="optimizer">AdamOptimizer</Entry>
 			<Entry key="nestedAlgorithmGenerations">1</Entry>
-		</Backpropagation>
+	</Backpropagation>
 	<SteadyStateTournament>
-		</SteadyStateTournament>
+	</SteadyStateTournament>
+	<CMAES>
+		<Entry key="weightType">NONE</Entry>
+		<Entry key="type">NORMAL</Entry>
+		<Entry key="mu">5</Entry>
+	</CMAES>
+	<GenHookeJeeves>
+	</GenHookeJeeves>
 	<GeneticAnnealing>
 			<Entry key="energybank">5</Entry>
 			<Entry key="coolingfactor">0.8</Entry>
 			<Entry key="elitism">0</Entry>
-		</GeneticAnnealing>
-	<EvolutionStrategy>
-			<Entry key="lambda">10</Entry>
-			<Entry key="mu">10</Entry>
-			<Entry key="rho">1</Entry>
-		</EvolutionStrategy>
+	</GeneticAnnealing>
 	</Algorithm>
 	<Genotype>
-		<DLFloatingPoint>
+		<FloatingPoint>
 			<Entry key="dimension">5</Entry>
 			<Entry key="lbound">-1</Entry>
 			<Entry key="ubound">1</Entry>
@@ -30,17 +45,17 @@
 			<Entry key="mut.unbound">0.5</Entry>
 			<Entry key="numberGenerator">NormalDistributionRNG</Entry>
 			<Entry key="distributionArg1">0</Entry>
-			<Entry key="distributionArg2">0.1</Entry>
-		</DLFloatingPoint>
+			<Entry key="distributionArg2">0.5</Entry>
+		</FloatingPoint>
 	</Genotype>
 	<Registry>
 		<Entry key="configFilePath">./config.txt</Entry>
 		<Entry key="saveModel">1</Entry>
-		<Entry key="saveModelMilestone">1200</Entry>
-		<Entry key="modelSavePath">../demo/CIFAR10/</Entry>
-		<Entry key="population.size">1</Entry>
+		<Entry key="saveModelMilestone">7500</Entry>
+		<Entry key="modelSavePath">../demo/PUF/</Entry>
+		<Entry key="population.size">20</Entry>
 		<Entry key="mutation.indprob">0.5</Entry>
-		<Entry key="term.maxgen">12000</Entry>
+		<Entry key="term.maxgen">5000</Entry>
 		<Entry key="term.fitnessval">1e-5</Entry>
 		<Entry key="log.frequency">15</Entry>
 		<Entry key="log.level">2</Entry>
