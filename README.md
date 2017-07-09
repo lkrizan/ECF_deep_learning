@@ -88,6 +88,16 @@ C:\...\build> Release\tf_tutorials_example_trainer.exe
     - in ECF_lib.sln, set build configuration to Release x64
     - in solution properties, under C/C++ > Code Generation, set Runtime Library option
       to `Multi-threaded DLL` instead of `Multi-threaded`
+    - optional: enable parameterization of multiple algorithms in ECF (used for hybrid approach which combines Backpropagation with other metaheuristic algorithms):
+        - add the following lines to State::parseAlgorithmNode method in State.cpp file, just before final return true statement:
+    ```
+    for (int i = 1; i < n; ++i)
+    {
+        XMLNode tmpNode = node.getChildNode(i);
+        registry_->readEntries(tmpNode, tmpNode.getName());
+    }
+    ```
+    - build ECF solution
       
 * stop TensorFlow log messages (optional):
     - set environment variable `TF_CPP_MIN_LOG_LEVEL` with value 2 (this disables warnings and debug log)
@@ -96,20 +106,5 @@ C:\...\build> Release\tf_tutorials_example_trainer.exe
         
 ## Release notes ##
 
-* release will always include versions with and without GPU support
-    
-### r.0.01 ###
-    
-* more or less a play-ground release - it cannot be parameterized and uses hardcoded values for everything
-
-### r.0.2 ###
-
-* neural network parameterization (see config.txt file)
-* limitations:
-    - only fully connected layer and sigmoid activation supported (for now)
-    - learning examples can only be vectors (for now)
-
-### Goals for next release ###
-* more dataset options (support for image classification)
-* new layers, activation and loss functions (convolution, pooling layers, ReLU, tanh)
-* option to save trained model (and use it elsewhere for e.g., evaluation)
+* release 1.0 includes GPU version (r1.0-gpu branch) and non-GPU version (r1.0-no-gpu branch)
+* known limitation: PaddedMaxPool layer does not work on non-gpu version because TensorFlow does not support MaxPoolWithArgmax operation without GPU
