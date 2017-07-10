@@ -90,16 +90,16 @@ C:\...\build> Release\tf_tutorials_example_trainer.exe
       to `Multi-threaded DLL` instead of `Multi-threaded`
     - optional: enable parameterization of multiple algorithms in ECF (used for hybrid approach which combines Backpropagation with other metaheuristic algorithms):
         - add the following lines to State::parseAlgorithmNode method in State.cpp file, just before final return true statement:
-    ```
-    #!c++
 
-    for (int i = 1; i < n; ++i)
-    {
-        XMLNode tmpNode = node.getChildNode(i);
-        registry_->readEntries(tmpNode, tmpNode.getName());
-    }
-    ```
-    - build ECF solution
+```
+#!c++
+
+for (int i = 1; i < n; ++i)
+{
+    XMLNode tmpNode = node.getChildNode(i);
+    registry_->readEntries(tmpNode, tmpNode.getName());
+}
+```
       
 * stop TensorFlow log messages (optional):
     - set environment variable `TF_CPP_MIN_LOG_LEVEL` with value 2 (this disables warnings and debug log)
