@@ -91,6 +91,8 @@ C:\...\build> Release\tf_tutorials_example_trainer.exe
     - optional: enable parameterization of multiple algorithms in ECF (used for hybrid approach which combines Backpropagation with other metaheuristic algorithms):
         - add the following lines to State::parseAlgorithmNode method in State.cpp file, just before final return true statement:
     ```
+    #!c++
+
     for (int i = 1; i < n; ++i)
     {
         XMLNode tmpNode = node.getChildNode(i);
